@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DareDrop</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
+color:white;
+text-align:center;
+}
+
+.container{
+padding:40px 20px;
+}
+
+h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.subtitle{
+opacity:0.9;
+margin-bottom:30px;
+}
+
+.card{
+background:white;
+color:#333;
+border-radius:15px;
+padding:25px;
+max-width:420px;
+margin:auto;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+select{
+padding:10px;
+font-size:16px;
+margin-bottom:15px;
+width:100%;
+border-radius:8px;
+}
+
+.dare{
+font-size:20px;
+min-height:80px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+button{
+border:none;
+padding:15px 25px;
+border-radius:8px;
+font-size:18px;
+cursor:pointer;
+margin:10px;
+}
+
+.primary{
+background:#ff416c;
+color:white;
+}
+
+.secondary{
+background:#eee;
+}
+
+.footer{
+margin-top:30px;
+opacity:0.8;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🔥 DareDrop</h1>
+<div class="subtitle">Choose category & get dare</div>
+
+<div class="card">
+
+<select id="category">
+<option value="funny">😄 Funny</option>
+<option value="love">❤️ Love</option>
+<option value="fitness">💪 Fitness</option>
+<option value="extreme">😈 Extreme</option>
+</select>
+
+<div id="dareBox" class="dare">Select category & press button</div>
+
+<button class="primary" onclick="generateDare()">🎲 Get Dare</button>
+<button class="secondary" onclick="shareDare()">📤 Share</button>
+
+</div>
+
+<div class="footer">Made with ❤️</div>
+
+</div>
+
+<script>
+
+const dares={
+funny:[
+"Talk like cartoon for 2 min",
+"Do weird dance",
+"Sing loudly",
+"Make funny face selfie",
+"Act like robot"
+],
+love:[
+"Send heart to crush",
+"Call best friend say miss you",
+"Write love status",
+"Compliment someone",
+"Send hug emoji"
+],
+fitness:[
+"Do 15 squats",
+"Run in place 1 min",
+"10 pushups",
+"Wall sit 30 sec",
+"Stretch full body"
+],
+extreme:[
+"Post embarrassing photo",
+"Call random friend say hi",
+"Let friend choose status",
+"Speak truth 1 min",
+"Do dare without question"
+]
+};
+
+function generateDare(){
+let cat=document.getElementById("category").value;
+let list=dares[cat];
+let random=list[Math.floor(Math.random()*list.length)];
+document.getElementById("dareBox").innerText=random;
+}
+
+function shareDare(){
+let text=document.getElementById("dareBox").innerText;
+navigator.share?.({text});
+}
+
+</script>
+
+</body>
+</html>
