@@ -2,287 +2,182 @@
 <html lang="pa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DareDrop Pro Party - V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DareDrop Ultimate Party</title>
     <style>
-        :root {
-            --primary: #ff0055;
-            --secondary: #00dbde;
-            --bg-dark: #0f0c29;
-        }
-
+        :root { --primary: #ff0055; --secondary: #00dbde; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            margin: 0; background: #0f0c29; color: white;
+            display: flex; justify-content: center; align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
         }
-
         .container {
-            width: 90%;
-            max-width: 450px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            width: 95%; max-width: 420px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            padding: 25px; border-radius: 30px;
+            text-align: center; border: 1px solid rgba(255,255,255,0.1);
         }
-
-        h1 { font-size: 2.2rem; margin-bottom: 15px; text-shadow: 0 0 10px var(--primary); }
-
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        #wheelCanvas {
+            width: 100%; height: 100%; border-radius: 50%;
+            transition: transform 5s cubic-bezier(0.15, 0, 0.15, 1);
+        }
         .btn {
-            width: 80%;
-            padding: 12px;
-            font-size: 1rem;
-            margin: 8px auto;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(45deg, var(--primary), #fb406c);
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            display: block;
-            transition: 0.3s;
-            text-transform: uppercase;
+            width: 100%; padding: 15px; font-size: 1.1rem; margin: 10px 0;
+            border-radius: 50px; border: none; cursor: pointer; font-weight: 800;
         }
-
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,0,85,0.3); }
-
-        input {
-            padding: 12px;
-            width: 70%;
-            border-radius: 20px;
-            border: 2px solid var(--secondary);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            margin-bottom: 10px;
-            outline: none;
-        }
-
-        /* Wheel Styles */
-        .wheel-container {
-            position: relative;
-            width: 280px;
-            height: 280px;
-            margin: 20px auto;
-        }
-
-        #wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 5px solid #fff;
-            position: relative;
-            transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1);
-            box-shadow: 0 0 30px rgba(0,0,0,0.4);
-            overflow: hidden;
-        }
-
-        .arrow {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 30px;
-            background: #fff;
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
-            z-index: 100;
-        }
-
-        .hidden { display: none; }
-        
-        .task-card {
-            background: #fff;
-            color: #222;
-            padding: 20px;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            margin: 15px 0;
-            font-weight: bold;
-            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
+        .btn-primary { background: linear-gradient(45deg, var(--primary), #fb406c); color: white; }
+        .btn-quit { background: transparent; border: 1px solid #ff4b2b; color: #ff4b2b; margin-top: 20px; font-size: 0.8rem; width: 50%; }
+        .hidden { display: none !important; }
+        .task-display { background: white; color: #111; padding: 25px; border-radius: 20px; font-size: 1.3rem; font-weight: bold; }
+        input { padding: 12px; width: 70%; border-radius: 20px; border: none; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 id="title">DareDrop 🎲</h1>
+    <h1 id="main-logo">DAREDROP 🎲</h1>
 
-    <div id="modeMenu">
-        <button class="btn" onclick="startMode('self')">Solo Challenge</button>
-        <button class="btn" onclick="startMode('friends')">Party with Friends</button>
+    <div id="scene-entry" class="scene">
+        <button class="btn btn-primary" onclick="navigateTo('setup')">Start Party</button>
     </div>
 
-    <div id="setup" class="hidden">
-        <input type="text" id="playerName" placeholder="Enter Name...">
-        <button class="btn" style="width:auto; display:inline-block" onclick="addPlayer()">Add</button>
-        <div id="pList" style="margin-top:10px; font-size:0.9rem; color:var(--secondary)"></div>
-        <button class="btn" id="startBtn" style="display:none" onclick="initGame()">Start Game</button>
+    <div id="scene-setup" class="scene hidden">
+        <input type="text" id="pInput" placeholder="Friend's Name">
+        <button onclick="addPlayer()" style="background:var(--secondary); border-radius:50%; width:40px; height:40px; border:none;">+</button>
+        <div id="badge-container" style="margin:15px 0; color:var(--secondary)"></div>
+        <button id="goBtn" class="btn btn-primary hidden" onclick="navigateTo('wheel')">Let's Spin!</button>
     </div>
 
-    <div id="gameSection" class="hidden">
+    <div id="scene-wheel" class="scene hidden">
         <div class="wheel-container">
-            <div class="arrow"></div>
-            <canvas id="wheelCanvas" width="280" height="280"></canvas>
+            <canvas id="wheelCanvas" width="500" height="500"></canvas>
         </div>
-        <h2 id="statusText">Tap to Spin!</h2>
-        <button class="btn" id="spinBtn" onclick="spinWheel()">SPIN NOW</button>
+        <button class="btn btn-primary" id="spinBtn" onclick="executeSpin()">SPIN</button>
     </div>
 
-    <div id="categorySection" class="hidden">
-        <h3 id="targetLabel">Select Vibe</h3>
-        <button class="btn" onclick="pickCat('fun')">Fun 😄</button>
-        <button class="btn" onclick="pickCat('extreme')" style="background:#e67e22">Extreme 🔥</button>
+    <div id="scene-choice" class="scene hidden">
+        <h2 id="lucky-player" style="color:var(--secondary)"></h2>
+        <button class="btn" style="background:#3498db; color:white;" onclick="loadTask('truth')">TRUTH 💡</button>
+        <button class="btn" style="background:#27ae60; color:white;" onclick="loadTask('dare')">DARE ⚡</button>
     </div>
 
-    <div id="choiceSection" class="hidden">
-        <button class="btn" onclick="getTask('truth')" style="background:#3498db">Truth 💡</button>
-        <button class="btn" onclick="getTask('dare')" style="background:#27ae60">Dare ⚡</button>
+    <div id="scene-result" class="scene hidden">
+        <div class="task-display" id="final-task"></div>
+        <button class="btn btn-primary" onclick="navigateTo('wheel')">Next Round 🔄</button>
     </div>
 
-    <div id="resultBox" class="hidden">
-        <div class="task-card" id="taskDisplay"></div>
-        <button class="btn" onclick="shareWhatsApp()" style="background:#25D366">WhatsApp Share 📱</button>
-        <button class="btn" onclick="resetRound()" style="background:#7f8c8d">Next Round 🔄</button>
-    </div>
+    <button id="quit-btn" class="btn btn-quit hidden" onclick="quitGame()">Quit Game 🚪</button>
 </div>
 
 <script>
     let players = [];
-    let currentTarget = "";
-    let currentVibe = "";
     let rotation = 0;
+    let currentScene = 'entry';
 
-    // AUDIO CONTEXT
-    const spinSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3');
-    const winSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
+    // Navigation Logic (Step-by-Step Back)
+    function navigateTo(sceneId, isBack = false) {
+        // Hide all scenes
+        document.querySelectorAll('.scene').forEach(s => s.classList.add('hidden'));
+        
+        // Show target scene
+        document.getElementById('scene-' + sceneId).classList.remove('hidden');
+        currentScene = sceneId;
 
-    const tasks = {
-        fun: {
-            truth: ["First crush da naam?", "School ch kade maar khadi hai?", "Sabh ton vaddi galti?", "Social media te fake account hai?", "Kade bina naye 3 din kadde ne?", "Apni search history dikhao", "Je lottery nikal je taan ki karoge?", "Tuhadi sabh ton vaddi kamzori?", "Kade class bunk kiti hai?", "Pehli kamayi kinni si?", "Kade kissi nu ignore kitta?", "Sabh ton ganda gift ki miliya?", "Kade lift ch fase ho?", "Tuhada nickname ki hai?", "Kade rona aya bina gall ton?"], // Add up to 100
-            dare: ["10 sec funny dance", "Act like a monkey", "Apne friend nu emoji joke bhejo", "Bina hath laye pani piyo", "Punjabi accent ch 2 min gall karo", "Siri naal romantic gall karo", "Apne status te 'I am crazy' likho", "Ek funny selfie group ch pao", "Murgi ban ke dikhao", "Kissi nu prank call karo", "Mirror ch dekh ke apne aap nu propose karo", "1 min tak statue bano", "Apne phone di last photo dikhao"]
-        },
-        extreme: {
-            truth: ["Kade police ne phadiya?", "Ex di yaad aundi hai?", "Sabh ton vadda jhooth?", "Bank balance kinna hai?", "Kade cheating kiti exam ch?", "Darkest secret?", "Kissi naal dhokha kitta?", "Kade chori kiti hai?", "Tuhadi sabh ton gandi habit?", "Kissi nu secretly dislike karde ho?"],
-            dare: ["Crush nu call karo", "Apne phone da lock kholo te 2 min layi kisse nu deo", "Last search history dikhao", "Ghar de bahr ja ke chikko 'Main Pagal Haan'", "Kissi friend nu block karke dikhao", "Status pao 'I am getting married today'", "Face te powder laga ke selfie pao", "Kissi random number nu text karo"]
+        // Quit button show/hide
+        if(sceneId === 'entry') document.getElementById('quit-btn').classList.add('hidden');
+        else document.getElementById('quit-btn').classList.remove('hidden');
+
+        // History management
+        if(!isBack) {
+            history.pushState({ scene: sceneId }, "");
+        }
+
+        if(sceneId === 'wheel') drawWheel();
+    }
+
+    // Browser back button handle karna
+    window.onpopstate = function(event) {
+        if (event.state && event.state.scene) {
+            navigateTo(event.state.scene, true);
+        } else {
+            navigateTo('entry', true);
         }
     };
 
-    function startMode(m) {
-        document.getElementById('modeMenu').classList.add('hidden');
-        if(m === 'self') {
-            currentTarget = "You";
-            showCategories();
-        } else {
-            document.getElementById('setup').classList.remove('hidden');
+    function quitGame() {
+        if(confirm("Ki tusi game band karke starting te jana chahunde ho?")) {
+            players = [];
+            document.getElementById('badge-container').innerHTML = "";
+            document.getElementById('goBtn').classList.add('hidden');
+            navigateTo('entry');
         }
     }
 
+    // Initial state set karna
+    history.replaceState({ scene: 'entry' }, "");
+
+    // --- Baki Game Logic ---
     function addPlayer() {
-        const name = document.getElementById('playerName').value.trim();
-        if(name) {
-            players.push(name);
-            document.getElementById('playerName').value = "";
-            document.getElementById('pList').innerText = "Players: " + players.join(", ");
-            if(players.length >= 2) document.getElementById('startBtn').style.display = "block";
+        const val = document.getElementById('pInput').value.trim();
+        if(val) {
+            players.push(val);
+            document.getElementById('pInput').value = "";
+            document.getElementById('badge-container').innerText = "Players: " + players.join(", ");
+            if(players.length >= 2) document.getElementById('goBtn').classList.remove('hidden');
         }
-    }
-
-    function initGame() {
-        document.getElementById('setup').classList.add('hidden');
-        document.getElementById('gameSection').classList.remove('hidden');
-        drawWheel();
     }
 
     function drawWheel() {
         const canvas = document.getElementById('wheelCanvas');
         const ctx = canvas.getContext('2d');
-        const sliceAngle = (2 * Math.PI) / players.length;
-        const colors = ["#ff0055", "#00dbde", "#f39c12", "#9b59b6", "#2ecc71", "#e74c3c"];
+        const arc = (Math.PI * 2) / players.length;
+        const colors = ["#ff0055", "#00dbde", "#ffbe0b", "#3a86ff"];
 
-        players.forEach((player, i) => {
+        ctx.clearRect(0,0,500,500);
+        players.forEach((p, i) => {
             ctx.beginPath();
             ctx.fillStyle = colors[i % colors.length];
-            ctx.moveTo(140, 140);
-            ctx.arc(140, 140, 140, i * sliceAngle, (i + 1) * sliceAngle);
+            ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 250, i * arc, (i + 1) * arc);
             ctx.fill();
             ctx.save();
-            ctx.translate(140, 140);
-            ctx.rotate(i * sliceAngle + sliceAngle / 2);
+            ctx.translate(250, 250);
+            ctx.rotate(i * arc + arc/2);
             ctx.fillStyle = "white";
-            ctx.font = "bold 14px Arial";
-            ctx.fillText(player.substring(0, 8), 60, 5);
+            ctx.font = "bold 30px Arial";
+            ctx.fillText(p.substring(0,8), 100, 10);
             ctx.restore();
         });
     }
 
-    function spinWheel() {
-        spinSound.play();
+    function executeSpin() {
+        const extra = 3600 + Math.floor(Math.random() * 3600);
+        rotation += extra;
         const canvas = document.getElementById('wheelCanvas');
-        const extraDeg = Math.floor(3000 + Math.random() * 3000);
-        rotation += extraDeg;
         canvas.style.transform = `rotate(${rotation}deg)`;
-        
-        document.getElementById('spinBtn').disabled = true;
-        document.getElementById('statusText').innerText = "Spinning...";
 
         setTimeout(() => {
-            winSound.play();
-            if(navigator.vibrate) navigator.vibrate(200);
-            
             const actualDeg = rotation % 360;
             const sliceSize = 360 / players.length;
             const index = Math.floor((360 - (actualDeg % 360)) / sliceSize) % players.length;
-            currentTarget = players[index];
-            
-            document.getElementById('statusText').innerText = "Target: " + currentTarget;
-            setTimeout(showCategories, 1500);
-        }, 4000);
+            const winner = players[index];
+            document.getElementById('lucky-player').innerText = winner + "'s Turn";
+            navigateTo('choice');
+        }, 5000);
     }
 
-    function showCategories() {
-        document.getElementById('gameSection').classList.add('hidden');
-        document.getElementById('categorySection').classList.remove('hidden');
-        document.getElementById('targetLabel').innerText = currentTarget + "'s Turn!";
-    }
-
-    function pickCat(vibe) {
-        currentVibe = vibe;
-        document.getElementById('categorySection').classList.add('hidden');
-        document.getElementById('choiceSection').classList.remove('hidden');
-    }
-
-    function getTask(type) {
-        const list = tasks[currentVibe][type];
-        const task = list[Math.floor(Math.random() * list.length)];
-        
-        document.getElementById('choiceSection').classList.add('hidden');
-        document.getElementById('resultBox').classList.remove('hidden');
-        document.getElementById('taskDisplay').innerHTML = `<small>${currentTarget}'s ${type.toUpperCase()}</small><br><br>${task}`;
-    }
-
-    function resetRound() {
-        document.getElementById('resultBox').classList.add('hidden');
-        document.getElementById('gameSection').classList.remove('hidden');
-        document.getElementById('spinBtn').disabled = false;
-        document.getElementById('statusText').innerText = "Next Round!";
-    }
-
-    function shareWhatsApp() {
-        const text = encodeURIComponent(`🎲 *DareDrop Party* \n\n👤 Player: ${currentTarget}\n🔥 Task: ${document.getElementById('taskDisplay').innerText}\n\nKhedo te mauj karo!`);
-        window.open(`https://wa.me/?text=${text}`, '_blank');
+    function loadTask(type) {
+        const tasks = {
+            truth: ["Pehla crush?", "Cheating kiti kade?", "Sabh ton vadda jhooth?"],
+            dare: ["Dance karo", "Murgi bano", "Prank call karo"]
+        };
+        const task = tasks[type][Math.floor(Math.random() * tasks[type].length)];
+        document.getElementById('final-task').innerText = task;
+        navigateTo('result');
     }
 </script>
-
 </body>
 </html>
