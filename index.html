@@ -1,163 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DareDrop</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DareDrop Party</title>
 
 <style>
 body{
-font-family:Arial, sans-serif;
+font-family:sans-serif;
 margin:0;
-background:linear-gradient(135deg,#667eea,#764ba2);
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
 color:white;
 text-align:center;
 }
 
-header{
-padding:20px;
-font-size:28px;
-font-weight:bold;
-}
-
-.container{
-padding:20px;
-}
+.container{padding:20px}
 
 button{
 padding:12px 20px;
-margin:10px;
+margin:8px;
 border:none;
-border-radius:8px;
+border-radius:10px;
+background:#ffffff;
+color:#ff416c;
+font-weight:bold;
 cursor:pointer;
 font-size:16px;
 }
 
-.primary{background:#ff4d6d;color:white;}
-.secondary{background:#ffffff;color:#333;}
-
-#dareBox{
-margin-top:20px;
-padding:20px;
-background:white;
-color:#333;
-border-radius:12px;
-font-size:20px;
-min-height:80px;
-}
+button:hover{transform:scale(1.05)}
 
 input{
 padding:10px;
 border-radius:8px;
 border:none;
-width:80%;
-margin-top:10px;
+margin:5px;
 }
 
-.section{
-margin-top:30px;
-}
-
-ul{
-list-style:none;
-padding:0;
-}
-
-li{
+.card{
 background:white;
 color:#333;
-margin:5px;
-padding:10px;
-border-radius:8px;
+padding:20px;
+border-radius:15px;
+margin-top:20px;
+font-size:18px;
 }
 
-footer{
-margin-top:40px;
-padding:10px;
-opacity:0.7;
+.hidden{display:none}
+
+#wheel{
+width:300px;
+height:300px;
+border-radius:50%;
+border:8px solid white;
+margin:20px auto;
+position:relative;
+overflow:hidden;
+}
+
+.slice{
+position:absolute;
+width:50%;
+height:50%;
+transform-origin:100% 100%;
+background:rgba(255,255,255,0.2);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:12px;
+}
+
+.arrow{
+width:0;
+height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-bottom:30px solid white;
+margin:auto;
 }
 </style>
 </head>
 
 <body>
 
-<header>DareDrop 🔥</header>
-
 <div class="container">
 
-<select id="category">
-<option value="fun">Fun</option>
-<option value="friends">Friends</option>
-<option value="couple">Couple</option>
-<option value="extreme">Extreme</option>
-</select>
+<h1>DareDrop Party</h1>
 
-<br>
-
-<button class="primary" onclick="generateDare()">Generate Dare</button>
-<button class="secondary" onclick="saveFav()">❤️ Like</button>
-
-<div id="dareBox">Press Generate</div>
-
-<div class="section">
-<h3>Add Your Dare</h3>
-<input id="customDare" placeholder="Type dare">
-<br>
-<button class="primary" onclick="addCustom()">Add Dare</button>
+<div id="home">
+<button onclick="startMode('self')">Self Mode</button>
+<button onclick="startMode('friends')">With Friends</button>
 </div>
 
-<div class="section">
-<h3>❤️ Favorites</h3>
-<ul id="favList"></ul>
+<div id="friendSection" class="hidden">
+<input id="friendInput" placeholder="Friend name">
+<button onclick="addFriend()">Add Friend</button>
+<div id="friendList"></div>
+<div class="arrow"></div>
+<div id="wheel"></div>
+<button onclick="spinWheel()">Spin Wheel</button>
 </div>
 
-<div class="section">
-<h3>📋 History</h3>
-<ul id="history"></ul>
+<div id="categorySection" class="hidden">
+<h3>Select Category</h3>
+<button onclick="setCategory('fun')">Fun</button>
+<button onclick="setCategory('love')">Love</button>
+<button onclick="setCategory('couple')">Couple</button>
+<button onclick="setCategory('danger')">Dangerous</button>
+<button onclick="setCategory('extreme')">Extreme</button>
 </div>
 
+<div id="choiceSection" class="hidden">
+<h3>Truth or Dare</h3>
+<button onclick="getTask('truth')">Truth</button>
+<button onclick="getTask('dare')">Dare</button>
 </div>
 
-<footer>Made with ❤️ DareDrop</footer>
+<div id="result" class="card hidden"></div>
+
+<button id="resetBtn" class="hidden" onclick="location.reload()">Play Again</button>
+
+</div>
 
 <script>
 
-const dares={
-fun:["Dance for 30 sec","Sing loudly","Act like robot","Do funny face"],
-friends:["Call friend and say I miss you","Tell secret","Imitate friend","Roast friend"],
-couple:["Hold hands 1 min","Compliment partner","Eye contact 30 sec","Say love line"],
-extreme:["Ice bucket challenge","Eat chilli","50 jumping jacks","Speak truth 5 min"]
-};
+let mode=""
+let friends=[]
+let selectedFriend=""
+let category=""
 
-let currentDare="";
-
-function generateDare(){
-let cat=document.getElementById("category").value;
-let list=dares[cat];
-currentDare=list[Math.floor(Math.random()*list.length)];
-document.getElementById("dareBox").innerText=currentDare;
-addHistory(currentDare);
+const data={
+fun:{
+truth:["What makes you laugh most?","Your embarrassing moment?","Favorite cartoon?","Funniest friend?","Secret talent?"],
+dare:["Dance 10 sec","Sing loudly","Act like baby","Jump 10 times","Make funny face"]
+},
+love:{
+truth:["First crush?","Do you believe love?","Love marriage or arrange?","Romantic memory?","Love fear?"],
+dare:["Send heart emoji","Say I love you loudly","Call crush","Write love line","Hug pillow"]
+},
+couple:{
+truth:["Best couple you know?","Jealous type?","Biggest fight?","Proposal idea?","Love language?"],
+dare:["Romantic walk act","Hold hands air","Send kiss emoji","Say pickup line","Love pose"]
+},
+danger:{
+truth:["Biggest risk?","Fear secret?","Ever lied badly?","Fight memory?","Scary moment?"],
+dare:["Eat spicy","Shout loudly","Do pushups","Cold water splash","Scary face"]
+},
+extreme:{
+truth:["Wild dream?","Craziest idea?","Rule break?","Secret fantasy?","Extreme wish?"],
+dare:["Run outside","Do plank","Dance crazy","Spin 10 times","Talk nonsense"]
+}
 }
 
-function addHistory(d){
-let li=document.createElement("li");
-li.innerText=d;
-document.getElementById("history").prepend(li);
+function startMode(m){
+mode=m
+document.getElementById("home").classList.add("hidden")
+if(m==="self"){
+document.getElementById("categorySection").classList.remove("hidden")
+}else{
+document.getElementById("friendSection").classList.remove("hidden")
+}
 }
 
-function saveFav(){
-if(currentDare==="") return;
-let li=document.createElement("li");
-li.innerText=currentDare;
-document.getElementById("favList").prepend(li);
+function addFriend(){
+let name=document.getElementById("friendInput").value
+if(!name)return
+friends.push(name)
+document.getElementById("friendInput").value=""
+renderFriends()
+renderWheel()
 }
 
-function addCustom(){
-let val=document.getElementById("customDare").value;
-if(val==="") return;
-dares.fun.push(val);
-document.getElementById("customDare").value="";
-alert("Added to Fun category");
+function renderFriends(){
+document.getElementById("friendList").innerHTML=friends.join(", ")
+}
+
+function renderWheel(){
+let wheel=document.getElementById("wheel")
+wheel.innerHTML=""
+let angle=360/friends.length
+friends.forEach((f,i)=>{
+let div=document.createElement("div")
+div.className="slice"
+div.style.transform=`rotate(${i*angle}deg) skewY(${90-angle}deg)`
+div.innerHTML=f
+wheel.appendChild(div)
+})
+}
+
+function spinWheel(){
+if(friends.length===0)return
+let index=Math.floor(Math.random()*friends.length)
+selectedFriend=friends[index]
+alert("Selected: "+selectedFriend)
+document.getElementById("categorySection").classList.remove("hidden")
+}
+
+function setCategory(c){
+category=c
+document.getElementById("categorySection").classList.add("hidden")
+document.getElementById("choiceSection").classList.remove("hidden")
+}
+
+function getTask(type){
+let arr=data[category][type]
+let task=arr[Math.floor(Math.random()*arr.length)]
+let text=(selectedFriend?selectedFriend+": ":"")+task
+let result=document.getElementById("result")
+result.innerHTML=text+"<br><br><button onclick='shareTask(`"+text+"`)'>Share</button>"
+result.classList.remove("hidden")
+document.getElementById("choiceSection").classList.add("hidden")
+document.getElementById("resetBtn").classList.remove("hidden")
+}
+
+function shareTask(t){
+window.open("https://wa.me/?text="+encodeURIComponent(t))
 }
 
 </script>
