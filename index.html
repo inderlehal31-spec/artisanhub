@@ -3,132 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DareDrop Party PRO</title>
-
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+<title>DareDrop</title>
 
 <style>
-body{margin:0;font-family:Segoe UI;background:linear-gradient(135deg,#ff416c,#ff4b2b);display:flex;justify-content:center;align-items:center;min-height:100vh;}
-.card{width:95%;max-width:420px;padding:25px;border-radius:25px;backdrop-filter: blur(20px);background: rgba(255,255,255,0.65);box-shadow:0 20px 40px rgba(0,0,0,0.25);text-align:center;}
-.title{font-size:30px;font-weight:800;background: linear-gradient(90deg,#ff416c,#ff4b2b,#ff416c);-webkit-background-clip:text;color:transparent;animation: glow 3s linear infinite;background-size:200%;}
-@keyframes glow{0%{background-position:0%}100%{background-position:200%}}
-input,select{width:100%;padding:14px;border:none;border-radius:15px;margin-top:10px;font-size:16px;}
-button{border:none;padding:14px;margin-top:15px;border-radius:15px;font-size:18px;font-weight:700;cursor:pointer;transition:.2s;}
-button:active{transform:scale(.95)}
-.add{background:#ff416c;color:white;width:60%}
-.friend-chip{display:inline-block;padding:8px 14px;margin:5px;background:linear-gradient(45deg,#ff758c,#ff7eb3);color:white;border-radius:20px;font-weight:600;}
-#wheel{width:220px;height:220px;border-radius:50%;border:8px solid white;margin:20px auto;transition:4s cubic-bezier(.17,.67,.26,1);}
-.pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:25px solid black;margin:auto;margin-bottom:-10px;}
-.truth{background:linear-gradient(45deg,#00c6ff,#0072ff);color:white;width:40%}
-.dare{background:linear-gradient(45deg,#ff416c,#ff4b2b);color:white;width:40%}
-.question{font-size:20px;font-weight:700;margin-top:15px}
-.shareBox{position:fixed;bottom:0;left:0;right:0;background:white;padding:20px;border-radius:20px 20px 0 0;box-shadow:0 -5px 20px rgba(0,0,0,0.3);display:none;}
-.shareBox button{width:100%;margin:8px 0;}
+body{
+font-family:Arial, sans-serif;
+margin:0;
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+text-align:center;
+}
+
+header{
+padding:20px;
+font-size:28px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+button{
+padding:12px 20px;
+margin:10px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:16px;
+}
+
+.primary{background:#ff4d6d;color:white;}
+.secondary{background:#ffffff;color:#333;}
+
+#dareBox{
+margin-top:20px;
+padding:20px;
+background:white;
+color:#333;
+border-radius:12px;
+font-size:20px;
+min-height:80px;
+}
+
+input{
+padding:10px;
+border-radius:8px;
+border:none;
+width:80%;
+margin-top:10px;
+}
+
+.section{
+margin-top:30px;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+background:white;
+color:#333;
+margin:5px;
+padding:10px;
+border-radius:8px;
+}
+
+footer{
+margin-top:40px;
+padding:10px;
+opacity:0.7;
+}
 </style>
 </head>
 
 <body>
-<div class="card">
-<div class="title">🔥 DareDrop Party PRO</div>
 
-<input id="name" placeholder="Friend name">
-<button class="add" onclick="addFriend()">Add</button>
-<div id="friends"></div>
+<header>DareDrop 🔥</header>
 
-<div class="pointer"></div>
-<canvas id="wheel" width="220" height="220"></canvas>
-
-<button class="add" onclick="spin()">🎡 Spin Friend</button>
-<h2 id="player"></h2>
+<div class="container">
 
 <select id="category">
-<option value="funny">😂 Funny Dare</option>
-<option value="romantic">❤️ Romantic Dare</option>
-<option value="party">🔥 Party Dare</option>
+<option value="fun">Fun</option>
+<option value="friends">Friends</option>
+<option value="couple">Couple</option>
+<option value="extreme">Extreme</option>
 </select>
 
-<div>
-<button class="truth" onclick="truth()">Truth</button>
-<button class="dare" onclick="dare()">Dare</button>
+<br>
+
+<button class="primary" onclick="generateDare()">Generate Dare</button>
+<button class="secondary" onclick="saveFav()">❤️ Like</button>
+
+<div id="dareBox">Press Generate</div>
+
+<div class="section">
+<h3>Add Your Dare</h3>
+<input id="customDare" placeholder="Type dare">
+<br>
+<button class="primary" onclick="addCustom()">Add Dare</button>
 </div>
 
-<div class="question" id="question"></div>
-<button class="add" onclick="openShare()">📤 Share</button>
+<div class="section">
+<h3>❤️ Favorites</h3>
+<ul id="favList"></ul>
 </div>
 
-<div class="shareBox" id="shareBox">
-<h3>Share DareDrop</h3>
-<button onclick="shareWhats()">WhatsApp</button>
-<button onclick="shareFB()">Facebook</button>
-<button onclick="copyText('Instagram')">Instagram</button>
-<button onclick="copyText('Snapchat')">Snapchat</button>
-<button onclick="closeShare()">Close</button>
+<div class="section">
+<h3>📋 History</h3>
+<ul id="history"></ul>
 </div>
+
+</div>
+
+<footer>Made with ❤️ DareDrop</footer>
 
 <script>
-let friends=[],selected="",angle=0
-const canvas=document.getElementById("wheel")
-const ctx=canvas.getContext("2D".toLowerCase())
 
-function drawWheel(){
-if(!friends.length)return
-let slice=2*Math.PI/friends.length
-ctx.clearRect(0,0,220,220)
-friends.forEach((f,i)=>{
-ctx.beginPath();ctx.moveTo(110,110)
-ctx.arc(110,110,110,i*slice,(i+1)*slice)
-ctx.fillStyle=`hsl(${i*360/friends.length},80%,65%)`;ctx.fill()
-ctx.save();ctx.translate(110,110);ctx.rotate(i*slice+slice/2)
-ctx.fillStyle="white";ctx.font="bold 14px sans-serif";ctx.fillText(f,50,5);ctx.restore()
-})
+const dares={
+fun:["Dance for 30 sec","Sing loudly","Act like robot","Do funny face"],
+friends:["Call friend and say I miss you","Tell secret","Imitate friend","Roast friend"],
+couple:["Hold hands 1 min","Compliment partner","Eye contact 30 sec","Say love line"],
+extreme:["Ice bucket challenge","Eat chilli","50 jumping jacks","Speak truth 5 min"]
+};
+
+let currentDare="";
+
+function generateDare(){
+let cat=document.getElementById("category").value;
+let list=dares[cat];
+currentDare=list[Math.floor(Math.random()*list.length)];
+document.getElementById("dareBox").innerText=currentDare;
+addHistory(currentDare);
 }
 
-function addFriend(){
-let name=nameInput.value
-if(!name)return
-friends.push(name);nameInput.value=""
-let chip=document.createElement("span");chip.innerText=name;chip.className="friend-chip"
-friendsDiv.appendChild(chip);drawWheel()
+function addHistory(d){
+let li=document.createElement("li");
+li.innerText=d;
+document.getElementById("history").prepend(li);
 }
 
-const nameInput=document.getElementById("name")
-const friendsDiv=document.getElementById("friends")
-
-function spin(){
-if(!friends.length)return
-const slice=360/friends.length
-const rand=Math.floor(Math.random()*friends.length)
-const stopAngle=360-(rand*slice)-slice/2
-angle+=360*5+stopAngle
-canvas.style.transform=`rotate(${angle}deg)`
-setTimeout(()=>{selected=friends[rand];player.innerHTML="👉 "+selected;confetti()},4000)
+function saveFav(){
+if(currentDare==="") return;
+let li=document.createElement("li");
+li.innerText=currentDare;
+document.getElementById("favList").prepend(li);
 }
 
-/* SHARE */
-function openShare(){shareBox.style.display="block"}
-function closeShare(){shareBox.style.display="none"}
-function getShareText(){return "🔥 Playing DareDrop Party — Try now 👉 "+location.href}
-function shareWhats(){window.open("https://wa.me/?text="+encodeURIComponent(getShareText()))}
-function shareFB(){window.open("https://www.facebook.com/sharer/sharer.php?u="+encodeURIComponent(location.href))}
-function copyText(app){navigator.clipboard.writeText(getShareText());alert("Copied — paste in "+app)}
-
-/* TRUTHS */
-const truths=[ "Who was your first crush?","What is your biggest fear?","Secret never told?","Guilty pleasure?","Biggest regret?" ]
-while(truths.length<100)truths.push("Truth question "+truths.length)
-
-/* DARES */
-const funny=["Talk like baby","Funny dance","Act monkey"]
-const romantic=["Send heart emoji","Compliment player"]
-const party=["Dance 30 sec","Pushups 10"]
-while(funny.length<100)funny.push("Funny dare "+funny.length)
-while(romantic.length<100)romantic.push("Romantic dare "+romantic.length)
-while(party.length<100)party.push("Party dare "+party.length)
-
-function truth(){question.innerHTML="🔥 "+selected+": "+truths[Math.floor(Math.random()*truths.length)]}
-function dare(){
-let arr=category.value=="funny"?funny:category.value=="romantic"?romantic:party
-question.innerHTML="😈 "+selected+": "+arr[Math.floor(Math.random()*arr.length)]
+function addCustom(){
+let val=document.getElementById("customDare").value;
+if(val==="") return;
+dares.fun.push(val);
+document.getElementById("customDare").value="";
+alert("Added to Fun category");
 }
+
 </script>
+
 </body>
 </html>
