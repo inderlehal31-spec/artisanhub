@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,49 +14,60 @@ color:white;
 text-align:center;
 }
 
-.container{
-padding:20px;
-}
+.container{padding:20px;}
 
 .card{
 background:white;
 color:black;
 padding:20px;
 border-radius:20px;
-max-width:400px;
+max-width:420px;
 margin:auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
 
 button{
 padding:12px 20px;
-margin:5px;
+margin:6px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 background:#ff416c;
 color:white;
 font-weight:bold;
+cursor:pointer;
 }
 
-input{
+button:hover{opacity:0.9}
+
+input,select{
 padding:10px;
-width:70%;
-border-radius:8px;
+width:75%;
+border-radius:10px;
 border:1px solid #ccc;
 }
 
 #friendList span{
 display:inline-block;
 background:#eee;
-padding:5px 10px;
+padding:6px 12px;
 margin:4px;
-border-radius:10px;
+border-radius:12px;
+font-size:13px;
 }
 
 .big{
 font-size:22px;
 font-weight:bold;
-margin:15px 0;
+margin:18px 0;
+min-height:40px;
 }
+
+.modeTag{
+font-size:12px;
+opacity:0.6;
+margin-bottom:10px;
+}
+
 </style>
 </head>
 
@@ -72,7 +84,7 @@ margin:15px 0;
 <option value="friend">Friend Play</option>
 </select>
 
-<br><br>
+<div class="modeTag">Choose mode & start fun 🎉</div>
 
 <div id="friendBox" style="display:none">
 
@@ -99,9 +111,11 @@ margin:15px 0;
 
 <script>
 
+// ================= STATE =================
 let friends=[]
 let currentFriend="You"
 
+// ================= BASE DATA =================
 const truths=[
 "Biggest crush ever?",
 "Secret fear?",
@@ -109,37 +123,90 @@ const truths=[
 "Most embarrassing moment?",
 "Dream job?",
 "Biggest regret?",
-"Last person you stalked?",
 "Hidden talent?",
 "Secret habit?",
-"Love or money?"
+"Love or money?",
+"First love memory?",
+"Phone addiction level?",
+"Celebrity crush?",
+"Most awkward moment?",
+"Favorite childhood memory?",
+"Biggest insecurity?",
+"Most emotional moment?",
+"Person you trust most?",
+"Biggest jealousy moment?",
+"Last time you cried?",
+"Secret wish?"
 ]
 
 const dares=[
-"Sing loudly",
+"Sing loudly 20 sec",
+"Dance without music",
 "Do 10 pushups",
-"Dance 20 sec",
-"Send emoji spam",
-"Talk in accent",
-"Compliment stranger",
-"Call friend randomly",
-"Act like cat",
-"Do funny walk",
-"Drink water fast"
+"Take funny selfie",
+"Act like baby",
+"Do chicken dance",
+"Speak robot voice",
+"Say joke loudly",
+"Run slow motion",
+"Imitate teacher",
+"Act scared",
+"Do runway walk",
+"Make weird face",
+"Say poem dramatically",
+"Do plank 15 sec",
+"Speak in rhyme",
+"Act like news reporter",
+"Fake cry scene",
+"Do superhero pose",
+"Freestyle dance"
 ]
 
-// generate 100+
-for(let i=0;i<90;i++){
-truths.push("Truth question "+(i+11))
-dares.push("Dare challenge "+(i+11))
+// ================= SMART GENERATOR =================
+const truthTemplates=[
+"Tell something embarrassing about",
+"What do you fear about",
+"What is your memory of",
+"Have you ever hidden",
+"What do you regret about",
+"What is your fantasy about",
+"Tell your opinion on"
+]
+
+const truthTopics=["love","school","friend","family","crush","future","phone","social media","money","childhood"]
+
+const dareTemplates=[
+"Imitate someone doing",
+"Perform a dance about",
+"Create a funny story about",
+"Pretend scene of",
+"Act dramatically about",
+"Show reaction to",
+"Do a performance about"
+]
+
+const dareTopics=["ghost","teacher","celebrity","robot","baby","villain","hero","friend","love","movie"]
+
+// AUTO expand content
+for(let i=0;i<80;i++){
+
+let t1=truthTemplates[Math.floor(Math.random()*truthTemplates.length)]
+let t2=truthTopics[Math.floor(Math.random()*truthTopics.length)]
+truths.push(t1+" "+t2)
+
+let d1=dareTemplates[Math.floor(Math.random()*dareTemplates.length)]
+let d2=dareTopics[Math.floor(Math.random()*dareTopics.length)]
+dares.push(d1+" "+d2)
 }
 
+// ================= MODE =================
 mode.onchange=()=>{
 friendBox.style.display=mode.value==="friend"?"block":"none"
 }
 
+// ================= FRIEND =================
 function addFriend(){
-let name=friendInput.value
+let name=friendInput.value.trim()
 if(name){
 friends.push(name)
 renderFriends()
@@ -152,21 +219,18 @@ friendList.innerHTML=friends.map(f=>`<span>${f}</span>`).join("")
 }
 
 function spinFriend(){
-if(!friends.length)return alert("Add friends")
+if(!friends.length)return alert("Add friends first")
 let i=Math.floor(Math.random()*friends.length)
 currentFriend=friends[i]
 selectedFriend.innerText="👉 "+currentFriend
 }
 
-function getTruth(){
-showTask(random(truths))
-}
-
-function getDare(){
-showTask(random(dares))
-}
+// ================= GAME =================
+function getTruth(){showTask(random(truths))}
+function getDare(){showTask(random(dares))}
 
 function showTask(t){
+if(mode.value==="self") currentFriend="You"
 task.innerText=currentFriend+": "+t
 }
 
@@ -174,7 +238,9 @@ function random(arr){
 return arr[Math.floor(Math.random()*arr.length)]
 }
 
+// ================= SHARE =================
 function share(){
+if(!task.innerText) return
 let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
 window.open("https://wa.me/?text="+text)
 }
