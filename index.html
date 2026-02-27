@@ -1,247 +1,234 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DareDrop Party</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DareDrop Party PRO</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
 <style>
+
 body{
-font-family:sans-serif;
-background:linear-gradient(135deg,#ff416c,#ff4b2b);
 margin:0;
-color:white;
+font-family:Segoe UI;
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.card{
+width:95%;
+max-width:420px;
+padding:25px;
+border-radius:25px;
+backdrop-filter: blur(20px);
+background: rgba(255,255,255,0.65);
+box-shadow:0 20px 40px rgba(0,0,0,0.25);
 text-align:center;
 }
 
-.container{padding:20px;}
+.title{
+font-size:30px;
+font-weight:800;
+background: linear-gradient(90deg,#ff416c,#ff4b2b,#ff416c);
+-webkit-background-clip:text;
+color:transparent;
+animation: glow 3s linear infinite;
+background-size:200%;
+}
 
-.card{
-background:white;
-color:black;
-padding:20px;
-border-radius:20px;
-max-width:420px;
-margin:auto;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+@keyframes glow{0%{background-position:0%}100%{background-position:200%}}
+
+input,select{
+width:100%;
+padding:14px;
+border:none;
+border-radius:15px;
+margin-top:10px;
+font-size:16px;
 }
 
 button{
-padding:12px 20px;
-margin:6px;
 border:none;
-border-radius:12px;
-background:#ff416c;
-color:white;
-font-weight:bold;
+padding:14px;
+margin-top:15px;
+border-radius:15px;
+font-size:18px;
+font-weight:700;
 cursor:pointer;
+transition:.2s;
 }
 
-button:hover{opacity:0.9}
+button:active{transform:scale(.95)}
 
-input,select{
-padding:10px;
-width:75%;
-border-radius:10px;
-border:1px solid #ccc;
-}
+.add{background:#ff416c;color:white;width:60%}
 
-#friendList span{
+.friend-chip{
 display:inline-block;
-background:#eee;
-padding:6px 12px;
-margin:4px;
-border-radius:12px;
-font-size:13px;
+padding:8px 14px;
+margin:5px;
+background:linear-gradient(45deg,#ff758c,#ff7eb3);
+color:white;
+border-radius:20px;
+font-weight:600;
 }
 
-.big{
-font-size:22px;
-font-weight:bold;
-margin:18px 0;
-min-height:40px;
+#wheel{
+width:220px;
+height:220px;
+border-radius:50%;
+border:8px solid white;
+margin:20px auto;
+transition:4s cubic-bezier(.17,.67,.26,1);
 }
 
-.modeTag{
-font-size:12px;
-opacity:0.6;
-margin-bottom:10px;
+.pointer{
+width:0;height:0;
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-bottom:25px solid black;
+margin:auto;
 }
+
+.truth{background:linear-gradient(45deg,#00c6ff,#0072ff);color:white;width:40%}
+.dare{background:linear-gradient(45deg,#ff416c,#ff4b2b);color:white;width:40%}
+
+.question{font-size:20px;font-weight:700;margin-top:15px}
 
 </style>
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>🔥 DareDrop Party</h1>
-
 <div class="card">
 
-<select id="mode">
-<option value="self">Self Play</option>
-<option value="friend">Friend Play</option>
+<div class="title">🔥 DareDrop Party PRO</div>
+
+<input id="name" placeholder="Friend name">
+<button class="add" onclick="addFriend()">Add</button>
+
+<div id="friends"></div>
+
+<div class="pointer"></div>
+<canvas id="wheel" width="220" height="220"></canvas>
+
+<button class="add" onclick="spin()">🎡 Spin Friend</button>
+
+<h2 id="player"></h2>
+
+<select id="category">
+<option value="funny">😂 Funny Dare</option>
+<option value="romantic">❤️ Romantic Dare</option>
+<option value="party">🔥 Party Dare</option>
 </select>
 
-<div class="modeTag">Choose mode & start fun 🎉</div>
-
-<div id="friendBox" style="display:none">
-
-<input id="friendInput" placeholder="Friend name">
-<button onclick="addFriend()">Add</button>
-
-<div id="friendList"></div>
-
-<button onclick="spinFriend()">🎡 Spin Friend</button>
-
+<div>
+<button class="truth" onclick="truth()">Truth</button>
+<button class="dare" onclick="dare()">Dare</button>
 </div>
 
-<div id="selectedFriend" class="big"></div>
+<div class="question" id="question"></div>
 
-<button onclick="getTruth()">Truth</button>
-<button onclick="getDare()">Dare</button>
-
-<div id="task" class="big"></div>
-
-<button onclick="share()">📲 Share</button>
-
-</div>
 </div>
 
 <script>
 
-// ================= STATE =================
 let friends=[]
-let currentFriend="You"
+let selected=""
+const canvas=document.getElementById("wheel")
+const ctx=canvas.getContext("2d")
+let angle=0
 
-// ================= BASE DATA =================
-const truths=[
-"Biggest crush ever?",
-"Secret fear?",
-"Last lie told?",
-"Most embarrassing moment?",
-"Dream job?",
-"Biggest regret?",
-"Hidden talent?",
-"Secret habit?",
-"Love or money?",
-"First love memory?",
-"Phone addiction level?",
-"Celebrity crush?",
-"Most awkward moment?",
-"Favorite childhood memory?",
-"Biggest insecurity?",
-"Most emotional moment?",
-"Person you trust most?",
-"Biggest jealousy moment?",
-"Last time you cried?",
-"Secret wish?"
-]
+function drawWheel(){
+if(!friends.length)return
+let slice=2*Math.PI/friends.length
+ctx.clearRect(0,0,220,220)
 
-const dares=[
-"Sing loudly 20 sec",
-"Dance without music",
-"Do 10 pushups",
-"Take funny selfie",
-"Act like baby",
-"Do chicken dance",
-"Speak robot voice",
-"Say joke loudly",
-"Run slow motion",
-"Imitate teacher",
-"Act scared",
-"Do runway walk",
-"Make weird face",
-"Say poem dramatically",
-"Do plank 15 sec",
-"Speak in rhyme",
-"Act like news reporter",
-"Fake cry scene",
-"Do superhero pose",
-"Freestyle dance"
-]
+friends.forEach((f,i)=>{
+ctx.beginPath()
+ctx.moveTo(110,110)
+ctx.arc(110,110,110,i*slice,(i+1)*slice)
+ctx.fillStyle=`hsl(${i*360/friends.length},80%,65%)`
+ctx.fill()
 
-// ================= SMART GENERATOR =================
-const truthTemplates=[
-"Tell something embarrassing about",
-"What do you fear about",
-"What is your memory of",
-"Have you ever hidden",
-"What do you regret about",
-"What is your fantasy about",
-"Tell your opinion on"
-]
-
-const truthTopics=["love","school","friend","family","crush","future","phone","social media","money","childhood"]
-
-const dareTemplates=[
-"Imitate someone doing",
-"Perform a dance about",
-"Create a funny story about",
-"Pretend scene of",
-"Act dramatically about",
-"Show reaction to",
-"Do a performance about"
-]
-
-const dareTopics=["ghost","teacher","celebrity","robot","baby","villain","hero","friend","love","movie"]
-
-// AUTO expand content
-for(let i=0;i<80;i++){
-
-let t1=truthTemplates[Math.floor(Math.random()*truthTemplates.length)]
-let t2=truthTopics[Math.floor(Math.random()*truthTopics.length)]
-truths.push(t1+" "+t2)
-
-let d1=dareTemplates[Math.floor(Math.random()*dareTemplates.length)]
-let d2=dareTopics[Math.floor(Math.random()*dareTopics.length)]
-dares.push(d1+" "+d2)
+ctx.save()
+ctx.translate(110,110)
+ctx.rotate(i*slice+slice/2)
+ctx.fillStyle="white"
+ctx.font="bold 14px sans-serif"
+ctx.fillText(f,50,5)
+ctx.restore()
+})
 }
 
-// ================= MODE =================
-mode.onchange=()=>{
-friendBox.style.display=mode.value==="friend"?"block":"none"
-}
-
-// ================= FRIEND =================
 function addFriend(){
-let name=friendInput.value.trim()
-if(name){
+let name=document.getElementById("name").value
+if(!name)return
 friends.push(name)
-renderFriends()
-friendInput.value=""
-}
-}
+document.getElementById("name").value=""
 
-function renderFriends(){
-friendList.innerHTML=friends.map(f=>`<span>${f}</span>`).join("")
-}
+let chip=document.createElement("span")
+chip.innerText=name
+chip.className="friend-chip"
+document.getElementById("friends").appendChild(chip)
 
-function spinFriend(){
-if(!friends.length)return alert("Add friends first")
-let i=Math.floor(Math.random()*friends.length)
-currentFriend=friends[i]
-selectedFriend.innerText="👉 "+currentFriend
+drawWheel()
 }
 
-// ================= GAME =================
-function getTruth(){showTask(random(truths))}
-function getDare(){showTask(random(dares))}
+function spin(){
+if(!friends.length)return
+let rand=Math.floor(Math.random()*friends.length)
+selected=friends[rand]
 
-function showTask(t){
-if(mode.value==="self") currentFriend="You"
-task.innerText=currentFriend+": "+t
+angle+=360*5 + (360/friends.length)*rand
+canvas.style.transform=`rotate(${angle}deg)`
+
+setTimeout(()=>{
+document.getElementById("player").innerHTML="👉 "+selected
+confetti()
+},4000)
 }
 
-function random(arr){
-return arr[Math.floor(Math.random()*arr.length)]
+/* 100 TRUTHS */
+const truths=[...Array(100)].map((_,i)=>"Truth question "+(i+1)+" — Tell something honest")
+
+/* CATEGORY DARES */
+const funny=[
+"Talk like baby 1 min","Dance without music","Act monkey","Laugh loudly 30 sec",
+"Do funny walk","Sing cartoon song","Make weird face","Talk backwards",
+"Act teacher","Pretend robot"
+]
+
+const romantic=[
+"Send heart emoji crush","Compliment player","Hold hand 10 sec","Say cheesy line",
+"Give flying kiss","Say I miss you","Hug pillow","Romantic pose",
+"Say love quote","Eye contact 20 sec"
+]
+
+const party=[
+"Dance 30 sec","Shot water challenge","Pushups 10","Sing loud",
+"Rap 20 sec","Spin 10 times","Jump 20","Funny selfie",
+"Imitate celeb","Tell joke"
+]
+
+/* expand to 100 each */
+while(funny.length<100)funny.push("Funny dare "+funny.length)
+while(romantic.length<100)romantic.push("Romantic dare "+romantic.length)
+while(party.length<100)party.push("Party dare "+party.length)
+
+function truth(){
+let q=truths[Math.floor(Math.random()*truths.length)]
+document.getElementById("question").innerHTML="🔥 "+selected+": "+q
 }
 
-// ================= SHARE =================
-function share(){
-if(!task.innerText) return
-let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
-window.open("https://wa.me/?text="+text)
+function dare(){
+let cat=document.getElementById("category").value
+let arr=cat=="funny"?funny:cat=="romantic"?romantic:party
+let q=arr[Math.floor(Math.random()*arr.length)]
+document.getElementById("question").innerHTML="😈 "+selected+": "+q
 }
 
 </script>
