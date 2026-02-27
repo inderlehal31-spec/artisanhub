@@ -248,6 +248,83 @@ function share(){
 if(!task.innerText) return
 let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
 window.open("https://wa.me/?text="+text)
+
+  // ================= SPIN WHEEL =================
+const wheelCanvas=document.getElementById("wheelCanvas");
+const wheelCtx=wheelCanvas.getContext("2d");
+
+let wheelAngle=0;
+let spinning=false;
+
+function drawWheel(){
+
+if(!friends.length){
+wheelCtx.clearRect(0,0,300,300);
+return;
+}
+
+const arc=2*Math.PI/friends.length;
+wheelCtx.clearRect(0,0,300,300);
+
+friends.forEach((name,i)=>{
+const start=wheelAngle+i*arc;
+
+wheelCtx.beginPath();
+wheelCtx.fillStyle=`hsl(${i*360/friends.length},70%,65%)`;
+wheelCtx.moveTo(150,150);
+wheelCtx.arc(150,150,140,start,start+arc);
+wheelCtx.fill();
+
+wheelCtx.save();
+wheelCtx.translate(150,150);
+wheelCtx.rotate(start+arc/2);
+wheelCtx.fillStyle="#000";
+wheelCtx.font="14px Arial";
+wheelCtx.fillText(name,60,5);
+wheelCtx.restore();
+});
+}
+
+function spinWheel(){
+
+if(!friends.length)return alert("Add friends first");
+if(spinning)return;
+
+spinning=true;
+
+let spinAmount=Math.random()*3000+2500;
+let start=wheelAngle;
+let duration=4000;
+let startTime=null;
+
+function animate(t){
+
+if(!startTime)startTime=t;
+let progress=t-startTime;
+
+let ease=1-Math.pow(1-progress/duration,3);
+wheelAngle=start+spinAmount*ease;
+
+drawWheel();
+
+if(progress<duration){
+requestAnimationFrame(animate);
+}else{
+spinning=false;
+selectWinner();
+}
+}
+
+requestAnimationFrame(animate);
+}
+
+function selectWinner(){
+const arc=2*Math.PI/friends.length;
+let index=Math.floor((2*Math.PI-wheelAngle%(2*Math.PI))/arc)%friends.length;
+
+currentFriend=friends[index];
+selectedFriend.innerText="👉 "+currentFriend;
+}
 }
 
 </script>
