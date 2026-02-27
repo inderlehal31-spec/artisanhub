@@ -3,71 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DareDrop Pro Party</title>
+    <title>DareDrop Pro Party - V2</title>
     <style>
         :root {
             --primary: #ff0055;
             --secondary: #00dbde;
-            --success: #25D366;
+            --bg-dark: #0f0c29;
         }
 
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            background: radial-gradient(circle, #1a1a2e, #16213e, #0f3460);
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .container {
-            width: 95%;
+            width: 90%;
             max-width: 450px;
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(25px);
-            padding: 25px;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
             text-align: center;
             border: 1px solid rgba(255,255,255,0.1);
-            position: relative;
         }
 
-        h1 { font-size: 2.5rem; margin-bottom: 20px; text-shadow: 0 0 15px var(--primary); }
+        h1 { font-size: 2.2rem; margin-bottom: 15px; text-shadow: 0 0 10px var(--primary); }
 
         .btn {
-            width: 85%;
-            padding: 14px;
+            width: 80%;
+            padding: 12px;
             font-size: 1rem;
-            margin: 8px;
+            margin: 8px auto;
             border-radius: 50px;
             border: none;
             background: linear-gradient(45deg, var(--primary), #fb406c);
             color: white;
             cursor: pointer;
             font-weight: bold;
-            transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: block;
+            transition: 0.3s;
             text-transform: uppercase;
         }
 
-        .btn:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(255,0,85,0.4); }
-
-        .quit-btn {
-            background: transparent;
-            border: 1px solid #ff4b2b;
-            color: #ff4b2b;
-            margin-top: 15px;
-            width: 50%;
-            font-size: 0.8rem;
-        }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(255,0,85,0.3); }
 
         input {
-            padding: 14px 20px;
-            width: 75%;
-            border-radius: 25px;
+            padding: 12px;
+            width: 70%;
+            border-radius: 20px;
             border: 2px solid var(--secondary);
             background: rgba(255,255,255,0.1);
             color: white;
@@ -75,11 +66,11 @@
             outline: none;
         }
 
-        /* Spinner */
-        .wheel-box {
+        /* Wheel Styles */
+        .wheel-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             margin: 20px auto;
         }
 
@@ -87,65 +78,45 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            border: 6px solid #fff;
+            border: 5px solid #fff;
             position: relative;
-            overflow: hidden;
             transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1);
+            box-shadow: 0 0 30px rgba(0,0,0,0.4);
+            overflow: hidden;
         }
 
         .arrow {
             position: absolute;
-            top: -20px;
+            top: -15px;
             left: 50%;
             transform: translateX(-50%);
-            width: 0; height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 30px solid #fff;
-            z-index: 10;
-        }
-
-        .slice {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            transform-origin: 100% 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .slice span {
-            position: absolute;
-            right: 20%;
-            bottom: 35%;
-            font-weight: bold;
-            font-size: 12px;
-            transform-origin: center;
-            width: 70px;
-            text-align: center;
+            width: 30px;
+            height: 30px;
+            background: #fff;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 100;
         }
 
         .hidden { display: none; }
-
+        
         .task-card {
-            background: white;
-            color: #111;
-            padding: 25px;
-            border-radius: 20px;
-            margin-top: 20px;
-            font-size: 1.3rem;
+            background: #fff;
+            color: #222;
+            padding: 20px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            margin: 15px 0;
             font-weight: bold;
-            line-height: 1.4;
+            animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        #pList { font-size: 0.9rem; color: var(--secondary); margin-bottom: 10px; }
+        @keyframes pop { from { transform: scale(0.5); } to { transform: scale(1); } }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1 id="mainTitle">DareDrop 🎲</h1>
+    <h1 id="title">DareDrop 🎲</h1>
 
     <div id="modeMenu">
         <button class="btn" onclick="startMode('self')">Solo Challenge</button>
@@ -153,59 +124,64 @@
     </div>
 
     <div id="setup" class="hidden">
-        <input type="text" id="playerName" placeholder="Player Name...">
-        <button class="btn" style="width:auto" onclick="addPlayer()">Add</button>
-        <div id="pList"></div>
+        <input type="text" id="playerName" placeholder="Enter Name...">
+        <button class="btn" style="width:auto; display:inline-block" onclick="addPlayer()">Add</button>
+        <div id="pList" style="margin-top:10px; font-size:0.9rem; color:var(--secondary)"></div>
         <button class="btn" id="startBtn" style="display:none" onclick="initGame()">Start Game</button>
     </div>
 
     <div id="gameSection" class="hidden">
-        <div class="wheel-box">
+        <div class="wheel-container">
             <div class="arrow"></div>
-            <div id="wheel"></div>
+            <canvas id="wheelCanvas" width="280" height="280"></canvas>
         </div>
         <h2 id="statusText">Tap to Spin!</h2>
-        <button class="btn" id="spinBtn" onclick="spinNow()">Spin Wheel</button>
+        <button class="btn" id="spinBtn" onclick="spinWheel()">SPIN NOW</button>
     </div>
 
     <div id="categorySection" class="hidden">
-        <h3>Select Vibe</h3>
+        <h3 id="targetLabel">Select Vibe</h3>
         <button class="btn" onclick="pickCat('fun')">Fun 😄</button>
-        <button class="btn" onclick="pickCat('extreme')" style="background: #e67e22;">Extreme 🔥</button>
+        <button class="btn" onclick="pickCat('extreme')" style="background:#e67e22">Extreme 🔥</button>
     </div>
 
-    <div id="truthDareSection" class="hidden">
-        <h3 id="targetName"></h3>
-        <button class="btn" onclick="showTask('truth')" style="background:#3498db">Truth 💡</button>
-        <button class="btn" onclick="showTask('dare')" style="background:#27ae60">Dare ⚡</button>
+    <div id="choiceSection" class="hidden">
+        <button class="btn" onclick="getTask('truth')" style="background:#3498db">Truth 💡</button>
+        <button class="btn" onclick="getTask('dare')" style="background:#27ae60">Dare ⚡</button>
     </div>
 
     <div id="resultBox" class="hidden">
         <div class="task-card" id="taskDisplay"></div>
-        <button class="btn" id="shareWA" style="background:#25D366">WhatsApp Share 📱</button>
-        <button class="btn" onclick="nextRound()" style="background:#7f8c8d">Next Round 🔄</button>
-        <button class="btn quit-btn" onclick="location.reload()">Quit Game 🚪</button>
+        <button class="btn" onclick="shareWhatsApp()" style="background:#25D366">WhatsApp Share 📱</button>
+        <button class="btn" onclick="resetRound()" style="background:#7f8c8d">Next Round 🔄</button>
     </div>
 </div>
 
 <script>
     let players = [];
-    let currentPlayer = "";
-    let selectedCat = "";
-    let mode = "";
-    let currentRotation = 0;
-    const colors = ["#f32121", "#21f321", "#2121f3", "#f3f321", "#f321f3", "#21f3f3", "#ffa500", "#800080"];
+    let currentTarget = "";
+    let currentVibe = "";
+    let rotation = 0;
+
+    // AUDIO CONTEXT
+    const spinSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3');
+    const winSound = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3');
 
     const tasks = {
-        fun: { truth: ["Crush da naam?", "Sabh ton vaddi galti?"], dare: ["10 sec funny dance", "Act like a monkey"] },
-        extreme: { truth: ["Ever cheated in exam?", "Darkest secret?"], dare: ["Call your crush now", "Post a silly photo"] }
+        fun: {
+            truth: ["First crush da naam?", "School ch kade maar khadi hai?", "Sabh ton vaddi galti?", "Social media te fake account hai?", "Kade bina naye 3 din kadde ne?", "Apni search history dikhao", "Je lottery nikal je taan ki karoge?", "Tuhadi sabh ton vaddi kamzori?", "Kade class bunk kiti hai?", "Pehli kamayi kinni si?", "Kade kissi nu ignore kitta?", "Sabh ton ganda gift ki miliya?", "Kade lift ch fase ho?", "Tuhada nickname ki hai?", "Kade rona aya bina gall ton?"], // Add up to 100
+            dare: ["10 sec funny dance", "Act like a monkey", "Apne friend nu emoji joke bhejo", "Bina hath laye pani piyo", "Punjabi accent ch 2 min gall karo", "Siri naal romantic gall karo", "Apne status te 'I am crazy' likho", "Ek funny selfie group ch pao", "Murgi ban ke dikhao", "Kissi nu prank call karo", "Mirror ch dekh ke apne aap nu propose karo", "1 min tak statue bano", "Apne phone di last photo dikhao"]
+        },
+        extreme: {
+            truth: ["Kade police ne phadiya?", "Ex di yaad aundi hai?", "Sabh ton vadda jhooth?", "Bank balance kinna hai?", "Kade cheating kiti exam ch?", "Darkest secret?", "Kissi naal dhokha kitta?", "Kade chori kiti hai?", "Tuhadi sabh ton gandi habit?", "Kissi nu secretly dislike karde ho?"],
+            dare: ["Crush nu call karo", "Apne phone da lock kholo te 2 min layi kisse nu deo", "Last search history dikhao", "Ghar de bahr ja ke chikko 'Main Pagal Haan'", "Kissi friend nu block karke dikhao", "Status pao 'I am getting married today'", "Face te powder laga ke selfie pao", "Kissi random number nu text karo"]
+        }
     };
 
     function startMode(m) {
-        mode = m;
         document.getElementById('modeMenu').classList.add('hidden');
         if(m === 'self') {
-            currentPlayer = "You";
+            currentTarget = "You";
             showCategories();
         } else {
             document.getElementById('setup').classList.remove('hidden');
@@ -213,11 +189,11 @@
     }
 
     function addPlayer() {
-        let name = document.getElementById('playerName').value.trim();
+        const name = document.getElementById('playerName').value.trim();
         if(name) {
             players.push(name);
             document.getElementById('playerName').value = "";
-            document.getElementById('pList').innerText = "Players: " + players.join(" | ");
+            document.getElementById('pList').innerText = "Players: " + players.join(", ");
             if(players.length >= 2) document.getElementById('startBtn').style.display = "block";
         }
     }
@@ -229,84 +205,82 @@
     }
 
     function drawWheel() {
-        const wheel = document.getElementById('wheel');
-        wheel.innerHTML = "";
-        const angle = 360 / players.length;
-        players.forEach((p, i) => {
-            const slice = document.createElement('div');
-            slice.className = 'slice';
-            slice.style.backgroundColor = colors[i % colors.length];
-            slice.style.transform = `rotate(${i * angle}deg) skewY(${90 - angle}deg)`;
-            
-            const span = document.createElement('span');
-            span.style.transform = `skewY(-${90 - angle}deg) rotate(${angle/2}deg)`;
-            span.innerText = p;
-            slice.appendChild(span);
-            wheel.appendChild(slice);
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const sliceAngle = (2 * Math.PI) / players.length;
+        const colors = ["#ff0055", "#00dbde", "#f39c12", "#9b59b6", "#2ecc71", "#e74c3c"];
+
+        players.forEach((player, i) => {
+            ctx.beginPath();
+            ctx.fillStyle = colors[i % colors.length];
+            ctx.moveTo(140, 140);
+            ctx.arc(140, 140, 140, i * sliceAngle, (i + 1) * sliceAngle);
+            ctx.fill();
+            ctx.save();
+            ctx.translate(140, 140);
+            ctx.rotate(i * sliceAngle + sliceAngle / 2);
+            ctx.fillStyle = "white";
+            ctx.font = "bold 14px Arial";
+            ctx.fillText(player.substring(0, 8), 60, 5);
+            ctx.restore();
         });
     }
 
-    function spinNow() {
-        const wheel = document.getElementById('wheel');
-        const extraDeg = Math.floor(2000 + Math.random() * 3000);
-        currentRotation += extraDeg;
-        wheel.style.transform = `rotate(${currentRotation}deg)`;
+    function spinWheel() {
+        spinSound.play();
+        const canvas = document.getElementById('wheelCanvas');
+        const extraDeg = Math.floor(3000 + Math.random() * 3000);
+        rotation += extraDeg;
+        canvas.style.transform = `rotate(${rotation}deg)`;
         
         document.getElementById('spinBtn').disabled = true;
         document.getElementById('statusText').innerText = "Spinning...";
 
         setTimeout(() => {
-            const actualDeg = currentRotation % 360;
+            winSound.play();
+            if(navigator.vibrate) navigator.vibrate(200);
+            
+            const actualDeg = rotation % 360;
             const sliceSize = 360 / players.length;
             const index = Math.floor((360 - (actualDeg % 360)) / sliceSize) % players.length;
-            currentPlayer = players[index];
+            currentTarget = players[index];
             
-            document.getElementById('statusText').innerText = "Target: " + currentPlayer;
-            setTimeout(() => {
-                showCategories();
-            }, 1000);
+            document.getElementById('statusText').innerText = "Target: " + currentTarget;
+            setTimeout(showCategories, 1500);
         }, 4000);
     }
 
     function showCategories() {
         document.getElementById('gameSection').classList.add('hidden');
         document.getElementById('categorySection').classList.remove('hidden');
+        document.getElementById('targetLabel').innerText = currentTarget + "'s Turn!";
     }
 
-    function pickCat(c) {
-        selectedCat = c;
+    function pickCat(vibe) {
+        currentVibe = vibe;
         document.getElementById('categorySection').classList.add('hidden');
-        document.getElementById('targetName').innerText = currentPlayer + "'s Turn";
-        document.getElementById('truthDareSection').classList.remove('hidden');
+        document.getElementById('choiceSection').classList.remove('hidden');
     }
 
-    function showTask(type) {
-        const list = tasks[selectedCat][type];
+    function getTask(type) {
+        const list = tasks[currentVibe][type];
         const task = list[Math.floor(Math.random() * list.length)];
         
-        document.getElementById('truthDareSection').classList.add('hidden');
-        const box = document.getElementById('resultBox');
-        const display = document.getElementById('taskDisplay');
-        
-        display.innerHTML = `<small>${currentPlayer}</small><br>${task}`;
-        box.classList.remove('hidden');
-
-        // WhatsApp Link Fix
-        document.getElementById('shareWA').onclick = () => {
-            const text = encodeURIComponent(`🎲 *DareDrop Party* \n\n👤 Player: ${currentPlayer}\n🔥 Task: ${task}\n\nKhedo te mauj karo!`);
-            window.open(`https://wa.me/?text=${text}`, '_blank');
-        };
+        document.getElementById('choiceSection').classList.add('hidden');
+        document.getElementById('resultBox').classList.remove('hidden');
+        document.getElementById('taskDisplay').innerHTML = `<small>${currentTarget}'s ${type.toUpperCase()}</small><br><br>${task}`;
     }
 
-    function nextRound() {
+    function resetRound() {
         document.getElementById('resultBox').classList.add('hidden');
-        if(mode === 'self') {
-            showCategories();
-        } else {
-            document.getElementById('gameSection').classList.remove('hidden');
-            document.getElementById('spinBtn').disabled = false;
-            document.getElementById('statusText').innerText = "Next Player!";
-        }
+        document.getElementById('gameSection').classList.remove('hidden');
+        document.getElementById('spinBtn').disabled = false;
+        document.getElementById('statusText').innerText = "Next Round!";
+    }
+
+    function shareWhatsApp() {
+        const text = encodeURIComponent(`🎲 *DareDrop Party* \n\n👤 Player: ${currentTarget}\n🔥 Task: ${document.getElementById('taskDisplay').innerText}\n\nKhedo te mauj karo!`);
+        window.open(`https://wa.me/?text=${text}`, '_blank');
     }
 </script>
 
