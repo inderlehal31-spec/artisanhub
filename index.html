@@ -3,123 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE LAST STAND | Real-Time Survival</title>
+    <title>THE LAST STAND | Live</title>
     <style>
         :root { --neon: #ff003c; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: 'Orbitron', sans-serif; text-align: center; margin: 0; overflow: hidden; }
-        
-        /* AD SPACE */
-        .ad-unit { background: #111; border: 1px dashed #444; margin: 10px auto; padding: 10px; width: 728px; height: 90px; color: #444; font-size: 12px; }
-
-        h1 { color: var(--neon); letter-spacing: 10px; text-shadow: 0 0 15px var(--neon); margin: 20px 0; font-size: 2.5rem; }
-        
-        .main-layout { display: flex; height: 60vh; padding: 20px; gap: 20px; }
-        
-        /* Leaderboard & Chat */
-        .side-panel { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; }
-        .leaderboard-list { text-align: left; list-style: none; padding: 0; font-size: 14px; color: #aaa; }
-        .leaderboard-list li { margin: 10px 0; border-bottom: 1px solid #222; }
-        .chat-box { flex-grow: 1; overflow-y: auto; background: #000; padding: 10px; margin-top: 10px; text-align: left; font-size: 12px; }
-
-        /* Counter Section */
-        .center-stage { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .live-count { font-size: 6rem; font-weight: bold; text-shadow: 0 0 30px #fff; }
-
-        /* Anti-Sleep Modal */
-        #antiSleepModal { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); display: none; flex-direction: column; 
-            align-items: center; justify-content: center; z-index: 1000; 
-        }
-        .btn-alive { padding: 20px 40px; background: var(--neon); color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 50px; font-size: 20px; box-shadow: 0 0 20px var(--neon); }
+        body { background: var(--bg); color: white; font-family: sans-serif; text-align: center; margin: 0; overflow-x: hidden; }
+        .main-layout { display: flex; flex-wrap: wrap; height: 80vh; padding: 20px; gap: 20px; }
+        .side-panel { flex: 1; min-width: 250px; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; }
+        .chat-box { flex-grow: 1; overflow-y: auto; background: #000; padding: 10px; margin-top: 10px; text-align: left; font-size: 14px; border: 1px solid #222; height: 200px; }
+        .center-stage { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 300px; }
+        .live-count { font-size: 5rem; font-weight: bold; text-shadow: 0 0 20px var(--neon); color: white; }
+        input { background: #222; border: 1px solid #444; color: white; padding: 10px; margin-top: 5px; width: 90%; }
+        #antiSleepModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
+        .btn-alive { padding: 15px 30px; background: var(--neon); color: white; border: none; cursor: pointer; font-size: 1.2rem; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="ad-unit">GOOGLE ADSENSE / EXTERNAL AD HERE</div>
-
-    <h1>THE LAST STAND</h1>
+    <h1 style="color: var(--neon); letter-spacing: 5px;">THE LAST STAND</h1>
 
     <div class="main-layout">
         <div class="side-panel">
-            <h3>TOP WARRIORS</h3>
-            <ul class="leaderboard-list" id="leaderboard">
-                <li>1. Deep_Singh - 14h 22m</li>
-                <li>2. Alpha_User - 12h 05m</li>
-                <li>3. NoMoreSleep - 09h 45m</li>
-            </ul>
+            <h3>LIVE WARRIORS</h3>
+            <div id="playerList" style="text-align: left; font-size: 14px; color: #00ffcc;"></div>
         </div>
 
         <div class="center-stage">
-            <div class="live-count" id="activeUsers">42</div>
-            <p style="color: #666;">WARRIORS ONLINE RIGHT NOW</p>
-            <div id="timer" style="font-size: 20px; margin-top: 20px; color: gold;">SURVIVED: 00:00:00</div>
+            <div class="live-count" id="activeUsersCount">0</div>
+            <p style="color: #888;">WARRIORS ONLINE</p>
+            <div id="survivalTimer" style="font-size: 24px; color: gold; margin-top: 10px;">SURVIVED: 00:00:00</div>
         </div>
 
         <div class="side-panel">
-            <h3>WAR ROOM (CHAT)</h3>
-            <div class="chat-box" id="chat">
-                <p><b style="color:var(--neon)">System:</b> Welcome to the battlefield.</p>
-                <p><b>User99:</b> Oye koi hai?</p>
-                <p><b>Pro_1:</b> Main 4 ghante ton baitha haan!</p>
-            </div>
-            <input type="text" placeholder="Type a message..." style="background:#222; border:none; color:white; padding:10px; margin-top:5px;">
+            <h3>WAR ROOM</h3>
+            <div class="chat-box" id="chatDisplay"></div>
+            <input type="text" id="chatInput" placeholder="Type message & press Enter...">
         </div>
     </div>
 
     <div id="antiSleepModal">
         <h2 style="color: gold;">STILL AWAKE?</h2>
-        <p>You have 10 seconds to click the button or be ELIMINATED.</p>
         <button class="btn-alive" onclick="confirmAlive()">I AM ALIVE!</button>
     </div>
 
-    <div class="ad-unit">AUTO-REFRESHING AD UNIT</div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
 
-    <script>
-        // 1. SURVIVAL TIMER
-        let seconds = 0;
+        const firebaseConfig = {
+            apiKey: "AIzaSyDd2wOgiCBatMfrw-OfdnCBHXfLQY_VIMc",
+            authDomain: "the-last-stand-a2d6d.firebaseapp.com",
+            databaseURL: "https://the-last-stand-a2d6d-default-rtdb.firebaseio.com",
+            projectId: "the-last-stand-a2d6d",
+            storageBucket: "the-last-stand-a2d6d.firebasestorage.app",
+            messagingSenderId: "334010746772",
+            appId: "1:334010746772:web:88e8d4dc48a1a530c03181"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // 1. SETUP USER
+        const myName = "Warrior_" + Math.floor(Math.random() * 999);
+        const myStatusRef = ref(db, 'players/' + myName);
+        const startTime = Date.now();
+
+        // Join game
+        set(myStatusRef, { username: myName, status: "alive", joinedAt: serverTimestamp() });
+        onDisconnect(myStatusRef).remove(); // Browser band karan te delete
+
+        // 2. LIVE TIMER
         setInterval(() => {
-            seconds++;
-            let h = Math.floor(seconds / 3600).toString().padStart(2, '0');
-            let m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
-            let s = (seconds % 60).toString().padStart(2, '0');
-            document.getElementById('timer').innerText = `SURVIVED: ${h}:${m}:${s}`;
+            let diff = Math.floor((Date.now() - startTime) / 1000);
+            let h = Math.floor(diff / 3600).toString().padStart(2, '0');
+            let m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
+            let s = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('survivalTimer').innerText = `SURVIVED: ${h}:${m}:${s}`;
         }, 1000);
 
-        // 2. TAB VISIBILITY LOCK
-        document.addEventListener("visibilitychange", function() {
-            if (document.hidden) {
-                alert("ELIMINATED! You switched tabs.");
-                location.reload();
+        // 3. UPDATE PLAYER LIST & COUNT
+        onValue(ref(db, 'players'), (snapshot) => {
+            const players = snapshot.val() || {};
+            const listDiv = document.getElementById('playerList');
+            listDiv.innerHTML = "";
+            let count = 0;
+            for (let id in players) {
+                count++;
+                listDiv.innerHTML += `<div>• ${players[id].username} <span style="color:gray;">(Live)</span></div>`;
+            }
+            document.getElementById('activeUsersCount').innerText = count;
+        });
+
+        // 4. CHAT LOGIC
+        const chatInput = document.getElementById('chatInput');
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && chatInput.value !== "") {
+                push(ref(db, 'chats'), { user: myName, msg: chatInput.value });
+                chatInput.value = "";
             }
         });
 
-        // 3. ANTI-SLEEP LOGIC (Every 15-20 minutes)
-        function triggerAntiSleep() {
-            document.getElementById('antiSleepModal').style.display = 'flex';
-            let failTimer = setTimeout(() => {
-                alert("ELIMINATED! You fell asleep.");
-                location.reload();
-            }, 10000); // 10 seconds to respond
-
-            window.confirmAlive = function() {
-                clearTimeout(failTimer);
-                document.getElementById('antiSleepModal').style.display = 'none';
-                scheduleNextCheck();
+        onValue(ref(db, 'chats'), (snapshot) => {
+            const chatDisplay = document.getElementById('chatDisplay');
+            chatDisplay.innerHTML = "";
+            const data = snapshot.val();
+            for (let id in data) {
+                chatDisplay.innerHTML += `<p><b>${data[id].user}:</b> ${data[id].msg}</p>`;
             }
-        }
+            chatDisplay.scrollTop = chatDisplay.scrollHeight;
+        });
 
-        function scheduleNextCheck() {
-            let nextCheck = (Math.random() * (20 - 15) + 15) * 60 * 1000; // 15-20 mins
-            setTimeout(triggerAntiSleep, nextCheck);
-        }
-        scheduleNextCheck();
-
-        // 4. ADS REFRESH LOGIC
-        setInterval(() => {
-            console.log("Refreshing Ads...");
-            // Logic to reload Ad components without refreshing page
-        }, 120000); // Every 2 minutes
+        // 5. ANTI-TAB SWITCH
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                alert("ELIMINATED! You left the battlefield.");
+                location.reload();
+            }
+        });
     </script>
 </body>
 </html>
