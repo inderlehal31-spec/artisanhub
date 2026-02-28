@@ -5,32 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>THE LAST STAND | Live</title>
     <style>
-        :root { --neon: #ff003c; --bg: #050505; }
-        body { background: var(--bg); color: white; font-family: sans-serif; text-align: center; margin: 0; overflow-x: hidden; }
-        .main-layout { display: flex; flex-wrap: wrap; height: 80vh; padding: 20px; gap: 20px; }
+        :root { --neon: #ff003c; --bg: #050505; --cyan: #00ffcc; }
+        body { background: var(--bg); color: white; font-family: 'Courier New', Courier, monospace; text-align: center; margin: 0; overflow-x: hidden; }
+        
+        /* Login Overlay */
+        #authOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; }
+        .btn-login { padding: 15px 40px; background: white; color: black; border: none; cursor: pointer; font-size: 1.2rem; font-weight: bold; border-radius: 5px; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
+        .main-layout { display: flex; flex-wrap: wrap; height: 80vh; padding: 20px; gap: 20px; filter: blur(0px); }
         .side-panel { flex: 1; min-width: 250px; background: rgba(255,255,255,0.05); border: 1px solid #333; border-radius: 10px; padding: 15px; display: flex; flex-direction: column; }
-        .chat-box { flex-grow: 1; overflow-y: auto; background: #000; padding: 10px; margin-top: 10px; text-align: left; font-size: 14px; border: 1px solid #222; height: 200px; }
+        .chat-box { flex-grow: 1; overflow-y: auto; background: #000; padding: 10px; margin-top: 10px; text-align: left; font-size: 14px; border: 1px solid #222; height: 300px; }
         .center-stage { flex: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 300px; }
-        .live-count { font-size: 5rem; font-weight: bold; text-shadow: 0 0 20px var(--neon); color: white; }
-        input { background: #222; border: 1px solid #444; color: white; padding: 10px; margin-top: 5px; width: 90%; }
-        #antiSleepModal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; }
-        .btn-alive { padding: 15px 30px; background: var(--neon); color: white; border: none; cursor: pointer; font-size: 1.2rem; border-radius: 5px; }
+        .live-count { font-size: 6rem; font-weight: bold; text-shadow: 0 0 20px var(--neon); color: white; margin: 10px 0; }
+        input { background: #222; border: 1px solid #444; color: white; padding: 12px; margin-top: 5px; width: 90%; outline: none; }
+        input:focus { border-color: var(--neon); }
+        #survivalTimer { font-size: 24px; color: gold; margin-top: 10px; font-weight: bold; letter-spacing: 2px; }
     </style>
 </head>
 <body>
 
-    <h1 style="color: var(--neon); letter-spacing: 5px;">THE LAST STAND</h1>
+    <div id="authOverlay">
+        <h1 style="color: var(--neon); font-size: 3rem; letter-spacing: 10px;">THE LAST STAND</h1>
+        <p style="color: #666; margin-bottom: 20px;">ENTER THE BATTLEFIELD IF YOU DARE</p>
+        <button class="btn-login" id="googleLoginBtn">SIGN IN WITH GOOGLE</button>
+    </div>
+
+    <h1 style="color: var(--neon); letter-spacing: 5px; margin-top: 20px;">THE LAST STAND</h1>
 
     <div class="main-layout">
         <div class="side-panel">
             <h3>LIVE WARRIORS</h3>
-            <div id="playerList" style="text-align: left; font-size: 14px; color: #00ffcc;"></div>
+            <div id="playerList" style="text-align: left; font-size: 14px; color: var(--cyan);"></div>
         </div>
 
         <div class="center-stage">
             <div class="live-count" id="activeUsersCount">0</div>
             <p style="color: #888;">WARRIORS ONLINE</p>
-            <div id="survivalTimer" style="font-size: 24px; color: gold; margin-top: 10px;">SURVIVED: 00:00:00</div>
+            <div id="survivalTimer">SURVIVED: 00:00:00</div>
         </div>
 
         <div class="side-panel">
@@ -40,14 +51,10 @@
         </div>
     </div>
 
-    <div id="antiSleepModal">
-        <h2 style="color: gold;">STILL AWAKE?</h2>
-        <button class="btn-alive" onclick="confirmAlive()">I AM ALIVE!</button>
-    </div>
-
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue, push, onDisconnect, serverTimestamp, get } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDd2wOgiCBatMfrw-OfdnCBHXfLQY_VIMc",
@@ -61,26 +68,61 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
-        // 1. SETUP USER
-        const myName = "Warrior_" + Math.floor(Math.random() * 999);
-        const myStatusRef = ref(db, 'players/' + myName);
-        const startTime = Date.now();
+        let userData = null;
+        let myJoinTime = null;
 
-        // Join game
-        set(myStatusRef, { username: myName, status: "alive", joinedAt: serverTimestamp() });
-        onDisconnect(myStatusRef).remove(); // Browser band karan te delete
+        // --- 1. SIGNUP / LOGIN LOGIC ---
+        document.getElementById('googleLoginBtn').onclick = () => {
+            signInWithPopup(auth, provider).catch(err => console.error(err));
+        };
 
-        // 2. LIVE TIMER
-        setInterval(() => {
-            let diff = Math.floor((Date.now() - startTime) / 1000);
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                userData = user;
+                document.getElementById('authOverlay').style.display = 'none';
+                initPlayer();
+            } else {
+                document.getElementById('authOverlay').style.display = 'flex';
+            }
+        });
+
+        // --- 2. SURVIVAL TIME & PLAYER SETUP ---
+        async function initPlayer() {
+            const playerRef = ref(db, 'players/' + userData.uid);
+            
+            // ਚੈੱਕ ਕਰੋ ਕਿ ਕੀ ਯੂਜ਼ਰ ਪਹਿਲਾਂ ਤੋਂ ਡਾਟਾਬੇਸ ਵਿੱਚ ਹੈ (ਰਿਫ੍ਰੈਸ਼ ਕੇਸ)
+            const snapshot = await get(playerRef);
+            if (snapshot.exists()) {
+                myJoinTime = snapshot.val().joinedAt;
+            } else {
+                myJoinTime = Date.now();
+                await set(playerRef, {
+                    username: userData.displayName,
+                    joinedAt: myJoinTime,
+                    status: "alive"
+                });
+            }
+
+            // ਰਿਫ੍ਰੈਸ਼ ਜਾਂ ਟੈਬ ਬੰਦ ਹੋਣ ਤੇ ਡਾਟਾ ਹਟਾਓ
+            onDisconnect(playerRef).remove();
+
+            // ਟਾਈਮਰ ਅਪਡੇਟ ਲੂਪ
+            setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            if (!myJoinTime) return;
+            let diff = Math.floor((Date.now() - myJoinTime) / 1000);
             let h = Math.floor(diff / 3600).toString().padStart(2, '0');
             let m = Math.floor((diff % 3600) / 60).toString().padStart(2, '0');
             let s = (diff % 60).toString().padStart(2, '0');
             document.getElementById('survivalTimer').innerText = `SURVIVED: ${h}:${m}:${s}`;
-        }, 1000);
+        }
 
-        // 3. UPDATE PLAYER LIST & COUNT
+        // --- 3. LIVE PLAYER LIST & COUNT ---
         onValue(ref(db, 'players'), (snapshot) => {
             const players = snapshot.val() || {};
             const listDiv = document.getElementById('playerList');
@@ -93,11 +135,15 @@
             document.getElementById('activeUsersCount').innerText = count;
         });
 
-        // 4. CHAT LOGIC
+        // --- 4. CHAT LOGIC ---
         const chatInput = document.getElementById('chatInput');
         chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter' && chatInput.value !== "") {
-                push(ref(db, 'chats'), { user: myName, msg: chatInput.value });
+            if (e.key === 'Enter' && chatInput.value.trim() !== "") {
+                push(ref(db, 'chats'), { 
+                    user: userData.displayName, 
+                    msg: chatInput.value,
+                    timestamp: serverTimestamp() 
+                });
                 chatInput.value = "";
             }
         });
@@ -106,15 +152,18 @@
             const chatDisplay = document.getElementById('chatDisplay');
             chatDisplay.innerHTML = "";
             const data = snapshot.val();
+            // ਸਿਰਫ ਆਖਰੀ 50 ਮੈਸੇਜ ਦਿਖਾਉਣ ਲਈ
             for (let id in data) {
                 chatDisplay.innerHTML += `<p><b>${data[id].user}:</b> ${data[id].msg}</p>`;
             }
             chatDisplay.scrollTop = chatDisplay.scrollHeight;
         });
 
-        // 5. ANTI-TAB SWITCH
+        // --- 5. ANTI-TAB SWITCH ---
         document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
+            if (document.hidden && userData) {
+                // ਜੇ ਟੈਬ ਬਦਲੀ ਤਾਂ ਐਲੀਮੀਨੇਟ
+                set(ref(db, 'players/' + userData.uid), null);
                 alert("ELIMINATED! You left the battlefield.");
                 location.reload();
             }
