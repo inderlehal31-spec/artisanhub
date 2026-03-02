@@ -1,250 +1,218 @@
 <!DOCTYPE html>
-<html>
+<html lang="pa">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DareDrop Party</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DareDrop Super Party</title>
+    <style>
+        :root {
+            --primary: #ff416c;
+            --secondary: #4facfe;
+            --glass: rgba(255, 255, 255, 0.15);
+        }
 
-<style>
-body{
-font-family:sans-serif;
-background:linear-gradient(135deg,#ff416c,#ff4b2b);
-margin:0;
-color:white;
-text-align:center;
-}
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b, #4facfe, #00f2fe);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            margin: 0;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
-.container{padding:20px;}
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-.card{
-background:white;
-color:black;
-padding:20px;
-border-radius:20px;
-max-width:420px;
-margin:auto;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
+        .main-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass);
+            border-radius: 30px;
+            padding: 25px;
+            width: 90%;
+            max-width: 450px;
+            margin-top: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
+        }
 
-button{
-padding:12px 20px;
-margin:6px;
-border:none;
-border-radius:12px;
-background:#ff416c;
-color:white;
-font-weight:bold;
-cursor:pointer;
-}
+        .game-btn {
+            background: white;
+            color: var(--primary);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: 0.3s;
+            margin-bottom: 20px;
+        }
 
-button:hover{opacity:0.9}
+        .game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
 
-input,select{
-padding:10px;
-width:75%;
-border-radius:10px;
-border:1px solid #ccc;
-}
+        /* Game List Menu */
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
 
-#friendList span{
-display:inline-block;
-background:#eee;
-padding:6px 12px;
-margin:4px;
-border-radius:12px;
-font-size:13px;
-}
+        .menu-content {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            width: 80%;
+            max-width: 300px;
+        }
 
-.big{
-font-size:22px;
-font-weight:bold;
-margin:18px 0;
-min-height:40px;
-}
+        .menu-item {
+            padding: 15px;
+            color: #333;
+            font-weight: bold;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
 
-.modeTag{
-font-size:12px;
-opacity:0.6;
-margin-bottom:10px;
-}
+        .menu-item:hover { background: #f9f9f9; color: var(--primary); }
 
-</style>
+        /* Parchiyan Table */
+        .chit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .chit {
+            background: white;
+            color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .chat-box {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            height: 120px;
+            overflow-y: auto;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+            margin-top: 15px;
+        }
+
+        .hidden { display: none; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
+    <h1>✨ DareDrop Pro</h1>
 
-<h1>🔥 DareDrop Party</h1>
+    <button class="game-btn" onclick="toggleMenu()">🎮 Choose Game</button>
 
-<div class="card">
+    <div class="main-card">
+        <h2 id="gameTitle">Welcome!</h2>
+        <p id="gameDesc">Select a game to start the fun with friends.</p>
 
-<select id="mode">
-<option value="self">Self Play</option>
-<option value="friend">Friend Play</option>
-</select>
+        <div id="sectionTruth" class="hidden">
+            <div id="selectedPlayer" style="font-size: 20px; margin-bottom: 10px;">🎲 Click Spin!</div>
+            <button onclick="spinPlayer()" style="background:var(--secondary); color:white; padding:10px; border-radius:10px; border:none;">Spin Friend</button>
+            <div style="margin: 20px 0;">
+                <button onclick="getTask('truth')" style="background:#00b09b; color:white; padding:12px; border:none; border-radius:10px;">Truth</button>
+                <button onclick="getTask('dare')" style="background:#ff4b2b; color:white; padding:12px; border:none; border-radius:10px;">Dare</button>
+            </div>
+            <div id="taskDisplay" style="font-weight: bold; min-height: 40px;"></div>
+        </div>
 
-<div class="modeTag">Choose mode & start fun 🎉</div>
+        <div id="sectionParchiyan" class="hidden">
+            <p>Target: Collect 4 same chits!</p>
+            <div class="chit-grid">
+                <div class="chit" onclick="passChit(0)">Parchi 1</div>
+                <div class="chit" onclick="passChit(1)">Parchi 2</div>
+                <div class="chit" onclick="passChit(2)">Parchi 3</div>
+                <div class="chit" onclick="passChit(3)">Parchi 4</div>
+            </div>
+            <p style="font-size: 12px; margin-top: 10px;">Click a chit to "Pass" it to the next friend</p>
+        </div>
 
-<div id="friendBox" style="display:none">
+        <div class="chat-box" id="chat">
+            <div><b>System:</b> Ready to play? 🔥</div>
+        </div>
+    </div>
 
-<input id="friendInput" placeholder="Friend name">
-<button onclick="addFriend()">Add</button>
+    <div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()">
+        <div class="menu-content" onclick="event.stopPropagation()">
+            <div class="menu-item" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
+            <div class="menu-item" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
+            <div class="menu-item" onclick="loadGame('Parchiyan')">🃏 Parchiyan (4 Chits)</div>
+            <div class="menu-item" onclick="toggleMenu()" style="color:red">❌ Close</div>
+        </div>
+    </div>
 
-<div id="friendList"></div>
+    <script>
+        let friends = ["Rohan", "Deep", "Sonia", "Preet"]; // Example friends
+        let currentFriend = "You";
 
-<button onclick="spinFriend()">🎡 Spin Friend</button>
+        function toggleMenu() {
+            const menu = document.getElementById('menuOverlay');
+            menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+        }
 
-</div>
+        function loadGame(game) {
+            document.getElementById('gameTitle').innerText = game;
+            document.getElementById('sectionTruth').classList.add('hidden');
+            document.getElementById('sectionParchiyan').classList.add('hidden');
+            
+            if(game === 'Truth & Dare') {
+                document.getElementById('sectionTruth').classList.remove('hidden');
+                document.getElementById('gameDesc').innerText = "Classic Truth or Dare fun!";
+            } else if(game === 'Parchiyan') {
+                document.getElementById('sectionParchiyan').classList.remove('hidden');
+                document.getElementById('gameDesc').innerText = "Pass the chits and match 4 names!";
+            } else {
+                document.getElementById('gameDesc').innerText = "Coming soon: Play " + game;
+            }
+            toggleMenu();
+            addChat("Game changed to " + game);
+        }
 
-<div id="selectedFriend" class="big"></div>
+        function spinPlayer() {
+            let p = friends[Math.floor(Math.random() * friends.length)];
+            currentFriend = p;
+            document.getElementById('selectedPlayer').innerText = "👉 " + p;
+            addChat("It's " + p + "'s turn!");
+        }
 
-<button onclick="getTruth()">Truth</button>
-<button onclick="getDare()">Dare</button>
+        function getTask(type) {
+            const tasks = type === 'truth' ? ["Biggest crush?", "Last lie?"] : ["Dance now!", "Funny selfie!"];
+            let t = tasks[Math.floor(Math.random() * tasks.length)];
+            document.getElementById('taskDisplay').innerText = t;
+        }
 
-<div id="task" class="big"></div>
+        function passChit(id) {
+            addChat("You passed Parchi " + (id + 1) + " to next player! 🔄");
+        }
 
-<button onclick="share()">📲 Share</button>
-
-</div>
-</div>
-
-<script>
-
-// ================= STATE =================
-let friends=[]
-let currentFriend="You"
-
-// ================= BASE DATA =================
-const truths=[
-"Biggest crush ever?",
-"Secret fear?",
-"Last lie told?",
-"Most embarrassing moment?",
-"Dream job?",
-"Biggest regret?",
-"Hidden talent?",
-"Secret habit?",
-"Love or money?",
-"First love memory?",
-"Phone addiction level?",
-"Celebrity crush?",
-"Most awkward moment?",
-"Favorite childhood memory?",
-"Biggest insecurity?",
-"Most emotional moment?",
-"Person you trust most?",
-"Biggest jealousy moment?",
-"Last time you cried?",
-"Secret wish?"
-]
-
-const dares=[
-"Sing loudly 20 sec",
-"Dance without music",
-"Do 10 pushups",
-"Take funny selfie",
-"Act like baby",
-"Do chicken dance",
-"Speak robot voice",
-"Say joke loudly",
-"Run slow motion",
-"Imitate teacher",
-"Act scared",
-"Do runway walk",
-"Make weird face",
-"Say poem dramatically",
-"Do plank 15 sec",
-"Speak in rhyme",
-"Act like news reporter",
-"Fake cry scene",
-"Do superhero pose",
-"Freestyle dance"
-]
-
-// ================= SMART GENERATOR =================
-const truthTemplates=[
-"Tell something embarrassing about",
-"What do you fear about",
-"What is your memory of",
-"Have you ever hidden",
-"What do you regret about",
-"What is your fantasy about",
-"Tell your opinion on"
-]
-
-const truthTopics=["love","school","friend","family","crush","future","phone","social media","money","childhood"]
-
-const dareTemplates=[
-"Imitate someone doing",
-"Perform a dance about",
-"Create a funny story about",
-"Pretend scene of",
-"Act dramatically about",
-"Show reaction to",
-"Do a performance about"
-]
-
-const dareTopics=["ghost","teacher","celebrity","robot","baby","villain","hero","friend","love","movie"]
-
-// AUTO expand content
-for(let i=0;i<80;i++){
-
-let t1=truthTemplates[Math.floor(Math.random()*truthTemplates.length)]
-let t2=truthTopics[Math.floor(Math.random()*truthTopics.length)]
-truths.push(t1+" "+t2)
-
-let d1=dareTemplates[Math.floor(Math.random()*dareTemplates.length)]
-let d2=dareTopics[Math.floor(Math.random()*dareTopics.length)]
-dares.push(d1+" "+d2)
-}
-
-// ================= MODE =================
-mode.onchange=()=>{
-friendBox.style.display=mode.value==="friend"?"block":"none"
-}
-
-// ================= FRIEND =================
-function addFriend(){
-let name=friendInput.value.trim()
-if(name){
-friends.push(name)
-renderFriends()
-friendInput.value=""
-}
-}
-
-function renderFriends(){
-friendList.innerHTML=friends.map(f=>`<span>${f}</span>`).join("")
-}
-
-function spinFriend(){
-if(!friends.length)return alert("Add friends first")
-let i=Math.floor(Math.random()*friends.length)
-currentFriend=friends[i]
-selectedFriend.innerText="👉 "+currentFriend
-}
-
-// ================= GAME =================
-function getTruth(){showTask(random(truths))}
-function getDare(){showTask(random(dares))}
-
-function showTask(t){
-if(mode.value==="self") currentFriend="You"
-task.innerText=currentFriend+": "+t
-}
-
-function random(arr){
-return arr[Math.floor(Math.random()*arr.length)]
-}
-
-// ================= SHARE =================
-function share(){
-if(!task.innerText) return
-let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
-window.open("https://wa.me/?text="+text)
-}
-
-</script>
-
+        function addChat(msg) {
+            const chat = document.getElementById('chat');
+            chat.innerHTML += `<div><b>System:</b> ${msg}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
 </body>
 </html>
