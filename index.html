@@ -3,144 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DareDrop Party Elite</title>
+    <title>DareDrop Party Elite Pro</title>
     <style>
         :root {
             --primary: #ff416c;
             --secondary: #4facfe;
             --success: #00b09b;
             --warning: #ffd700;
-            --glass: rgba(255, 255, 255, 0.2);
+            --glass: rgba(255, 255, 255, 0.1);
         }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: #0f0c29;
-            background: linear-gradient(45deg, #24243e, #302b63, #0f0c29);
+            background: radial-gradient(circle at top, #1e1b4b, #0f172a);
             margin: 0; color: white; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
             overflow-x: hidden;
         }
 
-        /* Glowing Card Effect */
         .main-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(25px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
-            padding: 25px; width: 92%; max-width: 450px; margin-top: 20px;
-            box-shadow: 0 0 30px rgba(79, 172, 254, 0.2);
+            border-radius: 35px;
+            padding: 25px; width: 90%; max-width: 450px; margin-top: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
             text-align: center;
         }
 
         .game-btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            color: white; border: none;
-            padding: 14px 24px; border-radius: 50px; font-weight: bold;
-            cursor: pointer; transition: 0.4s; margin: 10px;
-            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.4);
+            background: linear-gradient(135deg, var(--primary), #ff4b2b);
+            color: white; border: none; padding: 12px 20px;
+            border-radius: 50px; font-weight: bold; cursor: pointer;
+            transition: 0.3s; margin: 8px; font-size: 14px;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
         }
 
-        .game-btn:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(255, 65, 108, 0.6); }
+        .game-btn:active { transform: scale(0.95); }
 
-        /* Parchiyan Grid Animation */
+        /* Parchiyan Grid */
+        .chit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .chit {
-            background: white; color: #333; height: 110px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            border-radius: 20px; font-weight: bold; cursor: pointer;
-            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-            border: 3px solid transparent;
+            background: white; color: #333; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 15px; font-weight: bold; cursor: pointer;
+            transition: 0.5s; box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .chit.flipped { background: var(--warning); transform: rotateY(10deg); }
+
+        /* Scoreboard */
+        .scoreboard {
+            background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px;
+            margin-top: 15px; font-size: 13px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
         }
 
-        .chit.flipped {
-            background: var(--warning);
-            transform: rotateY(180deg) scale(1.05);
-            border-color: white;
-        }
-
-        /* Pulsing Timer */
-        #timerDisplay {
-            font-size: 40px; font-weight: 800; margin: 15px;
-            text-shadow: 0 0 10px var(--secondary);
-        }
-
-        .winner-banner {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: white; color: black; padding: 30px; border-radius: 20px;
-            z-index: 2000; box-shadow: 0 0 50px gold; text-align: center;
-            display: none; animation: popIn 0.5s;
-        }
-
-        @keyframes popIn { from { transform: translate(-50%, -50%) scale(0); } to { transform: translate(-50%, -50%) scale(1); } }
-        
         .hidden { display: none; }
+        .highlight { color: var(--warning); font-size: 26px; font-weight: bold; }
+        
+        .chat-box {
+            background: rgba(0, 0, 0, 0.5); border-radius: 15px;
+            height: 90px; overflow-y: auto; padding: 10px;
+            text-align: left; font-size: 12px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Winner Popup */
+        .winner-pop {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9); z-index: 2000; flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        .menu-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .menu-content { background: #1e1b4b; padding: 30px; border-radius: 30px; width: 80%; max-width: 300px; border: 1px solid var(--secondary); }
     </style>
 </head>
 <body>
 
-    <h1 style="margin-top: 30px; font-size: 32px; font-weight: 900; background: -webkit-linear-gradient(#eee, #333); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">✨ DareDrop Elite</h1>
+    <h1 style="margin-top: 25px; letter-spacing: 2px;">⚡ DareDrop Elite</h1>
 
     <div style="display: flex; gap: 10px;">
-        <button class="game-btn" onclick="toggleMenu()" style="background: white; color: #ff416c;">🎮 Game List</button>
+        <button class="game-btn" onclick="toggleMenu()" style="background: white; color: black;">🎮 Game Mode</button>
         <button class="game-btn" onclick="addFriend()" style="background: var(--success);">👤 + Player</button>
     </div>
 
     <div class="main-card">
-        <div id="friendListContainer" style="margin-bottom: 15px;"></div>
-        <h2 id="gameTitle" style="color: var(--secondary);">Get Started!</h2>
+        <div id="scoreboard" class="scoreboard">Scores: 0 ਪਲੇਅਰ</div>
+        <h2 id="gameTitle">Ready to Play?</h2>
         
         <div id="sectionAntakshari" class="hidden">
-            <div id="letterBox" style="font-size: 80px; font-weight: 900; color: var(--warning);">?</div>
-            <div id="timerDisplay">15s</div>
-            <button onclick="generateLetter()" class="game-btn">🎤 Spin Letter</button>
+            <div id="letterBox" class="highlight" style="font-size: 60px;">?</div>
+            <div id="timerDisplay" style="font-size: 25px; margin: 10px;">15s</div>
+            <button onclick="generateLetter()" class="game-btn">🎤 Get Letter</button>
         </div>
 
         <div id="sectionParchiyan" class="hidden">
-            <div id="parchiPlayer" style="font-size: 24px; color: var(--warning); margin-bottom: 10px;">Player: ?</div>
-            <div class="chit-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div id="parchiPlayer" class="highlight"> Turn: ? </div>
+            <p id="parchiHint" style="font-size: 12px; opacity: 0.7;">ਪਰਚੀ ਦੇਖ ਕੇ ਦੂਜੇ ਨੂੰ ਪਾਸ ਕਰੋ!</p>
+            <div class="chit-grid">
                 <div class="chit" id="c1" onclick="handleParchi(1)">📄<br>Chit 1</div>
                 <div class="chit" id="c2" onclick="handleParchi(2)">📄<br>Chit 2</div>
                 <div class="chit" id="c3" onclick="handleParchi(3)">📄<br>Chit 3</div>
                 <div class="chit" id="c4" onclick="handleParchi(4)">📄<br>Chit 4</div>
             </div>
-            <p id="parchiHint" style="margin-top: 15px; font-size: 13px; opacity: 0.8;">ਤੁਹਾਡਾ ਟਾਰਗੇਟ: 4 ਇੱਕੋ ਜਿਹੇ ਨਾਮ ਇਕੱਠੇ ਕਰੋ!</p>
         </div>
 
         <div id="sectionTruth" class="hidden">
-            <div id="selectedPlayer" style="font-size: 24px; font-weight: bold; color: var(--secondary);">🎲 Spin First!</div>
-            <button onclick="spinPlayer()" class="game-btn">🎡 Spin</button>
-            <div style="margin-top: 10px;">
-                <button onclick="getTask('truth')" class="game-btn" style="background:#00b09b; width: 40%;">Truth</button>
-                <button onclick="getTask('dare')" class="game-btn" style="background:#ff416c; width: 40%;">Dare</button>
+            <div id="selectedPlayer" class="highlight"> Spin Now! </div>
+            <button onclick="spinPlayer()" class="game-btn">🎡 Spin Friend</button>
+            <div>
+                <button onclick="getTask('truth')" class="game-btn" style="background:var(--success);">Truth</button>
+                <button onclick="getTask('dare')" class="game-btn">Dare</button>
             </div>
             <div id="taskDisplay" style="margin-top: 15px; font-style: italic;"></div>
         </div>
 
-        <div class="chat-box" id="chat" style="background: rgba(0,0,0,0.4); height: 80px; border-radius: 15px; padding: 10px; overflow-y: auto; margin-top: 15px; font-size: 12px; text-align: left;">
-            <div><b>System:</b> Party is ready! 🥳</div>
+        <div class="chat-box" id="chat">
+            <div><b>System:</b> ਦੋਸਤ ਐਡ ਕਰੋ ਅਤੇ ਗੇਮ ਸ਼ੁਰੂ ਕਰੋ! 🥳</div>
         </div>
     </div>
 
-    <div id="winnerBanner" class="winner-banner">
-        <h1 style="color: #ff416c;">🎊 WINNER! 🎊</h1>
-        <p id="winnerName" style="font-size: 20px; font-weight: bold;"></p>
+    <div id="winnerPop" class="winner-pop">
+        <h1 style="font-size: 50px;">🏆</h1>
+        <h2 id="winnerName" style="color: var(--warning);">Player Won!</h2>
         <button class="game-btn" onclick="closeWinner()">Play Again</button>
     </div>
 
-    <div id="menuOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; justify-content:center; align-items:center;" onclick="toggleMenu()">
-        <div style="background:white; padding:30px; border-radius:30px; width:80%; max-width:320px;" onclick="event.stopPropagation()">
-            <h3 style="color: black; margin-bottom: 20px;">Select Game</h3>
-            <div class="game-btn" style="display: block; margin: 10px 0; text-align: center;" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
-            <div class="game-btn" style="display: block; margin: 10px 0; text-align: center;" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
-            <div class="game-btn" style="display: block; margin: 10px 0; text-align: center;" onclick="loadGame('Parchiyan')">🃏 Parchiyan (4 Chits)</div>
+    <div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()">
+        <div class="menu-content" onclick="event.stopPropagation()">
+            <h3 style="text-align: center; margin-bottom: 20px;">ਗੇਮ ਚੁਣੋ</h3>
+            <div class="game-btn" style="display: block; text-align: center;" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
+            <div class="game-btn" style="display: block; text-align: center;" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
+            <div class="game-btn" style="display: block; text-align: center;" onclick="loadGame('Parchiyan')">🃏 Parchiyan (Match 4)</div>
         </div>
     </div>
 
     <script>
         let friends = [];
+        let scores = {};
+        let currentFriendIndex = 0;
         let timerInterval;
-        let pCounts = {}; // To track 4 same chits
+        
+        // Parchiyan Data
+        const namesPool = ["ਰਾਜਾ 👑", "ਵਜ਼ੀਰ 🗡️", "ਚੋਰ 🎭", "ਸਿਪਾਹੀ 👮"];
+        let gameInventory = {}; 
 
         function toggleMenu() {
             const menu = document.getElementById('menuOverlay');
@@ -148,95 +156,134 @@
         }
 
         function addFriend() {
-            let name = prompt("Enter Player Name:");
-            if (name && !friends.includes(name)) {
-                friends.push(name.trim());
-                document.getElementById('friendListContainer').innerHTML = friends.map(f => `<span style="background:var(--glass); padding:5px 12px; border-radius:20px; margin:3px; display:inline-block; font-size:12px;">${f}</span>`).join("");
-                addChat(name + " joined!");
+            let name = prompt("ਪਲੇਅਰ ਦਾ ਨਾਮ:");
+            if (name && !friends.includes(name.trim())) {
+                let n = name.trim();
+                friends.push(n);
+                scores[n] = 0;
+                updateScoreboard();
+                addChat(n + " joined!");
             }
         }
 
-        function loadGame(game) {
-            if (friends.length < 2 && game !== 'Antakshari') return alert("Add at least 2 players!");
-            document.querySelectorAll('.main-card > div').forEach(d => { if(d.id && d.id !== 'chat') d.classList.add('hidden'); });
-            document.getElementById('gameTitle').innerText = game;
-            document.getElementById('section' + game.replace(/\s/g, '').replace('&','')).classList.remove('hidden');
-            toggleMenu();
-            if(game === 'Parchiyan') resetParchiyan();
+        function updateScoreboard() {
+            document.getElementById('scoreboard').innerHTML = friends.map(f => `<span>${f}: ${scores[f]}</span>`).join(" | ");
         }
 
-        // --- Improved Parchiyan (4 Same Names) Logic ---
-        const namesPool = ["King 👑", "Queen 👸", "Jack 🃏", "Ace ♠️"];
-        let playerChits = [];
+        function loadGame(game) {
+            if (friends.length < 2 && game !== 'Antakshari') return alert("ਘੱਟੋ-ਘੱਟ 2 ਪਲੇਅਰ ਚਾਹੀਦੇ ਹਨ!");
+            
+            document.querySelectorAll('.main-card > div').forEach(div => { if(div.id && div.id !== 'chat' && div.id !== 'scoreboard') div.classList.add('hidden'); });
+            document.getElementById('gameTitle').innerText = game;
+            
+            const sectionId = 'section' + game.replace(/\s/g, '').replace('&', '').replace('(Match4)', '');
+            document.getElementById(sectionId).classList.remove('hidden');
+            
+            if(game === 'Parchiyan') resetParchiyan();
+            toggleMenu();
+        }
 
+        // --- Real Parchiyan Logic (Match 4) ---
         function resetParchiyan() {
-            playerChits = [namesPool[0], namesPool[1], namesPool[2], namesPool[3]]; // Randomly assign
-            playerChits = playerChits.sort(() => Math.random() - 0.5);
-            document.getElementById('parchiPlayer').innerText = "Turn: " + friends[0];
+            friends.forEach(f => {
+                // ਹਰ ਪਲੇਅਰ ਨੂੰ 4 ਰੈਂਡਮ ਪਰਚੀਆਂ ਦੇਣਾ
+                gameInventory[f] = Array.from({length: 4}, () => namesPool[Math.floor(Math.random()*4)]);
+            });
+            currentFriendIndex = 0;
+            updateParchiUI();
+        }
+
+        function updateParchiUI() {
+            let player = friends[currentFriendIndex];
+            document.getElementById('parchiPlayer').innerText = "Turn: " + player;
             for(let i=1; i<=4; i++) {
-                let c = document.getElementById('c'+i);
-                c.classList.remove('flipped');
-                c.innerHTML = "📄<br>Chit " + i;
+                let el = document.getElementById('c'+i);
+                el.classList.remove('flipped');
+                el.innerHTML = "📄<br>Chit " + i;
             }
         }
 
         function handleParchi(id) {
+            let player = friends[currentFriendIndex];
             let el = document.getElementById('c'+id);
+            
             if (!el.classList.contains('flipped')) {
+                // Step 1: ਪਹਿਲੀ ਵਾਰ ਕਲਿੱਕ - ਪਰਚੀ ਦੇਖੋ
                 el.classList.add('flipped');
-                el.innerHTML = playerChits[id-1];
-                // Winner Check (Simple logic for demonstration)
-                if(Math.random() > 0.8) { // Chance of winning
-                   showWinner(friends[0]);
+                let cardValue = gameInventory[player][id-1];
+                el.innerHTML = cardValue;
+                
+                // ਚੈੱਕ ਕਰੋ ਜੇ 4 ਮੈਚ ਹੋ ਗਈਆਂ
+                if (gameInventory[player].every(v => v === gameInventory[player][0])) {
+                    showWinner(player);
                 }
             } else {
-                el.classList.remove('flipped');
-                el.innerHTML = "📄<br>Chit " + id;
-                addChat("Chit swapped!");
+                // Step 2: ਦੂਜੀ ਵਾਰ ਕਲਿੱਕ - ਅਗਲੇ ਬੰਦੇ ਨੂੰ ਪਾਸ ਕਰੋ
+                let nextIdx = (currentFriendIndex + 1) % friends.length;
+                let nextPlayer = friends[nextIdx];
+                
+                // Swap Logic
+                let movedCard = gameInventory[player].splice(id-1, 1)[0];
+                gameInventory[nextPlayer].push(movedCard);
+                
+                addChat(player + " ਨੇ ਇੱਕ ਪਰਚੀ " + nextPlayer + " ਨੂੰ ਪਾਸ ਕੀਤੀ।");
+                currentFriendIndex = nextIdx;
+                vibratePhone(50);
+                updateParchiUI();
             }
         }
 
-        function showWinner(name) {
-            document.getElementById('winnerName').innerText = name + " matches 4 chits!";
-            document.getElementById('winnerBanner').style.display = 'block';
-            celebrate();
-        }
-
-        function closeWinner() { document.getElementById('winnerBanner').style.display = 'none'; resetParchiyan(); }
-
-        // --- Rest of your logic ---
+        // --- Antakshari ---
         function generateLetter() {
-            const p = "ੳਅੲਸਹਕਖਗਘਚਛਜਝਟਠਡਢਤਥਦਧਨਪਫਬਭਮਯਰਲਵੜ";
-            document.getElementById('letterBox').innerText = p[Math.floor(Math.random() * p.length)];
-            let sec = 15;
+            const letters = "ੳਅੲਸਹਕਖਗਘਚਛਜਝਟਠਡਢਤਥਦਧਨਪਫਬਭਮਯਰਲਵੜ";
+            document.getElementById('letterBox').innerText = letters[Math.floor(Math.random() * letters.length)];
+            let timeLeft = 15;
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
-                sec--;
-                document.getElementById('timerDisplay').innerText = sec + "s";
-                if(sec <= 0) { clearInterval(timerInterval); alert("Time Up! 🛑"); }
+                timeLeft--;
+                document.getElementById('timerDisplay').innerText = timeLeft + "s";
+                if(timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    vibratePhone(200);
+                    alert("ਸਮਾਂ ਖਤਮ! 🛑");
+                }
             }, 1000);
         }
 
-        function celebrate() {
-            // Your existing confetti logic here
-            addChat("Winner announced! 🏆");
-        }
-
+        // --- Truth/Dare & Others ---
         function spinPlayer() {
             let p = friends[Math.floor(Math.random() * friends.length)];
             document.getElementById('selectedPlayer').innerText = "👉 " + p;
         }
 
         function getTask(type) {
-            const t = ["Crush name?", "Last lie?", "Fear?"];
-            const d = ["Dance!", "Sing!", "Act like a kid!"];
-            document.getElementById('taskDisplay').innerText = (type === 'truth' ? t : d)[Math.floor(Math.random()*3)];
+            const truths = ["ਸਭ ਤੋਂ ਵੱਡਾ ਡਰ?", "ਆਖਰੀ ਝੂਠ ਕੀ ਸੀ?", "ਮੋਬਾਈਲ ਪਾਸਵਰਡ?", "ਕ੍ਰਸ਼ ਦਾ ਨਾਮ?"];
+            const dares = ["ਕੋਈ ਪੰਜਾਬੀ ਗਾਣਾ ਗਾਓ", "10 ਪੁਸ਼-ਅੱਪਸ", "ਬਾਂਦਰ ਵਾਂਗ ਐਕਟਿੰਗ", "ਗਲਾਸ ਪਾਣੀ ਪੀਓ (ਬਿਨਾਂ ਹੱਥ ਲਾਏ)"];
+            let list = type === 'truth' ? truths : dares;
+            document.getElementById('taskDisplay').innerText = list[Math.floor(Math.random() * list.length)];
         }
 
-        function addChat(m) {
-            const c = document.getElementById('chat');
-            c.innerHTML += `<div>• ${m}</div>`;
-            c.scrollTop = c.scrollHeight;
+        function showWinner(name) {
+            scores[name]++;
+            updateScoreboard();
+            document.getElementById('winnerName').innerText = name + " ਜਿੱਤ ਗਿਆ! 👑";
+            document.getElementById('winnerPop').style.display = 'flex';
+            vibratePhone([100, 50, 100]);
+        }
+
+        function closeWinner() {
+            document.getElementById('winnerPop').style.display = 'none';
+            resetParchiyan();
+        }
+
+        function vibratePhone(pattern) {
+            if (navigator.vibrate) navigator.vibrate(pattern);
+        }
+
+        function addChat(msg) {
+            const chat = document.getElementById('chat');
+            chat.innerHTML += `<div>• ${msg}</div>`;
+            chat.scrollTop = chat.scrollHeight;
         }
     </script>
 </body>
