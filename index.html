@@ -2,291 +2,209 @@
 <html lang="pa">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>🔥 DareDrop: Psycho Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Soul - Burn Your Secret</title>
     <style>
-        :root {
-            --primary: #ff0055;
-            --secondary: #00f2ff;
-            --bg: #0a0a0c;
-            --card-bg: rgba(255, 255, 255, 0.05);
-        }
-
         body {
-            font-family: 'Poppins', sans-serif;
-            background: var(--bg);
-            background-image: 
-                radial-gradient(circle at 20% 30%, #ff005533 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, #00f2ff22 0%, transparent 40%);
-            color: white;
-            margin: 0;
+            background-color: #0a0a0a;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            overflow-x: hidden;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 30px;
-            width: 90%;
-            max-width: 420px;
+        .container {
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            width: 90%;
+            max-width: 500px;
         }
 
         h1 {
-            font-size: 2.5rem;
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 5px;
-            letter-spacing: -1px;
+            color: #d4a373;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
         }
 
-        /* Input Styling */
-        input, select {
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
+        /* Paper Styling */
+        #paper-container {
+            position: relative;
+            background: #f4e1d2;
+            padding: 30px;
+            min-height: 250px;
+            box-shadow: 0 0 20px rgba(212, 163, 115, 0.2);
+            border-radius: 2px;
+            transition: all 0.5s ease;
+        }
+
+        #confession-text {
             width: 100%;
-            margin-bottom: 15px;
-            box-sizing: border-box;
+            height: 200px;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 18px;
+            color: #432818;
+            resize: none;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        /* Burn Effect Animation */
+        .burning {
+            animation: burnAway 2s forwards ease-in;
+            pointer-events: none;
+            position: relative;
+        }
+
+        @keyframes burnAway {
+            0% {
+                transform: scale(1);
+                filter: brightness(1) sepia(0);
+                opacity: 1;
+            }
+            30% {
+                filter: brightness(1.2) sepia(0.5) saturate(2);
+                box-shadow: 0 0 50px #ff4500;
+            }
+            100% {
+                transform: scale(1.1) translateY(-50px);
+                filter: brightness(0) grayscale(1);
+                opacity: 0;
+                clip-path: polygon(10% 0%, 90% 10%, 100% 40%, 80% 90%, 20% 100%, 0% 50%);
+            }
+        }
+
+        /* Fire Sparks Effect */
+        .spark {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ff4500;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .buttons {
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 30px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 25px;
             transition: 0.3s;
         }
 
-        input:focus { border-color: var(--secondary); outline: none; }
-
-        /* Stylish Buttons */
-        button {
-            background: white;
-            color: black;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 15px;
-            font-weight: 800;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 100%;
-            margin: 5px 0;
+        .burn-btn {
+            background-color: #e63946;
+            color: white;
+            box-shadow: 0 4px 15px rgba(230, 57, 70, 0.4);
         }
 
-        button:active { transform: scale(0.95); }
-        
-        .btn-truth { background: var(--primary); color: white; box-shadow: 0 0 20px #ff005566; }
-        .btn-dare { background: var(--secondary); color: black; box-shadow: 0 0 20px #00f2ff66; }
-        
-        button:disabled { opacity: 0.3; filter: grayscale(1); }
-
-        /* The Big Display Area */
-        #selectedFriend {
-            font-size: 1.8rem;
-            min-height: 50px;
-            margin: 20px 0;
-            font-weight: 700;
-            text-shadow: 0 0 15px var(--secondary);
+        .burn-btn:hover {
+            background-color: #ff0000;
+            transform: scale(1.05);
         }
 
-        #taskDisplay {
-            background: rgba(0,0,0,0.3);
-            padding: 20px;
-            border-radius: 20px;
-            min-height: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .post-btn {
+            background-color: #2a9d8f;
+            color: white;
+        }
+
+        #status-msg {
+            margin-top: 20px;
+            color: #d4a373;
             font-style: italic;
-            border-left: 5px solid var(--primary);
-            margin-bottom: 20px;
-            animation: fadeIn 0.5s;
+            height: 20px;
         }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } }
-
-        /* Logs */
-        #chatLog {
-            height: 120px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.2);
-            border-radius: 15px;
-            margin: 15px 0;
-            padding: 10px;
-            font-size: 12px;
-            text-align: left;
-        }
-
-        .chat-msg {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            padding: 5px 0;
-            color: #aaa;
-        }
-
-        .task-log { color: var(--secondary); font-weight: bold; }
-
-        .reset-btn { background: transparent; color: #555; font-size: 10px; border: 1px solid #333; margin-top: 20px;}
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>DARE DROP</h1>
-    <p style="font-size: 12px; color: #888; margin-top: -10px;">Face the truth or pay the price.</p>
-    
-    <select id="mode" onchange="toggleMode()">
-        <option value="friend">PLAY WITH FRIENDS</option>
-        <option value="self">SOLO MODE</option>
-    </select>
+    <div class="container">
+        <h1>OPEN SOUL</h1>
+        <p>Apna raaz likho te dil halka karo...</p>
 
-    <div id="friendBox">
-        <div style="display:flex; gap:10px;">
-            <input id="friendInput" placeholder="Add Player Name...">
-            <button onclick="addFriend()" style="width: auto;">+</button>
+        <div id="paper-container">
+            <textarea id="confession-text" placeholder="Aithe likho..."></textarea>
         </div>
-        <div id="friendList" style="margin-bottom: 10px;"></div>
-        <button id="spinBtn" onclick="spinFriend()" style="background: linear-gradient(45deg, #444, #222); color: white;">🎲 SPIN THE WHEEL</button>
+
+        <div class="buttons">
+            <button class="burn-btn" onclick="burnConfession()">BURN IT (Kise nu na dikhao)</button>
+            <button class="post-btn" onclick="postConfession()">POST (Duniya nu dso)</button>
+        </div>
+
+        <div id="status-msg"></div>
     </div>
 
-    <div id="selectedFriend">WHO'S NEXT?</div>
+    <script>
+        function burnConfession() {
+            const paper = document.getElementById('paper-container');
+            const text = document.getElementById('confession-text');
+            const msg = document.getElementById('status-msg');
 
-    <div style="display:flex; gap: 15px;">
-        <button id="truthBtn" class="btn-truth" onclick="triggerTask('truth')">🤫 TRUTH</button>
-        <button id="dareBtn" class="btn-dare" onclick="triggerTask('dare')">⚡ DARE</button>
-    </div>
-
-    <div id="taskDisplay">Waiting for a victim...</div>
-
-    <button onclick="share()" style="background: #25D366; color: white;">📲 SEND TO WHATSAPP</button>
-
-    <div id="chatLog"></div>
-    
-    <button class="reset-btn" onclick="resetGame()">WIPE ALL DATA</button>
-</div>
-
-<script>
-    let friends = JSON.parse(localStorage.getItem('dareDropFriends')) || [];
-    let currentFriend = "";
-    let isProcessing = false;
-
-    window.onload = () => { renderFriends(); toggleMode(); };
-
-    function toggleMode() {
-        const mode = document.getElementById('mode').value;
-        const friendBox = document.getElementById('friendBox');
-        if(mode === "self") {
-            friendBox.style.display = "none";
-            currentFriend = "YOU";
-            document.getElementById('selectedFriend').innerText = "YOUR TURN 🎲";
-            enableButtons(true);
-        } else {
-            friendBox.style.display = "block";
-            document.getElementById('selectedFriend').innerText = "SPIN TO START";
-            enableButtons(false);
-        }
-    }
-
-    function addFriend() {
-        let input = document.getElementById('friendInput');
-        let name = input.value.trim().toUpperCase();
-        if(name && !friends.includes(name)) {
-            friends.push(name);
-            localStorage.setItem('dareDropFriends', JSON.stringify(friends));
-            renderFriends();
-            input.value = "";
-        }
-    }
-
-    function renderFriends() {
-        document.getElementById('friendList').innerHTML = friends.map(f => 
-            `<span style="display:inline-block; background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:10px; margin:2px; font-size:10px;">${f}</span>`
-        ).join("");
-    }
-
-    function spinFriend() {
-        if(friends.length < 2) return alert("Add at least 2 players!");
-        if(isProcessing) return;
-
-        isProcessing = true;
-        enableButtons(false);
-        let display = document.getElementById('selectedFriend');
-        let count = 0;
-        
-        let interval = setInterval(() => {
-            display.innerText = friends[Math.floor(Math.random() * friends.length)];
-            display.style.color = (count % 2 == 0) ? "var(--primary)" : "var(--secondary)";
-            count++;
-            if(count > 20) {
-                clearInterval(interval);
-                currentFriend = friends[Math.floor(Math.random() * friends.length)];
-                display.innerText = "🔥 " + currentFriend;
-                display.style.color = "white";
-                isProcessing = false;
-                enableButtons(true);
-                addLog(`TARGET LOCKED: ${currentFriend}`, "task-log");
+            if (text.value.trim() === "") {
+                alert("Pehlan kuj likho taan sahi!");
+                return;
             }
-        }, 60);
-    }
 
-    async function triggerTask(type) {
-        if(isProcessing) return;
-        isProcessing = true;
-        
-        const display = document.getElementById('taskDisplay');
-        const phrases = ["Reading your mind...", "Checking your history...", "Picking something scary...", "Calculating risk..."];
-        
-        // Psychological Delay (Suspense)
-        for(let phrase of phrases) {
-            display.innerText = phrase;
-            display.style.opacity = "0.5";
-            await new Promise(r => setTimeout(r, 400));
+            // Add burning class for animation
+            paper.classList.add('burning');
+            msg.innerText = "Tuhada raaz swaah ho reha hai...";
+
+            // Create Sparkles
+            for (let i = 0; i < 30; i++) {
+                createSpark();
+            }
+
+            // Reset after animation
+            setTimeout(() => {
+                text.value = "";
+                paper.classList.remove('burning');
+                msg.innerText = "Tuhada raaz hamesha layi mitya gaya.";
+                alert("Raaz swaah ho gaya! Kise ne nahi parhya.");
+            }, 2500);
         }
 
-        const list = type === 'truth' ? [
-            "Who was your first crush?",
-            "What is the biggest lie you ever told?",
-            "Show your last 3 Google searches.",
-            "Who in this room would you never date?",
-            "What's your most embarrassing childhood memory?"
-        ] : [
-            "Dance like a chicken for 1 minute.",
-            "Call an ex and say 'I miss you' (Hang up immediately).",
-            "Let someone else post a status on your WhatsApp.",
-            "Do 20 pushups while shouting 'I AM THE BEST'.",
-            "Mimic your best friend until your next turn."
-        ];
+        function postConfession() {
+            const text = document.getElementById('confession-text').value;
+            if (text.trim() === "") {
+                alert("Kuj likho!");
+                return;
+            }
+            alert("Tuhada raaz 'Open Soul' map te post ho gaya!");
+            // Aithe tusi Database naal connect kar sakde ho
+        }
 
-        const finalTask = list[Math.floor(Math.random() * list.length)];
-        display.innerText = finalTask;
-        display.style.opacity = "1";
-        display.style.borderLeftColor = type === 'truth' ? "var(--primary)" : "var(--secondary)";
-        
-        addLog(`${currentFriend}: ${finalTask}`, "task-log");
-        isProcessing = false;
-        if(document.getElementById('mode').value === "friend") enableButtons(false);
-    }
+        function createSpark() {
+            const spark = document.createElement('div');
+            spark.classList.add('spark');
+            document.body.appendChild(spark);
 
-    function enableButtons(status) {
-        document.getElementById('truthBtn').disabled = !status;
-        document.getElementById('dareBtn').disabled = !status;
-    }
+            const x = window.innerWidth / 2 + (Math.random() - 0.5) * 300;
+            const y = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
 
-    function addLog(text, className) {
-        let log = document.getElementById('chatLog');
-        log.innerHTML = `<div class="chat-msg ${className}">${text}</div>` + log.innerHTML;
-    }
+            spark.style.left = x + 'px';
+            spark.style.top = y + 'px';
 
-    function resetGame() { if(confirm("Clear all data?")) { localStorage.clear(); location.reload(); } }
+            const destinationX = x + (Math.random() - 0.5) * 200;
+            const destinationY = y - Math.random() * 400;
 
-    function share() {
-        let text = encodeURIComponent("I just got this task on DareDrop: " + document.getElementById('taskDisplay').innerText);
-        window.open("https://wa.me/?text=" + text);
-    }
-</script>
+            spark.animate([
+                { opacity: 1, transform: 'translate(0, 0)' },
+                { opacity: 0, transform: `translate(${destinationX - x}px, ${destinationY - y}px)` }
+            ], {
+                duration: 1000 + Math.random() * 1000,
+                easing: 'ease-out'
+            }).onfinish = () => spark.remove();
+        }
+    </script>
 </body>
 </html>
