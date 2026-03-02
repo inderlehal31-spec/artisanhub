@@ -12,146 +12,103 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(45deg, #ff416c, #ff4b2b, #4facfe, #00f2fe);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-            margin: 0;
-            color: white;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; color: white; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass);
-            border-radius: 30px;
-            padding: 25px;
-            width: 90%;
-            max-width: 450px;
-            margin-top: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            text-align: center;
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass); border-radius: 30px;
+            padding: 25px; width: 90%; max-width: 450px; margin-top: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center;
         }
 
         .game-btn {
-            background: white;
-            color: var(--primary);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: 0.3s;
-            margin-bottom: 20px;
+            background: white; color: var(--primary); border: none;
+            padding: 12px 25px; border-radius: 50px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: 0.3s; margin: 10px;
         }
 
-        .game-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        .game-btn:active { transform: scale(0.95); }
 
-        /* Game List Menu */
+        /* Menu Overlay */
         .menu-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center;
         }
 
-        .menu-content {
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            width: 80%;
-            max-width: 300px;
-        }
-
+        .menu-content { background: white; padding: 20px; border-radius: 20px; width: 80%; max-width: 300px; }
         .menu-item {
-            padding: 15px;
-            color: #333;
-            font-weight: bold;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
+            padding: 15px; color: #333; font-weight: bold;
+            border-bottom: 1px solid #eee; cursor: pointer; text-align: center;
         }
 
-        .menu-item:hover { background: #f9f9f9; color: var(--primary); }
-
-        /* Parchiyan Table */
-        .chit-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
+        /* Parchiyan Styling */
+        .chit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
         .chit {
-            background: white;
-            color: #333;
-            padding: 15px;
-            border-radius: 10px;
-            font-weight: bold;
-            cursor: pointer;
+            background: #fff; color: #333; height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 15px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: rotate(-2deg);
         }
+        .chit:nth-child(even) { transform: rotate(2deg); }
 
         .chat-box {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 15px;
-            height: 120px;
-            overflow-y: auto;
-            padding: 10px;
-            text-align: left;
-            font-size: 13px;
-            margin-top: 15px;
+            background: rgba(0, 0, 0, 0.3); border-radius: 15px;
+            height: 100px; overflow-y: auto; padding: 10px;
+            text-align: left; font-size: 13px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.1);
         }
 
         .hidden { display: none; }
+        .highlight { color: #fdfc47; font-size: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h1>✨ DareDrop Pro</h1>
+    <h1 style="margin-top: 20px;">🔥 DareDrop Super Pro</h1>
 
-    <button class="game-btn" onclick="toggleMenu()">🎮 Choose Game</button>
+    <button class="game-btn" onclick="toggleMenu()">🎮 Select Game Mode</button>
 
     <div class="main-card">
         <h2 id="gameTitle">Welcome!</h2>
-        <p id="gameDesc">Select a game to start the fun with friends.</p>
+        <p id="gameDesc" style="opacity: 0.8;">Select a game mode to start.</p>
 
         <div id="sectionTruth" class="hidden">
-            <div id="selectedPlayer" style="font-size: 20px; margin-bottom: 10px;">🎲 Click Spin!</div>
-            <button onclick="spinPlayer()" style="background:var(--secondary); color:white; padding:10px; border-radius:10px; border:none;">Spin Friend</button>
-            <div style="margin: 20px 0;">
-                <button onclick="getTask('truth')" style="background:#00b09b; color:white; padding:12px; border:none; border-radius:10px;">Truth</button>
-                <button onclick="getTask('dare')" style="background:#ff4b2b; color:white; padding:12px; border:none; border-radius:10px;">Dare</button>
+            <div id="selectedPlayer" class="highlight">🎲 Spin First!</div>
+            <button onclick="spinPlayer()" class="game-btn" style="background:var(--secondary); color:white;">🎡 Spin Friend</button>
+            <div style="margin: 15px 0;">
+                <button onclick="getTask('truth')" class="game-btn" style="background:#00b09b; color:white; width:100px;">Truth</button>
+                <button onclick="getTask('dare')" class="game-btn" style="background:#ff4b2b; color:white; width:100px;">Dare</button>
             </div>
-            <div id="taskDisplay" style="font-weight: bold; min-height: 40px;"></div>
+            <div id="taskDisplay" style="padding: 10px; font-style: italic;"></div>
         </div>
 
         <div id="sectionParchiyan" class="hidden">
-            <p>Target: Collect 4 same chits!</p>
+            <div id="parchiPlayer" class="highlight">Friend's Turn</div>
+            <p>Click a chit to "Pass" it!</p>
             <div class="chit-grid">
-                <div class="chit" onclick="passChit(0)">Parchi 1</div>
-                <div class="chit" onclick="passChit(1)">Parchi 2</div>
-                <div class="chit" onclick="passChit(2)">Parchi 3</div>
-                <div class="chit" onclick="passChit(3)">Parchi 4</div>
+                <div class="chit" onclick="passChit(1)">📄 <br> Chit 1</div>
+                <div class="chit" onclick="passChit(2)">📄 <br> Chit 2</div>
+                <div class="chit" onclick="passChit(3)">📄 <br> Chit 3</div>
+                <div class="chit" onclick="passChit(4)">📄 <br> Chit 4</div>
             </div>
-            <p style="font-size: 12px; margin-top: 10px;">Click a chit to "Pass" it to the next friend</p>
+        </div>
+
+        <div id="sectionAntakshari" class="hidden">
+            <div id="letterBox" class="highlight" style="font-size: 50px;">?</div>
+            <button onclick="generateLetter()" class="game-btn">🔄 Get Next Letter</button>
+            <p>Sing a song starting with this letter!</p>
         </div>
 
         <div class="chat-box" id="chat">
-            <div><b>System:</b> Ready to play? 🔥</div>
+            <div><b>System:</b> Party is ready! 🥳</div>
         </div>
     </div>
 
@@ -160,13 +117,13 @@
             <div class="menu-item" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
             <div class="menu-item" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
             <div class="menu-item" onclick="loadGame('Parchiyan')">🃏 Parchiyan (4 Chits)</div>
-            <div class="menu-item" onclick="toggleMenu()" style="color:red">❌ Close</div>
+            <div class="menu-item" onclick="toggleMenu()" style="color:red; border:none;">❌ Close</div>
         </div>
     </div>
 
     <script>
-        let friends = ["Rohan", "Deep", "Sonia", "Preet"]; // Example friends
-        let currentFriend = "You";
+        let friends = ["Rohan", "Deep", "Sonia", "Preet"];
+        let currentFriendIndex = 0;
 
         function toggleMenu() {
             const menu = document.getElementById('menuOverlay');
@@ -174,43 +131,62 @@
         }
 
         function loadGame(game) {
-            document.getElementById('gameTitle').innerText = game;
+            // Hide all
             document.getElementById('sectionTruth').classList.add('hidden');
             document.getElementById('sectionParchiyan').classList.add('hidden');
+            document.getElementById('sectionAntakshari').classList.add('hidden');
+            
+            document.getElementById('gameTitle').innerText = game;
             
             if(game === 'Truth & Dare') {
                 document.getElementById('sectionTruth').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Classic Truth or Dare fun!";
+                document.getElementById('gameDesc').innerText = "Classical Fun!";
             } else if(game === 'Parchiyan') {
                 document.getElementById('sectionParchiyan').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Pass the chits and match 4 names!";
-            } else {
-                document.getElementById('gameDesc').innerText = "Coming soon: Play " + game;
+                document.getElementById('gameDesc').innerText = "Pass the chits to collect same names!";
+                document.getElementById('parchiPlayer').innerText = friends[0];
+            } else if(game === 'Antakshari') {
+                document.getElementById('sectionAntakshari').classList.remove('hidden');
+                document.getElementById('gameDesc').innerText = "Sing till you win!";
             }
             toggleMenu();
-            addChat("Game changed to " + game);
+            addChat("Game mode: " + game);
         }
 
+        // Truth Dare Logic
         function spinPlayer() {
             let p = friends[Math.floor(Math.random() * friends.length)];
-            currentFriend = p;
             document.getElementById('selectedPlayer').innerText = "👉 " + p;
-            addChat("It's " + p + "'s turn!");
+            addChat(p + " is the chosen one!");
         }
 
         function getTask(type) {
-            const tasks = type === 'truth' ? ["Biggest crush?", "Last lie?"] : ["Dance now!", "Funny selfie!"];
-            let t = tasks[Math.floor(Math.random() * tasks.length)];
+            const truths = ["Biggest crush?", "Secret habit?", "Last lie?", "Phone password?"];
+            const dares = ["Do 10 pushups", "Sing a song", "Act like a monkey", "Call your crush"];
+            let list = type === 'truth' ? truths : dares;
+            let t = list[Math.floor(Math.random() * list.length)];
             document.getElementById('taskDisplay').innerText = t;
         }
 
-        function passChit(id) {
-            addChat("You passed Parchi " + (id + 1) + " to next player! 🔄");
+        // Parchiyan Logic
+        function passChit(n) {
+            currentFriendIndex = (currentFriendIndex + 1) % friends.length;
+            let nextPlayer = friends[currentFriendIndex];
+            document.getElementById('parchiPlayer').innerText = nextPlayer;
+            addChat(`Chit ${n} passed to ${nextPlayer} 🔄`);
+        }
+
+        // Antakshari Logic
+        function generateLetter() {
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            let randomLetter = letters[Math.floor(Math.random() * letters.length)];
+            document.getElementById('letterBox').innerText = randomLetter;
+            addChat("New Letter: " + randomLetter);
         }
 
         function addChat(msg) {
             const chat = document.getElementById('chat');
-            chat.innerHTML += `<div><b>System:</b> ${msg}</div>`;
+            chat.innerHTML += `<div><b>Log:</b> ${msg}</div>`;
             chat.scrollTop = chat.scrollHeight;
         }
     </script>
