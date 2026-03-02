@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>🔥 DareDrop Party Pro</title>
+    <title>🔥 DareDrop Party Pro - Full Edition</title>
 
     <style>
         /* 1. ANIMATED GRADIENT BACKGROUND */
@@ -66,6 +66,7 @@
         }
 
         /* 3. FRIEND TAGS & SPIN EFFECT */
+        #friendList { margin-top: 10px; min-height: 40px; }
         #friendList span {
             display: inline-block;
             background: #f0f0f0;
@@ -109,6 +110,8 @@
             text-align: left;
             font-size: 13px;
             border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
         }
 
         .chat-msg {
@@ -123,7 +126,13 @@
         .task-log { border-left-color: #2196f3; background: #e3f2fd; }
 
         .modeTag { font-size: 12px; opacity: 0.7; margin-bottom: 15px; font-weight: bold; }
-
+        
+        .reset-btn {
+            background: #999;
+            font-size: 10px;
+            padding: 5px 10px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -133,7 +142,7 @@
     <h1>🔥 DareDrop Party</h1>
     
     <div class="card">
-        <select id="mode">
+        <select id="mode" onchange="toggleMode()">
             <option value="friend">Friend Play (Dosto Naal)</option>
             <option value="self">Self Play (Kalle)</option>
         </select>
@@ -141,20 +150,20 @@
         <div class="modeTag">Party Mode ON! 🥳</div>
 
         <div id="friendBox">
-            <input id="friendInput" placeholder="Dost da naam likho...">
+            <input id="friendInput" placeholder="Dost da naam likho..." onkeypress="handleEnter(event)">
             <button onclick="addFriend()">Add +</button>
             <div id="friendList"></div>
-            <button onclick="spinFriend()" style="background:#4b6cb7;">🎡 Spin Friend</button>
+            <button onclick="spinFriend()" style="background:#4b6cb7; width: 90%;">🎡 Spin Friend</button>
         </div>
 
         <div id="selectedFriend" class="big">Taiyar Ho?</div>
 
-        <div style="display:flex; justify-content:center;">
-            <button onclick="getTruth()" style="background:#f093fb; color:black;">🤫 Truth</button>
-            <button onclick="getDare()" style="background:#5eead4; color:black;">⚡ Dare</button>
+        <div style="display:flex; justify-content:center; gap: 10px;">
+            <button onclick="getTruth()" style="background:#f093fb; color:black; flex:1;">🤫 Truth</button>
+            <button onclick="getDare()" style="background:#5eead4; color:black; flex:1;">⚡ Dare</button>
         </div>
 
-        <div id="task" class="big" style="color:#333; font-size:18px;">Click Truth or Dare!</div>
+        <div id="taskDisplay" class="big" style="color:#333; font-size:18px; min-height: 60px;">Click Truth or Dare!</div>
 
         <button onclick="share()" style="background:#25D366; width:90%;">📲 Share on WhatsApp</button>
 
@@ -163,76 +172,137 @@
                 <p style="text-align:center; opacity:0.5;">Activity log shuru ho reha hai...</p>
             </div>
             <div style="display:flex; gap:5px;">
-                <input id="chatInput" placeholder="Kujh mazedaar likho..." style="flex:1; margin:0; padding:8px;">
+                <input id="chatInput" placeholder="Kujh mazedaar likho..." style="flex:1; margin:0; padding:8px;" onkeypress="handleChatEnter(event)">
                 <button onclick="addComment()" style="margin:0; padding:8px 15px;">Send</button>
             </div>
         </div>
+        
+        <button class="reset-btn" onclick="resetGame()">Reset Friends</button>
     </div>
 </div>
 
 <script>
-// ================= STATE =================
-let friends = [];
-let currentFriend = "You";
+// ================= STATE & PERSISTENCE =================
+let friends = JSON.parse(localStorage.getItem('dareDropFriends')) || [];
+let currentFriend = "ਤੁਸੀਂ";
+
+// Initial Load
+window.onload = () => {
+    renderFriends();
+    toggleMode();
+};
 
 // ================= CONTENT =================
-const truths = ["Pehla crush koun si?", "Kade chori pakde gye?", "Sab ton vadda darr?", "Phone da password ki hai?", "Kise dost di burai kiti hai?", "Last time kadon roye si?"];
-const dares = ["Bina music de dance karo", "10 Pushups lagao", "Kise nu prank call karo", "Funny face bana ke selfie bhejo", "Robot di awaaz ch bolo", "Punabi bolli pao"];
+const truths = [
+    "ਤੇਰਾ ਪਹਿਲਾ ਕਰੱਸ਼ ਕੌਣ ਸੀ?", 
+    "ਕਦੇ ਚੋਰੀ ਕਰਦੇ ਪਕੜੇ ਗਏ ਹੋ?", 
+    "ਤੇਰਾ ਸਭ ਤੋਂ ਵੱਡਾ ਡਰ ਕੀ ਹੈ?", 
+    "ਆਪਣੇ ਫੋਨ ਦਾ ਪਾਸਵਰਡ ਦੱਸੋ?", 
+    "ਕੀ ਕਦੇ ਕਿਸੇ ਦੋਸਤ ਦੀ ਚੁਗਲੀ ਕੀਤੀ ਹੈ?", 
+    "ਆਖਰੀ ਵਾਰ ਕਦੋਂ ਅਤੇ ਕਿਉਂ ਰੋਏ ਸੀ?",
+    "ਕੀ ਤੁਸੀਂ ਕਦੇ ਕਿਸੇ ਨੂੰ ਗਲਤ ਮੈਸੇਜ ਭੇਜਿਆ ਹੈ?",
+    "ਤੁਹਾਡੀ ਸਭ ਤੋਂ ਬੁਰੀ ਆਦਤ ਕੀ ਹੈ?",
+    "ਕੀ ਤੁਸੀਂ ਕਦੇ ਸਕੂਲ/ਕਾਲਜ ਤੋਂ ਭੱਜੇ ਹੋ?"
+];
 
-// Auto-generate more tasks
-const truthTopics = ["paisa", "school", "ex", "rishtedaar", "secret"];
-for(let i=0; i<30; i++) {
-    truths.push("Tell us about your " + truthTopics[Math.floor(Math.random()*truthTopics.length)] + " story.");
-    dares.push("Perform a funny act about " + truthTopics[Math.floor(Math.random()*truthTopics.length)] + ".");
-}
+const dares = [
+    "ਬਿਨਾਂ ਮਿਊਜ਼ਿਕ ਦੇ 30 ਸੈਕਿੰਡ ਡਾਂਸ ਕਰੋ", 
+    "10 ਪੁਸ਼ਅਪਸ ਲਗਾਓ", 
+    "ਕਿਸੇ ਰੈਂਡਮ ਨੰਬਰ ਤੇ ਪ੍ਰੈਂਕ ਕਾਲ ਕਰੋ", 
+    "ਇੱਕ ਫਨੀ ਸੈਲਫੀ ਖਿੱਚ ਕੇ ਗਰੁੱਪ ਵਿੱਚ ਭੇਜੋ", 
+    "ਅਗਲੇ 2 ਮਿੰਟ ਲਈ ਰੋਬੋਟ ਵਾਂਗ ਗੱਲ ਕਰੋ", 
+    "ਇੱਕ ਵਧੀਆ ਪੰਜਾਬੀ ਬੋਲੀ ਪਾਓ",
+    "ਆਪਣੇ ਸਭ ਤੋਂ ਨਜ਼ਦੀਕੀ ਦੋਸਤ ਦੀ ਨਕਲ ਉਤਾਰੋ",
+    "ਨਿੰਬੂ ਚੱਟ ਕੇ ਦਿਖਾਓ (ਜੇ ਹੈਗਾ) ਜਾਂ ਐਕਟਿੰਗ ਕਰੋ",
+    "ਮੂੰਹ ਵਿੱਚ ਪਾਣੀ ਭਰ ਕੇ ਗਾਣਾ ਗਾਓ"
+];
 
 // ================= CORE FUNCTIONS =================
 
-mode.onchange = () => {
-    friendBox.style.display = mode.value === "friend" ? "block" : "none";
-    if(mode.value === "self") {
-        selectedFriend.innerText = "It's Your Turn!";
-        currentFriend = "You";
+function toggleMode() {
+    const mode = document.getElementById('mode').value;
+    const friendBox = document.getElementById('friendBox');
+    const selectedFriendDiv = document.getElementById('selectedFriend');
+    
+    if(mode === "self") {
+        friendBox.style.display = "none";
+        selectedFriendDiv.innerText = "ਤੁਹਾਡੀ ਵਾਰੀ ਹੈ! 🎲";
+        currentFriend = "ਤੁਸੀਂ";
+    } else {
+        friendBox.style.display = "block";
+        selectedFriendDiv.innerText = friends.length > 0 ? "Wheel ਘੁਮਾਓ!" : "ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਲਿਖੋ";
     }
-};
+}
+
+function handleEnter(e) { if(e.key === 'Enter') addFriend(); }
+function handleChatEnter(e) { if(e.key === 'Enter') addComment(); }
 
 function addFriend() {
-    let name = friendInput.value.trim();
+    let input = document.getElementById('friendInput');
+    let name = input.value.trim();
     if(name) {
-        friends.push(name);
-        renderFriends();
-        friendInput.value = "";
+        if(friends.includes(name)) {
+            alert("ਇਹ ਨਾਮ ਪਹਿਲਾਂ ਹੀ ਲਿਸਟ ਵਿੱਚ ਹੈ!");
+        } else {
+            friends.push(name);
+            saveAndRender();
+            input.value = "";
+        }
     }
+}
+
+function saveAndRender() {
+    localStorage.setItem('dareDropFriends', JSON.stringify(friends));
+    renderFriends();
 }
 
 function renderFriends() {
-    friendList.innerHTML = friends.map(f => `<span>${f}</span>`).join("");
+    const list = document.getElementById('friendList');
+    list.innerHTML = friends.map(f => `<span>${f}</span>`).join("");
 }
 
 function spinFriend() {
-    if(!friends.length) return alert("Pehlan dostan de naam add karo!");
+    if(friends.length < 2) return alert("ਘੱਟੋ-ਘੱਟ 2 ਦੋਸਤ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ!");
     
     let counter = 0;
+    let display = document.getElementById('selectedFriend');
+    
     let spinInterval = setInterval(() => {
-        selectedFriend.innerText = "🎲 " + friends[Math.floor(Math.random() * friends.length)];
+        let tempIndex = Math.floor(Math.random() * friends.length);
+        display.innerText = "🎲 " + friends[tempIndex];
         counter++;
-        if(counter > 12) {
+        
+        if(counter > 15) {
             clearInterval(spinInterval);
-            currentFriend = friends[Math.floor(Math.random() * friends.length)];
-            selectedFriend.innerText = "🔥 " + currentFriend;
-            addLog(`Vari aayi: ${currentFriend}`, "task-log");
+            let finalIndex = Math.floor(Math.random() * friends.length);
+            currentFriend = friends[finalIndex];
+            display.innerText = "🔥 " + currentFriend;
+            addLog(`ਵਾਰੀ ਆਈ: ${currentFriend}`, "task-log");
         }
     }, 80);
 }
 
-function getTruth() { showTask("🤫 Truth: " + random(truths)); }
-function getDare() { showTask("⚡ Dare: " + random(dares)); }
+function getTruth() { 
+    if(validatePlay()) showTask("🤫 Truth: " + random(truths)); 
+}
+
+function getDare() { 
+    if(validatePlay()) showTask("⚡ Dare: " + random(dares)); 
+}
+
+function validatePlay() {
+    const mode = document.getElementById('mode').value;
+    if(mode === "friend" && friends.length === 0) {
+        alert("ਪਹਿਲਾਂ ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਐਡ ਕਰੋ!");
+        return false;
+    }
+    return true;
+}
 
 function showTask(t) {
-    if(mode.value === "self") currentFriend = "You";
-    let fullMsg = currentFriend + " -> " + t;
-    task.innerText = t;
-    addLog(fullMsg, "task-log");
+    const taskDisplay = document.getElementById('taskDisplay');
+    taskDisplay.innerText = t;
+    addLog(`${currentFriend} -> ${t}`, "task-log");
 }
 
 function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
@@ -240,25 +310,44 @@ function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 // ================= CHAT & LOG =================
 
 function addComment() {
-    let msg = chatInput.value.trim();
+    let input = document.getElementById('chatInput');
+    let msg = input.value.trim();
     if(msg) {
         addLog(`💬: ${msg}`, "");
-        chatInput.value = "";
+        input.value = "";
     }
 }
 
 function addLog(text, className) {
+    let chatLog = document.getElementById('chatLog');
     let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     let div = document.createElement("div");
     div.className = "chat-msg " + className;
     div.innerHTML = `<b>[${time}]</b> ${text}`;
+    
+    // Remove initial placeholder
+    if(chatLog.children[0] && chatLog.children[0].style.opacity === "0.5") {
+        chatLog.innerHTML = "";
+    }
+    
     chatLog.prepend(div);
 }
 
 function share() {
-    if(!task.innerText || task.innerText.includes("Click")) return alert("Pehlan koi task select karo!");
-    let text = encodeURIComponent("Oye dekh! DareDrop te mere layi eh task niklya: \n\n" + task.innerText + "\n\nTu vi khel: " + window.location.href);
+    const taskText = document.getElementById('taskDisplay').innerText;
+    if(!taskText || taskText.includes("Click")) return alert("ਪਹਿਲਾਂ ਕੋਈ ਟਾਸਕ ਚੁਣੋ!");
+    
+    let text = encodeURIComponent("ਓਏ ਦੇਖ! DareDrop ਤੇ ਮੇਰੇ ਲਈ ਇਹ ਟਾਸਕ ਨਿਕਲਿਆ: \n\n" + taskText + "\n\nਤੂੰ ਵੀ ਖੇਡ: " + window.location.href);
     window.open("https://wa.me/?text=" + text);
+}
+
+function resetGame() {
+    if(confirm("ਕੀ ਤੁਸੀਂ ਸਾਰੇ ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?")) {
+        friends = [];
+        localStorage.removeItem('dareDropFriends');
+        renderFriends();
+        toggleMode();
+    }
 }
 </script>
 
