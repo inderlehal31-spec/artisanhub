@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DareDrop Super Party</title>
+    <title>DareDrop Super Party Pro</title>
     <style>
         :root {
             --primary: #ff416c;
             --secondary: #4facfe;
-            --glass: rgba(255, 255, 255, 0.15);
+            --success: #00b09b;
+            --warning: #ffd700;
+            --glass: rgba(255, 255, 255, 0.2);
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: linear-gradient(45deg, #ff416c, #ff4b2b, #4facfe, #00f2fe);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -23,92 +25,106 @@
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         .main-card {
-            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);
             border: 1px solid var(--glass); border-radius: 30px;
-            padding: 25px; width: 90%; max-width: 450px; margin-top: 20px;
+            padding: 20px; width: 90%; max-width: 450px; margin-top: 15px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center;
         }
 
         .game-btn {
             background: white; color: var(--primary); border: none;
-            padding: 12px 25px; border-radius: 50px; font-weight: bold;
+            padding: 12px 20px; border-radius: 50px; font-weight: bold;
             cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            transition: 0.3s; margin: 10px;
+            transition: 0.3s; margin: 8px; font-size: 14px;
         }
 
-        .game-btn:active { transform: scale(0.95); }
+        .game-btn:active { transform: scale(0.9); }
 
         /* Menu Overlay */
         .menu-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 100; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center;
         }
 
-        .menu-content { background: white; padding: 20px; border-radius: 20px; width: 80%; max-width: 300px; }
+        .menu-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 320px; }
         .menu-item {
-            padding: 15px; color: #333; font-weight: bold;
+            padding: 18px; color: #333; font-weight: bold; font-size: 18px;
             border-bottom: 1px solid #eee; cursor: pointer; text-align: center;
         }
 
         /* Parchiyan Styling */
-        .chit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .chit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
         .chit {
-            background: #fff; color: #333; height: 80px;
+            background: #fff; color: #333; height: 100px;
             display: flex; align-items: center; justify-content: center;
             border-radius: 15px; font-weight: bold; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); transform: rotate(-2deg);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.5s;
+            font-size: 16px;
         }
-        .chit:nth-child(even) { transform: rotate(2deg); }
 
+        /* Chat/Log Box */
         .chat-box {
             background: rgba(0, 0, 0, 0.3); border-radius: 15px;
-            height: 100px; overflow-y: auto; padding: 10px;
-            text-align: left; font-size: 13px; margin-top: 20px; border: 1px solid rgba(255,255,255,0.1);
+            height: 120px; overflow-y: auto; padding: 12px;
+            text-align: left; font-size: 13px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);
         }
 
         .hidden { display: none; }
-        .highlight { color: #fdfc47; font-size: 24px; font-weight: bold; }
+        .highlight { color: var(--warning); font-size: 26px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        
+        #timerDisplay { font-size: 20px; color: #ffeb3b; font-weight: bold; margin-top: 10px; }
+
+        .friend-tag {
+            display: inline-block; background: var(--glass); padding: 5px 12px;
+            border-radius: 20px; margin: 4px; font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
-    <h1 style="margin-top: 20px;">🔥 DareDrop Super Pro</h1>
+    <h1 style="margin-top: 25px; letter-spacing: 1px;">🔥 DareDrop Pro</h1>
 
-    <button class="game-btn" onclick="toggleMenu()">🎮 Select Game Mode</button>
+    <div style="display: flex; gap: 5px;">
+        <button class="game-btn" onclick="toggleMenu()">🎮 Choose Game</button>
+        <button class="game-btn" onclick="addFriend()" style="background:var(--success); color:white;">👤 + Add Friend</button>
+    </div>
 
     <div class="main-card">
-        <h2 id="gameTitle">Welcome!</h2>
-        <p id="gameDesc" style="opacity: 0.8;">Select a game mode to start.</p>
+        <div id="friendListContainer" style="margin-bottom: 10px;"></div>
+        <h2 id="gameTitle">Ready to Play?</h2>
+        <p id="gameDesc" style="opacity: 0.9; font-size: 14px;">ਪਹਿਲਾਂ ਦੋਸਤ ਐਡ ਕਰੋ, ਫਿਰ ਗੇਮ ਚੁਣੋ!</p>
 
         <div id="sectionTruth" class="hidden">
             <div id="selectedPlayer" class="highlight">🎲 Spin First!</div>
             <button onclick="spinPlayer()" class="game-btn" style="background:var(--secondary); color:white;">🎡 Spin Friend</button>
             <div style="margin: 15px 0;">
-                <button onclick="getTask('truth')" class="game-btn" style="background:#00b09b; color:white; width:100px;">Truth</button>
-                <button onclick="getTask('dare')" class="game-btn" style="background:#ff4b2b; color:white; width:100px;">Dare</button>
+                <button onclick="getTask('truth')" class="game-btn" style="background:var(--success); color:white; width:110px;">Truth</button>
+                <button onclick="getTask('dare')" class="game-btn" style="background:var(--primary); color:white; width:110px;">Dare</button>
             </div>
-            <div id="taskDisplay" style="padding: 10px; font-style: italic;"></div>
+            <div id="taskDisplay" style="padding: 10px; font-size: 18px; min-height: 50px;"></div>
         </div>
 
         <div id="sectionParchiyan" class="hidden">
             <div id="parchiPlayer" class="highlight">Friend's Turn</div>
-            <p>Click a chit to "Pass" it!</p>
+            <p id="parchiInstruction">ਪਰਚੀ ਦੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ!</p>
             <div class="chit-grid">
-                <div class="chit" onclick="passChit(1)">📄 <br> Chit 1</div>
-                <div class="chit" onclick="passChit(2)">📄 <br> Chit 2</div>
-                <div class="chit" onclick="passChit(3)">📄 <br> Chit 3</div>
-                <div class="chit" onclick="passChit(4)">📄 <br> Chit 4</div>
+                <div class="chit" id="c1" onclick="handleParchi(1)">📄<br>Chit 1</div>
+                <div class="chit" id="c2" onclick="handleParchi(2)">📄<br>Chit 2</div>
+                <div class="chit" id="c3" onclick="handleParchi(3)">📄<br>Chit 3</div>
+                <div class="chit" id="c4" onclick="handleParchi(4)">📄<br>Chit 4</div>
             </div>
+            <button class="game-btn" onclick="resetParchiyan()" style="margin-top:15px; font-size: 12px;">🔄 Reset Chits</button>
         </div>
 
         <div id="sectionAntakshari" class="hidden">
-            <div id="letterBox" class="highlight" style="font-size: 50px;">?</div>
-            <button onclick="generateLetter()" class="game-btn">🔄 Get Next Letter</button>
-            <p>Sing a song starting with this letter!</p>
+            <div id="letterBox" class="highlight" style="font-size: 60px;">?</div>
+            <div id="timerDisplay">00s</div>
+            <button onclick="generateLetter()" class="game-btn" style="background:var(--secondary); color:white;">🎤 Get Punjabi Letter</button>
+            <p style="font-size: 14px;">ਇਸ ਅੱਖਰ ਤੋਂ ਗਾਣਾ ਸ਼ੁਰੂ ਕਰੋ!</p>
         </div>
 
         <div class="chat-box" id="chat">
-            <div><b>System:</b> Party is ready! 🥳</div>
+            <div><b>System:</b> Welcome! 🥳</div>
         </div>
     </div>
 
@@ -116,72 +132,127 @@
         <div class="menu-content" onclick="event.stopPropagation()">
             <div class="menu-item" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
             <div class="menu-item" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
-            <div class="menu-item" onclick="loadGame('Parchiyan')">🃏 Parchiyan (4 Chits)</div>
-            <div class="menu-item" onclick="toggleMenu()" style="color:red; border:none;">❌ Close</div>
+            <div class="menu-item" onclick="loadGame('Parchiyan')">🃏 Parchiyan (ਰਾਜਾ ਰਾਣੀ)</div>
+            <div class="menu-item" onclick="toggleMenu()" style="color:red; border:none; margin-top: 10px;">❌ Close</div>
         </div>
     </div>
 
     <script>
-        let friends = ["Rohan", "Deep", "Sonia", "Preet"];
+        let friends = [];
         let currentFriendIndex = 0;
+        let timer;
+        let parchiyanNames = ["ਰਾਜਾ 👑", "ਵਜ਼ੀਰ 🗡️", "ਚੋਰ 🎭", "ਸਿਪਾਹੀ 👮"];
+        let shuffledChits = [];
 
         function toggleMenu() {
             const menu = document.getElementById('menuOverlay');
             menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        function addFriend() {
+            let name = prompt("ਦੋਸਤ ਦਾ ਨਾਮ ਲਿਖੋ:");
+            if (name && name.trim() !== "") {
+                friends.push(name.trim());
+                updateFriendList();
+                addChat(name + " joined!");
+            }
+        }
+
+        function updateFriendList() {
+            const container = document.getElementById('friendListContainer');
+            container.innerHTML = friends.map(f => `<span class="friend-tag">${f}</span>`).join("");
+        }
+
         function loadGame(game) {
-            // Hide all
+            if (friends.length < 1 && game !== 'Antakshari') {
+                alert("ਪਹਿਲਾਂ + Add Friend ਬਟਨ ਤੋਂ ਦੋਸਤ ਐਡ ਕਰੋ!");
+                return;
+            }
+
             document.getElementById('sectionTruth').classList.add('hidden');
             document.getElementById('sectionParchiyan').classList.add('hidden');
             document.getElementById('sectionAntakshari').classList.add('hidden');
-            
             document.getElementById('gameTitle').innerText = game;
             
             if(game === 'Truth & Dare') {
                 document.getElementById('sectionTruth').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Classical Fun!";
+                document.getElementById('gameDesc').innerText = "Classic fun mode!";
             } else if(game === 'Parchiyan') {
                 document.getElementById('sectionParchiyan').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Pass the chits to collect same names!";
-                document.getElementById('parchiPlayer').innerText = friends[0];
+                document.getElementById('gameDesc').innerText = "ਰਾਜਾ, ਵਜ਼ੀਰ, ਚੋਰ, ਸਿਪਾਹੀ!";
+                resetParchiyan();
             } else if(game === 'Antakshari') {
                 document.getElementById('sectionAntakshari').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Sing till you win!";
+                document.getElementById('gameDesc').innerText = "Sing or Lose!";
             }
             toggleMenu();
-            addChat("Game mode: " + game);
+            addChat("Started: " + game);
         }
 
-        // Truth Dare Logic
+        // --- Truth Dare ---
         function spinPlayer() {
             let p = friends[Math.floor(Math.random() * friends.length)];
             document.getElementById('selectedPlayer').innerText = "👉 " + p;
-            addChat(p + " is the chosen one!");
+            document.getElementById('taskDisplay').innerText = "";
         }
 
         function getTask(type) {
-            const truths = ["Biggest crush?", "Secret habit?", "Last lie?", "Phone password?"];
-            const dares = ["Do 10 pushups", "Sing a song", "Act like a monkey", "Call your crush"];
-            let list = type === 'truth' ? truths : dares;
-            let t = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('taskDisplay').innerText = t;
+            const t = ["ਸਭ ਤੋਂ ਵੱਡਾ ਡਰ?", "ਆਖਰੀ ਝੂਠ ਕੀ ਸੀ?", "ਤੁਹਾਡਾ ਕ੍ਰਸ਼ ਕੌਣ ਹੈ?", "ਫੋਨ ਦਾ ਪਾਸਵਰਡ?"];
+            const d = ["10 ਪੁਸ਼ਅੱਪ ਕਰੋ", "ਬਾਂਦਰ ਵਾਂਗ ਐਕਟਿੰਗ", "ਕੋਈ ਮਜ਼ਾਕੀਆ ਗਾਣਾ", "ਬਿਨਾਂ ਸੰਗੀਤ ਡਾਂਸ"];
+            let list = type === 'truth' ? t : d;
+            document.getElementById('taskDisplay').innerText = list[Math.floor(Math.random() * list.length)];
         }
 
-        // Parchiyan Logic
-        function passChit(n) {
-            currentFriendIndex = (currentFriendIndex + 1) % friends.length;
-            let nextPlayer = friends[currentFriendIndex];
-            document.getElementById('parchiPlayer').innerText = nextPlayer;
-            addChat(`Chit ${n} passed to ${nextPlayer} 🔄`);
+        // --- Real Parchiyan Logic ---
+        function resetParchiyan() {
+            shuffledChits = [...parchiyanNames].sort(() => Math.random() - 0.5);
+            currentFriendIndex = 0;
+            document.getElementById('parchiPlayer').innerText = friends[0];
+            document.getElementById('parchiInstruction').innerText = "ਪਰਚੀ ਦੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ!";
+            for(let i=1; i<=4; i++) {
+                let c = document.getElementById('c'+i);
+                c.innerText = "📄\nChit " + i;
+                c.style.background = "white";
+            }
         }
 
-        // Antakshari Logic
+        function handleParchi(id) {
+            let el = document.getElementById('c'+id);
+            if (el.innerText.includes("Chit")) {
+                // Secret Look
+                el.innerText = shuffledChits[id-1];
+                el.style.background = "var(--warning)";
+                document.getElementById('parchiInstruction').innerText = "ਹੁਣ ਇਹ ਪਰਚੀ 'Pass' ਕਰੋ";
+            } else {
+                // Pass it
+                el.innerText = "📄\nChit " + id;
+                el.style.background = "white";
+                currentFriendIndex = (currentFriendIndex + 1) % friends.length;
+                document.getElementById('parchiPlayer').innerText = friends[currentFriendIndex];
+                document.getElementById('parchiInstruction').innerText = "ਅਗਲੇ ਪਲੇਅਰ ਦੀ ਵਾਰੀ!";
+                addChat(`Chit ${id} passed to ${friends[currentFriendIndex]}`);
+            }
+        }
+
+        // --- Antakshari Logic ---
         function generateLetter() {
-            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            let randomLetter = letters[Math.floor(Math.random() * letters.length)];
-            document.getElementById('letterBox').innerText = randomLetter;
-            addChat("New Letter: " + randomLetter);
+            const pLetters = "ੳਅੲਸਹਕਖਗਘਚਛਜਝਟਠਡਢਤਥਦਧਨਪਫਬਭਮਯਰਲਵੜ";
+            let char = pLetters[Math.floor(Math.random() * pLetters.length)];
+            document.getElementById('letterBox').innerText = char;
+            startTimer();
+        }
+
+        function startTimer() {
+            let timeLeft = 15;
+            clearInterval(timer);
+            timer = setInterval(() => {
+                document.getElementById('timerDisplay').innerText = timeLeft + "s";
+                if(timeLeft <= 0) {
+                    clearInterval(timer);
+                    alert("ਸਮਾਂ ਖਤਮ! 🛑");
+                }
+                timeLeft--;
+            }, 1000);
         }
 
         function addChat(msg) {
