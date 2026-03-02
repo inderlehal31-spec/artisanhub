@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>🔥 DareDrop Party Pro - Full Edition</title>
+    <title>🔥 DareDrop Party Pro</title>
 
     <style>
-        /* 1. ANIMATED GRADIENT BACKGROUND */
+        /* CSS ਵਿੱਚ ਕੋਈ ਵੱਡੀ ਤਬਦੀਲੀ ਨਹੀਂ, ਸਿਰਫ ਕੁਝ ਸੁਧਾਰ */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
@@ -16,6 +16,9 @@
             color: white;
             text-align: center;
             min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         @keyframes gradientBG {
@@ -24,332 +27,201 @@
             100% { background-position: 0% 50%; }
         }
 
-        .container { padding: 20px; }
-
-        /* 2. MODERN GLASS CARD */
         .card {
             background: white;
             color: #333;
             padding: 25px;
             border-radius: 25px;
-            max-width: 450px;
-            margin: auto;
+            max-width: 400px;
+            width: 90%;
             box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-            transition: transform 0.3s ease;
         }
 
-        h1 { text-shadow: 2px 2px 4px rgba(0,0,0,0.3); margin-bottom: 10px; }
-
-        button {
-            padding: 12px 20px;
-            margin: 8px 4px;
-            border: none;
-            border-radius: 15px;
-            background: #ff416c;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 10px rgba(255, 65, 108, 0.3);
+        button:disabled {
+            background: #ccc !important;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
-        button:hover { transform: translateY(-2px); opacity: 0.9; }
-        button:active { transform: scale(0.95); }
-
-        input, select {
-            padding: 12px;
-            width: 80%;
-            border-radius: 12px;
-            border: 2px solid #eee;
-            margin-bottom: 10px;
-            outline: none;
-        }
-
-        /* 3. FRIEND TAGS & SPIN EFFECT */
-        #friendList { margin-top: 10px; min-height: 40px; }
         #friendList span {
             display: inline-block;
-            background: #f0f0f0;
+            background: #fdf2f4;
             color: #ff416c;
-            padding: 6px 15px;
-            margin: 5px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            border: 1px solid #ddd;
-        }
-
-        .big {
-            font-size: 24px;
-            font-weight: 800;
-            margin: 20px 0;
-            min-height: 50px;
-            color: #ff416c;
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* 4. CHAT BOX STYLING */
-        .chat-section {
-            margin-top: 20px;
-            border-top: 2px solid #f5f5f5;
-            padding-top: 15px;
-        }
-
-        #chatLog {
-            height: 150px;
-            overflow-y: auto;
-            background: #f9f9f9;
+            padding: 5px 12px;
+            margin: 4px;
             border-radius: 15px;
-            margin-bottom: 10px;
-            padding: 12px;
-            text-align: left;
             font-size: 13px;
-            border: 1px solid #eee;
-            display: flex;
-            flex-direction: column;
+            border: 1px solid #ffccd5;
         }
 
-        .chat-msg {
-            background: white;
-            padding: 8px 12px;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-left: 4px solid #ff416c;
-        }
-
-        .task-log { border-left-color: #2196f3; background: #e3f2fd; }
-
-        .modeTag { font-size: 12px; opacity: 0.7; margin-bottom: 15px; font-weight: bold; }
-        
-        .reset-btn {
-            background: #999;
-            font-size: 10px;
-            padding: 5px 10px;
-            margin-top: 10px;
+        /* ਟਾਸਕ ਦਾ ਸਟਾਈਲ ਥੋੜਾ ਬਿਹਤਰ ਕੀਤਾ */
+        #taskDisplay {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px dashed #ff416c;
+            margin: 15px 0;
+            font-size: 16px;
         }
     </style>
 </head>
-
 <body>
 
-<div class="container">
-    <h1>🔥 DareDrop Party</h1>
+<div class="card">
+    <h1>🔥 DareDrop</h1>
     
-    <div class="card">
-        <select id="mode" onchange="toggleMode()">
-            <option value="friend">Friend Play (Dosto Naal)</option>
-            <option value="self">Self Play (Kalle)</option>
-        </select>
+    <select id="mode" onchange="toggleMode()">
+        <option value="friend">Dosto Naal (Group)</option>
+        <option value="self">Kalle (Solo)</option>
+    </select>
 
-        <div class="modeTag">Party Mode ON! 🥳</div>
-
-        <div id="friendBox">
-            <input id="friendInput" placeholder="Dost da naam likho..." onkeypress="handleEnter(event)">
-            <button onclick="addFriend()">Add +</button>
-            <div id="friendList"></div>
-            <button onclick="spinFriend()" style="background:#4b6cb7; width: 90%;">🎡 Spin Friend</button>
+    <div id="friendBox">
+        <div style="display:flex; gap:5px; margin-bottom:10px;">
+            <input id="friendInput" placeholder="Dost da naam..." style="flex:1; margin:0;">
+            <button onclick="addFriend()" style="margin:0;">Add</button>
         </div>
-
-        <div id="selectedFriend" class="big">Taiyar Ho?</div>
-
-        <div style="display:flex; justify-content:center; gap: 10px;">
-            <button onclick="getTruth()" style="background:#f093fb; color:black; flex:1;">🤫 Truth</button>
-            <button onclick="getDare()" style="background:#5eead4; color:black; flex:1;">⚡ Dare</button>
-        </div>
-
-        <div id="taskDisplay" class="big" style="color:#333; font-size:18px; min-height: 60px;">Click Truth or Dare!</div>
-
-        <button onclick="share()" style="background:#25D366; width:90%;">📲 Share on WhatsApp</button>
-
-        <div class="chat-section">
-            <div id="chatLog">
-                <p style="text-align:center; opacity:0.5;">Activity log shuru ho reha hai...</p>
-            </div>
-            <div style="display:flex; gap:5px;">
-                <input id="chatInput" placeholder="Kujh mazedaar likho..." style="flex:1; margin:0; padding:8px;" onkeypress="handleChatEnter(event)">
-                <button onclick="addComment()" style="margin:0; padding:8px 15px;">Send</button>
-            </div>
-        </div>
-        
-        <button class="reset-btn" onclick="resetGame()">Reset Friends</button>
+        <div id="friendList"></div>
+        <button id="spinBtn" onclick="spinFriend()" style="background:#4b6cb7; width: 100%;">🎡 Spin the Wheel</button>
     </div>
+
+    <div id="selectedFriend" class="big">Taiyar Ho?</div>
+
+    <div style="display:flex; gap: 10px;">
+        <button id="truthBtn" onclick="getTruth()" style="background:#f093fb; color:black; flex:1;">🤫 Truth</button>
+        <button id="dareBtn" onclick="getDare()" style="background:#5eead4; color:black; flex:1;">⚡ Dare</button>
+    </div>
+
+    <div id="taskDisplay">Click Truth or Dare to start!</div>
+
+    <button onclick="share()" style="background:#25D366; width:100%;">📲 Share on WhatsApp</button>
+
+    <div class="chat-section">
+        <div id="chatLog"></div>
+        <div style="display:flex; gap:5px;">
+            <input id="chatInput" placeholder="Write something..." style="flex:1; margin:0;">
+            <button onclick="addComment()" style="margin:0;">Send</button>
+        </div>
+    </div>
+    
+    <button class="reset-btn" onclick="resetGame()">Reset All</button>
 </div>
 
 <script>
-// ================= STATE & PERSISTENCE =================
 let friends = JSON.parse(localStorage.getItem('dareDropFriends')) || [];
-let currentFriend = "ਤੁਸੀਂ";
+let currentFriend = "";
+let isSpinning = false;
 
-// Initial Load
 window.onload = () => {
     renderFriends();
     toggleMode();
 };
 
-// ================= CONTENT =================
-const truths = [
-    "ਤੇਰਾ ਪਹਿਲਾ ਕਰੱਸ਼ ਕੌਣ ਸੀ?", 
-    "ਕਦੇ ਚੋਰੀ ਕਰਦੇ ਪਕੜੇ ਗਏ ਹੋ?", 
-    "ਤੇਰਾ ਸਭ ਤੋਂ ਵੱਡਾ ਡਰ ਕੀ ਹੈ?", 
-    "ਆਪਣੇ ਫੋਨ ਦਾ ਪਾਸਵਰਡ ਦੱਸੋ?", 
-    "ਕੀ ਕਦੇ ਕਿਸੇ ਦੋਸਤ ਦੀ ਚੁਗਲੀ ਕੀਤੀ ਹੈ?", 
-    "ਆਖਰੀ ਵਾਰ ਕਦੋਂ ਅਤੇ ਕਿਉਂ ਰੋਏ ਸੀ?",
-    "ਕੀ ਤੁਸੀਂ ਕਦੇ ਕਿਸੇ ਨੂੰ ਗਲਤ ਮੈਸੇਜ ਭੇਜਿਆ ਹੈ?",
-    "ਤੁਹਾਡੀ ਸਭ ਤੋਂ ਬੁਰੀ ਆਦਤ ਕੀ ਹੈ?",
-    "ਕੀ ਤੁਸੀਂ ਕਦੇ ਸਕੂਲ/ਕਾਲਜ ਤੋਂ ਭੱਜੇ ਹੋ?"
-];
-
-const dares = [
-    "ਬਿਨਾਂ ਮਿਊਜ਼ਿਕ ਦੇ 30 ਸੈਕਿੰਡ ਡਾਂਸ ਕਰੋ", 
-    "10 ਪੁਸ਼ਅਪਸ ਲਗਾਓ", 
-    "ਕਿਸੇ ਰੈਂਡਮ ਨੰਬਰ ਤੇ ਪ੍ਰੈਂਕ ਕਾਲ ਕਰੋ", 
-    "ਇੱਕ ਫਨੀ ਸੈਲਫੀ ਖਿੱਚ ਕੇ ਗਰੁੱਪ ਵਿੱਚ ਭੇਜੋ", 
-    "ਅਗਲੇ 2 ਮਿੰਟ ਲਈ ਰੋਬੋਟ ਵਾਂਗ ਗੱਲ ਕਰੋ", 
-    "ਇੱਕ ਵਧੀਆ ਪੰਜਾਬੀ ਬੋਲੀ ਪਾਓ",
-    "ਆਪਣੇ ਸਭ ਤੋਂ ਨਜ਼ਦੀਕੀ ਦੋਸਤ ਦੀ ਨਕਲ ਉਤਾਰੋ",
-    "ਨਿੰਬੂ ਚੱਟ ਕੇ ਦਿਖਾਓ (ਜੇ ਹੈਗਾ) ਜਾਂ ਐਕਟਿੰਗ ਕਰੋ",
-    "ਮੂੰਹ ਵਿੱਚ ਪਾਣੀ ਭਰ ਕੇ ਗਾਣਾ ਗਾਓ"
-];
-
-// ================= CORE FUNCTIONS =================
-
 function toggleMode() {
     const mode = document.getElementById('mode').value;
     const friendBox = document.getElementById('friendBox');
-    const selectedFriendDiv = document.getElementById('selectedFriend');
-    
     if(mode === "self") {
         friendBox.style.display = "none";
-        selectedFriendDiv.innerText = "ਤੁਹਾਡੀ ਵਾਰੀ ਹੈ! 🎲";
         currentFriend = "ਤੁਸੀਂ";
+        document.getElementById('selectedFriend').innerText = "ਤੁਹਾਡੀ ਵਾਰੀ! 🎲";
+        enableTaskButtons(true);
     } else {
         friendBox.style.display = "block";
-        selectedFriendDiv.innerText = friends.length > 0 ? "Wheel ਘੁਮਾਓ!" : "ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਲਿਖੋ";
+        currentFriend = "";
+        document.getElementById('selectedFriend').innerText = "Spin ਕਰੋ!";
+        enableTaskButtons(false);
     }
 }
 
-function handleEnter(e) { if(e.key === 'Enter') addFriend(); }
-function handleChatEnter(e) { if(e.key === 'Enter') addComment(); }
+function enableTaskButtons(status) {
+    document.getElementById('truthBtn').disabled = !status;
+    document.getElementById('dareBtn').disabled = !status;
+}
 
 function addFriend() {
     let input = document.getElementById('friendInput');
     let name = input.value.trim();
-    if(name) {
-        if(friends.includes(name)) {
-            alert("ਇਹ ਨਾਮ ਪਹਿਲਾਂ ਹੀ ਲਿਸਟ ਵਿੱਚ ਹੈ!");
-        } else {
-            friends.push(name);
-            saveAndRender();
-            input.value = "";
-        }
+    if(name && !friends.includes(name)) {
+        friends.push(name);
+        localStorage.setItem('dareDropFriends', JSON.stringify(friends));
+        renderFriends();
+        input.value = "";
     }
 }
 
-function saveAndRender() {
-    localStorage.setItem('dareDropFriends', JSON.stringify(friends));
-    renderFriends();
-}
-
 function renderFriends() {
-    const list = document.getElementById('friendList');
-    list.innerHTML = friends.map(f => `<span>${f}</span>`).join("");
+    document.getElementById('friendList').innerHTML = friends.map(f => `<span>${f}</span>`).join("");
 }
 
 function spinFriend() {
-    if(friends.length < 2) return alert("ਘੱਟੋ-ਘੱਟ 2 ਦੋਸਤ ਹੋਣੇ ਚਾਹੀਦੇ ਹਨ!");
-    
+    if(friends.length < 2) return alert("Add at least 2 friends!");
+    if(isSpinning) return;
+
+    isSpinning = true;
+    enableTaskButtons(false);
     let counter = 0;
     let display = document.getElementById('selectedFriend');
-    
-    let spinInterval = setInterval(() => {
-        let tempIndex = Math.floor(Math.random() * friends.length);
-        display.innerText = "🎲 " + friends[tempIndex];
+    let spinBtn = document.getElementById('spinBtn');
+    spinBtn.disabled = true;
+
+    let interval = setInterval(() => {
+        display.innerText = "🎲 " + friends[Math.floor(Math.random() * friends.length)];
         counter++;
-        
         if(counter > 15) {
-            clearInterval(spinInterval);
-            let finalIndex = Math.floor(Math.random() * friends.length);
-            currentFriend = friends[finalIndex];
+            clearInterval(interval);
+            currentFriend = friends[Math.floor(Math.random() * friends.length)];
             display.innerText = "🔥 " + currentFriend;
+            isSpinning = false;
+            spinBtn.disabled = false;
+            enableTaskButtons(true); // ਸਪਿਨ ਤੋਂ ਬਾਅਦ ਬਟਨ ਖੋਲ੍ਹੋ
             addLog(`ਵਾਰੀ ਆਈ: ${currentFriend}`, "task-log");
         }
     }, 80);
 }
 
-function getTruth() { 
-    if(validatePlay()) showTask("🤫 Truth: " + random(truths)); 
+function getTruth() {
+    const truths = ["Crush da naam?", "Last jhoot ki si?", "Phone password?", "Kade chori kiti?"];
+    showTask("🤫 Truth: " + truths[Math.floor(Math.random()*truths.length)]);
 }
 
-function getDare() { 
-    if(validatePlay()) showTask("⚡ Dare: " + random(dares)); 
-}
-
-function validatePlay() {
-    const mode = document.getElementById('mode').value;
-    if(mode === "friend" && friends.length === 0) {
-        alert("ਪਹਿਲਾਂ ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਐਡ ਕਰੋ!");
-        return false;
-    }
-    return true;
+function getDare() {
+    const dares = ["Dance for 30s", "10 Pushups", "Prank call", "Funny selfie"];
+    showTask("⚡ Dare: " + dares[Math.floor(Math.random()*dares.length)]);
 }
 
 function showTask(t) {
-    const taskDisplay = document.getElementById('taskDisplay');
-    taskDisplay.innerText = t;
+    document.getElementById('taskDisplay').innerText = t;
     addLog(`${currentFriend} -> ${t}`, "task-log");
+    if(document.getElementById('mode').value === "friend") enableTaskButtons(false); // ਇੱਕ ਵਾਰ ਟਾਸਕ ਲੈਣ ਤੋਂ ਬਾਅਦ ਦੁਬਾਰਾ ਸਪਿਨ ਜ਼ਰੂਰੀ
 }
-
-function random(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-// ================= CHAT & LOG =================
 
 function addComment() {
     let input = document.getElementById('chatInput');
-    let msg = input.value.trim();
-    if(msg) {
-        addLog(`💬: ${msg}`, "");
+    if(input.value.trim()) {
+        addLog("💬: " + input.value, "");
         input.value = "";
     }
 }
 
 function addLog(text, className) {
-    let chatLog = document.getElementById('chatLog');
-    let time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    let log = document.getElementById('chatLog');
     let div = document.createElement("div");
     div.className = "chat-msg " + className;
-    div.innerHTML = `<b>[${time}]</b> ${text}`;
-    
-    // Remove initial placeholder
-    if(chatLog.children[0] && chatLog.children[0].style.opacity === "0.5") {
-        chatLog.innerHTML = "";
-    }
-    
-    chatLog.prepend(div);
-}
-
-function share() {
-    const taskText = document.getElementById('taskDisplay').innerText;
-    if(!taskText || taskText.includes("Click")) return alert("ਪਹਿਲਾਂ ਕੋਈ ਟਾਸਕ ਚੁਣੋ!");
-    
-    let text = encodeURIComponent("ਓਏ ਦੇਖ! DareDrop ਤੇ ਮੇਰੇ ਲਈ ਇਹ ਟਾਸਕ ਨਿਕਲਿਆ: \n\n" + taskText + "\n\nਤੂੰ ਵੀ ਖੇਡ: " + window.location.href);
-    window.open("https://wa.me/?text=" + text);
+    div.innerHTML = `<small>${new Date().toLocaleTimeString()}</small><br>${text}`;
+    log.prepend(div);
 }
 
 function resetGame() {
-    if(confirm("ਕੀ ਤੁਸੀਂ ਸਾਰੇ ਦੋਸਤਾਂ ਦੇ ਨਾਮ ਮਿਟਾਉਣਾ ਚਾਹੁੰਦੇ ਹੋ?")) {
+    if(confirm("Sare friends delete kar diye?")) {
         friends = [];
-        localStorage.removeItem('dareDropFriends');
-        renderFriends();
-        toggleMode();
+        localStorage.clear();
+        location.reload();
     }
 }
-</script>
 
+function share() {
+    let text = encodeURIComponent("Oye dekh mera task: " + document.getElementById('taskDisplay').innerText);
+    window.open("https://wa.me/?text=" + text);
+}
+</script>
 </body>
 </html>
