@@ -1,122 +1,249 @@
 <!DOCTYPE html>
-<html lang="pa">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Open Soul | Professional Confession Engine</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <style>
-        :root { --bg: #050505; --paper: #e9dcc9; --fire: #ff4500; }
-        body { background: var(--bg); color: white; font-family: 'Cinzel', serif; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DareDrop Party</title>
 
-        #app-container { text-align: center; position: relative; z-index: 10; }
-        
-        /* The Realistic Paper */
-        .paper-stack {
-            position: relative;
-            background: var(--paper);
-            width: 350px;
-            height: 450px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 100px rgba(0,0,0,0.1);
-            border-radius: 2px;
-            transform: rotate(-2deg);
-            transition: transform 0.3s;
-        }
+<style>
+body{
+font-family:sans-serif;
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
+margin:0;
+color:white;
+text-align:center;
+}
 
-        #confession-input {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            border: none;
-            resize: none;
-            font-family: 'Special Elite', cursive;
-            font-size: 20px;
-            line-height: 1.5;
-            color: #2c1e12;
-            outline: none;
-        }
+.container{padding:20px;}
 
-        /* Particles for Burning */
-        #particle-canvas {
-            position: absolute;
-            top: 0; left: 0;
-            pointer-events: none;
-        }
+.card{
+background:white;
+color:black;
+padding:20px;
+border-radius:20px;
+max-width:420px;
+margin:auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+}
 
-        .actions { margin-top: 40px; display: flex; gap: 20px; justify-content: center; }
-        
-        .btn {
-            padding: 15px 35px;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: 0.4s;
-        }
+button{
+padding:12px 20px;
+margin:6px;
+border:none;
+border-radius:12px;
+background:#ff416c;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
 
-        .btn-burn { background: linear-gradient(45deg, #441111, #ff4500); color: white; box-shadow: 0 0 20px rgba(255,69,0,0.3); }
-        .btn-post { background: #fff; color: #000; }
+button:hover{opacity:0.9}
 
-        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(255,69,0,0.5); }
-    </style>
+input,select{
+padding:10px;
+width:75%;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+#friendList span{
+display:inline-block;
+background:#eee;
+padding:6px 12px;
+margin:4px;
+border-radius:12px;
+font-size:13px;
+}
+
+.big{
+font-size:22px;
+font-weight:bold;
+margin:18px 0;
+min-height:40px;
+}
+
+.modeTag{
+font-size:12px;
+opacity:0.6;
+margin-bottom:10px;
+}
+
+</style>
 </head>
+
 <body>
 
-<div id="app-container">
-    <div id="capture-area" class="paper-stack">
-        <textarea id="confession-input" placeholder="Apna gupt raaz aithe likho..."></textarea>
-    </div>
+<div class="container">
 
-    <canvas id="particle-canvas"></canvas>
+<h1>🔥 DareDrop Party</h1>
 
-    <div class="actions">
-        <button class="btn btn-burn" onclick="startBurning()">Burn & Release</button>
-        <button class="btn btn-post" onclick="submitToGlobalMap()">Post to World Map</button>
-    </div>
+<div class="card">
+
+<select id="mode">
+<option value="self">Self Play</option>
+<option value="friend">Friend Play</option>
+</select>
+
+<div class="modeTag">Choose mode & start fun 🎉</div>
+
+<div id="friendBox" style="display:none">
+
+<input id="friendInput" placeholder="Friend name">
+<button onclick="addFriend()">Add</button>
+
+<div id="friendList"></div>
+
+<button onclick="spinFriend()">🎡 Spin Friend</button>
+
+</div>
+
+<div id="selectedFriend" class="big"></div>
+
+<button onclick="getTruth()">Truth</button>
+<button onclick="getDare()">Dare</button>
+
+<div id="task" class="big"></div>
+
+<button onclick="share()">📲 Share</button>
+
+</div>
 </div>
 
 <script>
-function startBurning() {
-    const paper = document.querySelector('.paper-stack');
-    const input = document.getElementById('confession-input');
-    
-    if(!input.value) return alert("Pehlan dil di gall likho.");
 
-    html2canvas(document.getElementById('capture-area')).then(canvas => {
-        const ctx = canvas.getContext('2d');
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        
-        // Hide original paper
-        paper.style.visibility = 'hidden';
-        
-        // Logic for Particle Burn (Simplified for Demo)
-        initParticles(imageData, canvas.width, canvas.height);
-    });
+// ================= STATE =================
+let friends=[]
+let currentFriend="You"
+
+// ================= BASE DATA =================
+const truths=[
+"Biggest crush ever?",
+"Secret fear?",
+"Last lie told?",
+"Most embarrassing moment?",
+"Dream job?",
+"Biggest regret?",
+"Hidden talent?",
+"Secret habit?",
+"Love or money?",
+"First love memory?",
+"Phone addiction level?",
+"Celebrity crush?",
+"Most awkward moment?",
+"Favorite childhood memory?",
+"Biggest insecurity?",
+"Most emotional moment?",
+"Person you trust most?",
+"Biggest jealousy moment?",
+"Last time you cried?",
+"Secret wish?"
+]
+
+const dares=[
+"Sing loudly 20 sec",
+"Dance without music",
+"Do 10 pushups",
+"Take funny selfie",
+"Act like baby",
+"Do chicken dance",
+"Speak robot voice",
+"Say joke loudly",
+"Run slow motion",
+"Imitate teacher",
+"Act scared",
+"Do runway walk",
+"Make weird face",
+"Say poem dramatically",
+"Do plank 15 sec",
+"Speak in rhyme",
+"Act like news reporter",
+"Fake cry scene",
+"Do superhero pose",
+"Freestyle dance"
+]
+
+// ================= SMART GENERATOR =================
+const truthTemplates=[
+"Tell something embarrassing about",
+"What do you fear about",
+"What is your memory of",
+"Have you ever hidden",
+"What do you regret about",
+"What is your fantasy about",
+"Tell your opinion on"
+]
+
+const truthTopics=["love","school","friend","family","crush","future","phone","social media","money","childhood"]
+
+const dareTemplates=[
+"Imitate someone doing",
+"Perform a dance about",
+"Create a funny story about",
+"Pretend scene of",
+"Act dramatically about",
+"Show reaction to",
+"Do a performance about"
+]
+
+const dareTopics=["ghost","teacher","celebrity","robot","baby","villain","hero","friend","love","movie"]
+
+// AUTO expand content
+for(let i=0;i<80;i++){
+
+let t1=truthTemplates[Math.floor(Math.random()*truthTemplates.length)]
+let t2=truthTopics[Math.floor(Math.random()*truthTopics.length)]
+truths.push(t1+" "+t2)
+
+let d1=dareTemplates[Math.floor(Math.random()*dareTemplates.length)]
+let d2=dareTopics[Math.floor(Math.random()*dareTopics.length)]
+dares.push(d1+" "+d2)
 }
 
-function initParticles(imageData, w, h) {
-    const canvas = document.getElementById('particle-canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    // Create realistic Ash and Fire particles from the text pixels
-    // This part requires a Particle Engine logic (standard in professional sites)
-    alert("Realistic Burning Animation Start: Tuhada raaz raakh (ash) ban reha hai...");
-    
-    setTimeout(() => {
-        location.reload(); // Reset after burn
-    }, 3000);
+// ================= MODE =================
+mode.onchange=()=>{
+friendBox.style.display=mode.value==="friend"?"block":"none"
 }
 
-async function submitToGlobalMap() {
-    const text = document.getElementById('confession-input').value;
-    // Real Backend Integration (Node.js/Firebase)
-    console.log("Saving to Database: ", text);
-    alert("Posted! Tuhada raaz Global Map te chamkega.");
+// ================= FRIEND =================
+function addFriend(){
+let name=friendInput.value.trim()
+if(name){
+friends.push(name)
+renderFriends()
+friendInput.value=""
 }
+}
+
+function renderFriends(){
+friendList.innerHTML=friends.map(f=>`<span>${f}</span>`).join("")
+}
+
+function spinFriend(){
+if(!friends.length)return alert("Add friends first")
+let i=Math.floor(Math.random()*friends.length)
+currentFriend=friends[i]
+selectedFriend.innerText="👉 "+currentFriend
+}
+
+// ================= GAME =================
+function getTruth(){showTask(random(truths))}
+function getDare(){showTask(random(dares))}
+
+function showTask(t){
+if(mode.value==="self") currentFriend="You"
+task.innerText=currentFriend+": "+t
+}
+
+function random(arr){
+return arr[Math.floor(Math.random()*arr.length)]
+}
+
+// ================= SHARE =================
+function share(){
+if(!task.innerText) return
+let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
+window.open("https://wa.me/?text="+text)
+}
+
 </script>
 
 </body>
