@@ -2,191 +2,247 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ChatDrop - Anonymous Global Chat</title>
+<title>DareDrop Party</title>
 
 <style>
 body{
-margin:0;
 font-family:sans-serif;
-background:#0f0f0f;
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
+margin:0;
 color:white;
-display:flex;
-flex-direction:column;
-height:100vh;
-}
-
-header{
-background:#1c1c1c;
-padding:15px;
 text-align:center;
-font-size:20px;
-font-weight:bold;
-border-bottom:1px solid #333;
 }
 
-#online{
-font-size:14px;
-color:#00ff99;
-}
+.container{padding:20px;}
 
-#chat{
-flex:1;
-overflow-y:auto;
-padding:10px;
-}
-
-.message{
-margin-bottom:10px;
-padding:8px;
-background:#1e1e1e;
-border-radius:8px;
-font-size:14px;
-}
-
-.username{
-color:#00ffcc;
-font-weight:bold;
-}
-
-#inputArea{
-display:flex;
-padding:10px;
-background:#1c1c1c;
-border-top:1px solid #333;
-}
-
-input{
-flex:1;
-padding:10px;
-border:none;
-border-radius:5px;
-outline:none;
-background:#2c2c2c;
-color:white;
+.card{
+background:white;
+color:black;
+padding:20px;
+border-radius:20px;
+max-width:420px;
+margin:auto;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
 }
 
 button{
-padding:10px;
-margin-left:5px;
+padding:12px 20px;
+margin:6px;
 border:none;
-background:#00cc66;
+border-radius:12px;
+background:#ff416c;
 color:white;
-border-radius:5px;
+font-weight:bold;
 cursor:pointer;
 }
 
-button:hover{
-background:#00aa55;
+button:hover{opacity:0.9}
+
+input,select{
+padding:10px;
+width:75%;
+border-radius:10px;
+border:1px solid #ccc;
 }
+
+#friendList span{
+display:inline-block;
+background:#eee;
+padding:6px 12px;
+margin:4px;
+border-radius:12px;
+font-size:13px;
+}
+
+.big{
+font-size:22px;
+font-weight:bold;
+margin:18px 0;
+min-height:40px;
+}
+
+.modeTag{
+font-size:12px;
+opacity:0.6;
+margin-bottom:10px;
+}
+
 </style>
 </head>
 
 <body>
 
-<header>
-ChatDrop 🌍
-<div id="online">Online: 0</div>
-</header>
+<div class="container">
 
-<div id="chat"></div>
+<h1>🔥 DareDrop Party</h1>
 
-<div id="inputArea">
-<input type="text" id="messageInput" placeholder="Type message...">
-<button onclick="sendMessage()">Send</button>
+<div class="card">
+
+<select id="mode">
+<option value="self">Self Play</option>
+<option value="friend">Friend Play</option>
+</select>
+
+<div class="modeTag">Choose mode & start fun 🎉</div>
+
+<div id="friendBox" style="display:none">
+
+<input id="friendInput" placeholder="Friend name">
+<button onclick="addFriend()">Add</button>
+
+<div id="friendList"></div>
+
+<button onclick="spinFriend()">🎡 Spin Friend</button>
+
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<div id="selectedFriend" class="big"></div>
+
+<button onclick="getTruth()">Truth</button>
+<button onclick="getDare()">Dare</button>
+
+<div id="task" class="big"></div>
+
+<button onclick="share()">📲 Share</button>
+
+</div>
+</div>
 
 <script>
 
-// 🔥 PASTE YOUR FIREBASE CONFIG HERE
-var firebaseConfig = {
-apiKey: "YOUR_API_KEY",
-authDomain: "YOUR_AUTH_DOMAIN",
-databaseURL: "YOUR_DATABASE_URL",
-projectId: "YOUR_PROJECT_ID",
-storageBucket: "YOUR_STORAGE_BUCKET",
-messagingSenderId: "YOUR_SENDER_ID",
-appId: "YOUR_APP_ID"
-};
+// ================= STATE =================
+let friends=[]
+let currentFriend="You"
 
-firebase.initializeApp(firebaseConfig);
+// ================= BASE DATA =================
+const truths=[
+"Biggest crush ever?",
+"Secret fear?",
+"Last lie told?",
+"Most embarrassing moment?",
+"Dream job?",
+"Biggest regret?",
+"Hidden talent?",
+"Secret habit?",
+"Love or money?",
+"First love memory?",
+"Phone addiction level?",
+"Celebrity crush?",
+"Most awkward moment?",
+"Favorite childhood memory?",
+"Biggest insecurity?",
+"Most emotional moment?",
+"Person you trust most?",
+"Biggest jealousy moment?",
+"Last time you cried?",
+"Secret wish?"
+]
 
-firebase.auth().signInAnonymously();
+const dares=[
+"Sing loudly 20 sec",
+"Dance without music",
+"Do 10 pushups",
+"Take funny selfie",
+"Act like baby",
+"Do chicken dance",
+"Speak robot voice",
+"Say joke loudly",
+"Run slow motion",
+"Imitate teacher",
+"Act scared",
+"Do runway walk",
+"Make weird face",
+"Say poem dramatically",
+"Do plank 15 sec",
+"Speak in rhyme",
+"Act like news reporter",
+"Fake cry scene",
+"Do superhero pose",
+"Freestyle dance"
+]
 
-var database = firebase.database();
-var chatRef = database.ref("messages");
-var onlineRef = database.ref("online");
+// ================= SMART GENERATOR =================
+const truthTemplates=[
+"Tell something embarrassing about",
+"What do you fear about",
+"What is your memory of",
+"Have you ever hidden",
+"What do you regret about",
+"What is your fantasy about",
+"Tell your opinion on"
+]
 
-var username = "User" + Math.floor(Math.random() * 9999);
+const truthTopics=["love","school","friend","family","crush","future","phone","social media","money","childhood"]
 
-firebase.auth().onAuthStateChanged(function(user) {
-if (user) {
-var userStatusRef = onlineRef.child(user.uid);
-userStatusRef.set(true);
-userStatusRef.onDisconnect().remove();
+const dareTemplates=[
+"Imitate someone doing",
+"Perform a dance about",
+"Create a funny story about",
+"Pretend scene of",
+"Act dramatically about",
+"Show reaction to",
+"Do a performance about"
+]
+
+const dareTopics=["ghost","teacher","celebrity","robot","baby","villain","hero","friend","love","movie"]
+
+// AUTO expand content
+for(let i=0;i<80;i++){
+
+let t1=truthTemplates[Math.floor(Math.random()*truthTemplates.length)]
+let t2=truthTopics[Math.floor(Math.random()*truthTopics.length)]
+truths.push(t1+" "+t2)
+
+let d1=dareTemplates[Math.floor(Math.random()*dareTemplates.length)]
+let d2=dareTopics[Math.floor(Math.random()*dareTopics.length)]
+dares.push(d1+" "+d2)
 }
-});
 
-// Online Count
-onlineRef.on("value", function(snapshot){
-document.getElementById("online").innerText = "Online: " + snapshot.numChildren();
-});
-
-// Bad Words Filter
-var badWords = ["sex","porn","xxx","nude"];
-
-function cleanMessage(msg){
-badWords.forEach(word=>{
-var regex = new RegExp(word,"gi");
-msg = msg.replace(regex,"****");
-});
-return msg;
+// ================= MODE =================
+mode.onchange=()=>{
+friendBox.style.display=mode.value==="friend"?"block":"none"
 }
 
-// Spam Control
-var lastMessageTime = 0;
-
-function sendMessage(){
-var input = document.getElementById("messageInput");
-var message = input.value.trim();
-
-if(message === "") return;
-
-var now = Date.now();
-if(now - lastMessageTime < 2000){
-alert("Wait 2 seconds before sending again.");
-return;
+// ================= FRIEND =================
+function addFriend(){
+let name=friendInput.value.trim()
+if(name){
+friends.push(name)
+renderFriends()
+friendInput.value=""
+}
 }
 
-lastMessageTime = now;
-message = cleanMessage(message);
-
-chatRef.push({
-username: username,
-text: message,
-timestamp: now
-});
-
-input.value = "";
+function renderFriends(){
+friendList.innerHTML=friends.map(f=>`<span>${f}</span>`).join("")
 }
 
-// Display Messages
-chatRef.limitToLast(100).on("child_added", function(snapshot){
-var msg = snapshot.val();
-var chat = document.getElementById("chat");
+function spinFriend(){
+if(!friends.length)return alert("Add friends first")
+let i=Math.floor(Math.random()*friends.length)
+currentFriend=friends[i]
+selectedFriend.innerText="👉 "+currentFriend
+}
 
-var div = document.createElement("div");
-div.classList.add("message");
+// ================= GAME =================
+function getTruth(){showTask(random(truths))}
+function getDare(){showTask(random(dares))}
 
-div.innerHTML = "<span class='username'>" + msg.username + ":</span> " + msg.text;
+function showTask(t){
+if(mode.value==="self") currentFriend="You"
+task.innerText=currentFriend+": "+t
+}
 
-chat.appendChild(div);
-chat.scrollTop = chat.scrollHeight;
-});
+function random(arr){
+return arr[Math.floor(Math.random()*arr.length)]
+}
+
+// ================= SHARE =================
+function share(){
+if(!task.innerText) return
+let text=encodeURIComponent(task.innerText+" 🔥 Play DareDrop "+location.href)
+window.open("https://wa.me/?text="+text)
+}
 
 </script>
 
