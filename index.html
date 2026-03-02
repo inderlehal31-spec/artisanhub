@@ -6,9 +6,9 @@
     <title>Duniya di Sab ton Slow Website</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1a1a1a;
-            color: white;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #0f0f0f;
+            color: #e0e0e0;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -16,52 +16,61 @@
             height: 100vh;
             margin: 0;
             text-align: center;
+            overflow: hidden;
         }
 
-        h1 { color: #ffcc00; }
+        h1 { color: #ffcc00; text-shadow: 2px 2px 10px rgba(255, 204, 0, 0.3); }
 
         .progress-container {
-            width: 80%;
-            background-color: #333;
-            border-radius: 25px;
-            padding: 5px;
-            border: 2px solid #555;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            width: 85%;
+            max-width: 600px;
+            background-color: #222;
+            border-radius: 50px;
+            padding: 6px;
+            border: 2px solid #444;
+            box-shadow: 0 0 25px rgba(0,0,0,0.7);
         }
 
         .progress-bar {
-            width: 0.0001%;
-            height: 30px;
-            background: linear-gradient(90deg, #4caf50, #8bc34a);
-            border-radius: 20px;
-            transition: width 0.5s;
+            width: 0%;
+            height: 25px;
+            background: linear-gradient(90deg, #1db954, #1ed760);
+            border-radius: 50px;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.5);
         }
 
         #timer {
-            margin-top: 20px;
-            font-size: 1.2rem;
-            font-weight: bold;
+            margin-top: 25px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.4rem;
             color: #00ffcc;
+            letter-spacing: 1px;
         }
 
         .status {
-            margin-top: 10px;
+            margin-top: 15px;
             font-style: italic;
-            color: #aaa;
+            color: #888;
+            min-height: 20px;
         }
 
+        .controls { margin-top: 40px; }
+
         button {
-            margin-top: 30px;
-            padding: 10px 20px;
+            padding: 12px 25px;
             font-size: 1rem;
             background-color: #ff4444;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 30px;
             cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            font-weight: bold;
         }
 
-        button:hover { background-color: #cc0000; }
+        button:hover { background-color: #ff1111; transform: scale(1.05); }
+        button:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -72,46 +81,75 @@
         <div id="myBar" class="progress-bar"></div>
     </div>
 
-    <div id="timer">Calculating time left...</div>
+    <div id="timer">Calculating destiny...</div>
     <div id="status" class="status">System garam ho reha hai...</div>
 
-    <button onclick="speedUp()">Speed Up (Thoda Tezz Karo)</button>
+    <div class="controls">
+        <button onclick="speedUp()">Speed Up (Thoda Tezz Karo)</button>
+    </div>
 
     <script>
-        // Target: 10 saal baad khatam hovega
-        let timeLeft = 10 * 365 * 24 * 60 * 60; // seconds vich
-        let progress = 0.00001;
+        // 1. Target Date: Ajj ton theek 10 saal baad
+        // LocalStorage vich save karde haan taan ki refresh te badle na
+        let targetDateStr = localStorage.getItem('targetDate');
+        
+        if (!targetDateStr) {
+            const date = new Date();
+            date.setFullYear(date.getFullYear() + 10);
+            targetDateStr = date.toISOString();
+            localStorage.setItem('targetDate', targetDateStr);
+            // Start date vi save karo calculation layi
+            localStorage.setItem('startDate', new Date().toISOString());
+        }
+
+        const targetDate = new Date(targetDateStr);
+        const startDate = new Date(localStorage.getItem('startDate'));
+        const totalDuration = targetDate - startDate;
 
         const messages = [
             "Chah pee lo, haley taan shuru hoya hai...",
             "Tuhade potey (grandkids) shayad 100% dekh sakan.",
             "Internet slow nahi hai, website hi dheet hai.",
-            "Wait karo, mitti di khushbu feel karo...",
-            "Loading meaning of life: 0.001% complete."
+            "Loading meaning of life: 0.001% complete.",
+            "NASA de computer te vi eina hi time laggna si.",
+            "Sabar da fall meetha hunda hai, par eh taan haley kacha hai.",
+            "Refresh na kariyo, pher 10 saal wait karni pau!"
         ];
 
         function updateUI() {
-            // Timer update
-            const years = Math.floor(timeLeft / (365 * 24 * 3600));
-            const days = Math.floor((timeLeft % (365 * 24 * 3600)) / (24 * 3600));
-            const hours = Math.floor((timeLeft % (24 * 3600)) / 3600);
-            const mins = Math.floor((timeLeft % 3600) / 60);
-            const secs = timeLeft % 60;
+            const now = new Date();
+            const remaining = targetDate - now;
 
+            if (remaining <= 0) {
+                document.getElementById('timer').innerText = "100% Complete! Mubarkaan!";
+                document.getElementById('myBar').style.width = "100%";
+                document.getElementById('status').innerText = "Tusi sachi 10 saal wait kita?";
+                return;
+            }
+
+            // Time Calculations
+            const totalSeconds = Math.floor(remaining / 1000);
+            const years = Math.floor(totalSeconds / (365 * 24 * 3600));
+            const days = Math.floor((totalSeconds % (365 * 24 * 3600)) / (24 * 3600));
+            const hours = Math.floor((totalSeconds % (24 * 3600)) / 3600);
+            const mins = Math.floor((totalSeconds % 3600) / 60);
+            const secs = totalSeconds % 60;
+
+            // Timer Text
             document.getElementById('timer').innerText = 
-                `Time Left: ${years}y ${days}d ${hours}h ${mins}m ${secs}s`;
+                `${years}y ${days}d ${hours}h ${mins}m ${secs}s`;
             
-            // Progress bar update
-            progress += 0.000001;
-            document.getElementById('myBar').style.width = progress + "%";
+            // Progress Calculation (High Precision)
+            const elapsed = now - startDate;
+            const progressPercent = (elapsed / totalDuration) * 100;
+            // fixed(8) taan ki progress bar mildi hoyi dikhe (kyunki 10 saal bahut vaddi cheez hai)
+            document.getElementById('myBar').style.width = progressPercent.toFixed(8) + "%";
 
-            // Random status message
-            if(secs % 15 === 0) {
+            // Random Status Change every 10 seconds
+            if(secs % 10 === 0) {
                 const randomMsg = messages[Math.floor(Math.random() * messages.length)];
                 document.getElementById('status').innerText = randomMsg;
             }
-
-            timeLeft--;
         }
 
         function speedUp() {
@@ -119,12 +157,15 @@
                 "Oye! Sabar kar, jaldi kide gal di hai?",
                 "Button daban naal bijli tezz nahi hundi.",
                 "Click kari jao, hona kujh nahi.",
-                "Thak gaye? Main vi."
+                "Processor keh reha 'Mainu baksh do'!",
+                "Error 404: Speed not found."
             ];
             alert(jokes[Math.floor(Math.random() * jokes.length)]);
         }
 
+        // Run update every second
         setInterval(updateUI, 1000);
+        updateUI(); // Initial call
     </script>
 
 </body>
