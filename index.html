@@ -20,6 +20,7 @@
             animation: gradientBG 15s ease infinite;
             margin: 0; color: white; min-height: 100vh;
             display: flex; flex-direction: column; align-items: center;
+            overflow-x: hidden;
         }
 
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
@@ -38,19 +39,8 @@
             transition: 0.3s; margin: 8px; font-size: 14px;
         }
 
+        .game-btn:hover { transform: scale(1.05); }
         .game-btn:active { transform: scale(0.9); }
-
-        /* Menu Overlay */
-        .menu-overlay {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center;
-        }
-
-        .menu-content { background: white; padding: 25px; border-radius: 25px; width: 85%; max-width: 320px; }
-        .menu-item {
-            padding: 18px; color: #333; font-weight: bold; font-size: 18px;
-            border-bottom: 1px solid #eee; cursor: pointer; text-align: center;
-        }
 
         /* Parchiyan Styling */
         .chit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
@@ -59,30 +49,34 @@
             display: flex; align-items: center; justify-content: center;
             border-radius: 15px; font-weight: bold; cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: 0.5s;
-            font-size: 16px;
-        }
-
-        /* Chat/Log Box */
-        .chat-box {
-            background: rgba(0, 0, 0, 0.3); border-radius: 15px;
-            height: 120px; overflow-y: auto; padding: 12px;
-            text-align: left; font-size: 13px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);
+            font-size: 16px; border: 2px solid transparent;
         }
 
         .hidden { display: none; }
-        .highlight { color: var(--warning); font-size: 26px; font-weight: bold; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .highlight { color: var(--warning); font-size: 28px; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.5); }
         
-        #timerDisplay { font-size: 20px; color: #ffeb3b; font-weight: bold; margin-top: 10px; }
+        /* Chat/Log Box */
+        .chat-box {
+            background: rgba(0, 0, 0, 0.3); border-radius: 15px;
+            height: 100px; overflow-y: auto; padding: 12px;
+            text-align: left; font-size: 13px; margin-top: 15px; border: 1px solid rgba(255,255,255,0.1);
+        }
 
         .friend-tag {
-            display: inline-block; background: var(--glass); padding: 5px 12px;
-            border-radius: 20px; margin: 4px; font-size: 12px;
+            display: inline-block; background: var(--glass); padding: 5px 15px;
+            border-radius: 20px; margin: 4px; font-size: 13px; cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.3);
         }
+        .friend-tag:hover { background: rgba(255,0,0,0.4); }
+
+        #timerDisplay { font-size: 30px; font-weight: bold; color: white; margin: 10px; transition: 0.3s; }
+        .timer-low { color: #ff416c !important; transform: scale(1.2); }
+
     </style>
 </head>
 <body>
 
-    <h1 style="margin-top: 25px; letter-spacing: 1px;">🔥 DareDrop Pro</h1>
+    <h1 style="margin-top: 25px; letter-spacing: 2px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">🔥 DareDrop Pro</h1>
 
     <div style="display: flex; gap: 5px;">
         <button class="game-btn" onclick="toggleMenu()">🎮 Choose Game</button>
@@ -90,22 +84,22 @@
     </div>
 
     <div class="main-card">
-        <div id="friendListContainer" style="margin-bottom: 10px;"></div>
-        <h2 id="gameTitle">Ready to Play?</h2>
-        <p id="gameDesc" style="opacity: 0.9; font-size: 14px;">ਪਹਿਲਾਂ ਦੋਸਤ ਐਡ ਕਰੋ, ਫਿਰ ਗੇਮ ਚੁਣੋ!</p>
+        <div id="friendListContainer"></div>
+        <h2 id="gameTitle">Ready?</h2>
+        <p id="gameDesc" style="opacity: 0.9; font-size: 14px;">ਨਾਮ ਐਡ ਕਰੋ ਤੇ ਖੇਡਣਾ ਸ਼ੁਰੂ ਕਰੋ!</p>
 
         <div id="sectionTruth" class="hidden">
             <div id="selectedPlayer" class="highlight">🎲 Spin First!</div>
             <button onclick="spinPlayer()" class="game-btn" style="background:var(--secondary); color:white;">🎡 Spin Friend</button>
             <div style="margin: 15px 0;">
-                <button onclick="getTask('truth')" class="game-btn" style="background:var(--success); color:white; width:110px;">Truth</button>
-                <button onclick="getTask('dare')" class="game-btn" style="background:var(--primary); color:white; width:110px;">Dare</button>
+                <button onclick="getTask('truth')" class="game-btn" style="background:var(--success); color:white; width:100px;">Truth</button>
+                <button onclick="getTask('dare')" class="game-btn" style="background:var(--primary); color:white; width:100px;">Dare</button>
             </div>
-            <div id="taskDisplay" style="padding: 10px; font-size: 18px; min-height: 50px;"></div>
+            <div id="taskDisplay" style="padding: 10px; font-size: 20px; min-height: 50px; font-weight: 500;"></div>
         </div>
 
         <div id="sectionParchiyan" class="hidden">
-            <div id="parchiPlayer" class="highlight">Friend's Turn</div>
+            <div id="parchiPlayer" class="highlight">...</div>
             <p id="parchiInstruction">ਪਰਚੀ ਦੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ!</p>
             <div class="chit-grid">
                 <div class="chit" id="c1" onclick="handleParchi(1)">📄<br>Chit 1</div>
@@ -113,14 +107,13 @@
                 <div class="chit" id="c3" onclick="handleParchi(3)">📄<br>Chit 3</div>
                 <div class="chit" id="c4" onclick="handleParchi(4)">📄<br>Chit 4</div>
             </div>
-            <button class="game-btn" onclick="resetParchiyan()" style="margin-top:15px; font-size: 12px;">🔄 Reset Chits</button>
+            <button class="game-btn" onclick="resetParchiyan()" style="margin-top:15px; background: transparent; color: white; border: 1px solid white;">🔄 Shuffle Chits</button>
         </div>
 
         <div id="sectionAntakshari" class="hidden">
-            <div id="letterBox" class="highlight" style="font-size: 60px;">?</div>
-            <div id="timerDisplay">00s</div>
-            <button onclick="generateLetter()" class="game-btn" style="background:var(--secondary); color:white;">🎤 Get Punjabi Letter</button>
-            <p style="font-size: 14px;">ਇਸ ਅੱਖਰ ਤੋਂ ਗਾਣਾ ਸ਼ੁਰੂ ਕਰੋ!</p>
+            <div id="letterBox" class="highlight" style="font-size: 70px;">?</div>
+            <div id="timerDisplay">15s</div>
+            <button onclick="generateLetter()" class="game-btn" style="background:var(--secondary); color:white;">🎤 New Letter</button>
         </div>
 
         <div class="chat-box" id="chat">
@@ -128,19 +121,18 @@
         </div>
     </div>
 
-    <div id="menuOverlay" class="menu-overlay" onclick="toggleMenu()">
-        <div class="menu-content" onclick="event.stopPropagation()">
-            <div class="menu-item" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
-            <div class="menu-item" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
-            <div class="menu-item" onclick="loadGame('Parchiyan')">🃏 Parchiyan (ਰਾਜਾ ਰਾਣੀ)</div>
-            <div class="menu-item" onclick="toggleMenu()" style="color:red; border:none; margin-top: 10px;">❌ Close</div>
+    <div id="menuOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:100; justify-content:center; align-items:center;" onclick="toggleMenu()">
+        <div style="background:white; padding:25px; border-radius:25px; width:80%; max-width:300px;" onclick="event.stopPropagation()">
+            <div style="padding:15px; color:#333; font-weight:bold; cursor:pointer; text-align:center; border-bottom:1px solid #eee;" onclick="loadGame('Truth & Dare')">🔥 Truth or Dare</div>
+            <div style="padding:15px; color:#333; font-weight:bold; cursor:pointer; text-align:center; border-bottom:1px solid #eee;" onclick="loadGame('Antakshari')">🎤 Antakshari</div>
+            <div style="padding:15px; color:#333; font-weight:bold; cursor:pointer; text-align:center;" onclick="loadGame('Parchiyan')">🃏 Parchiyan (ਰਾਜਾ ਰਾਣੀ)</div>
         </div>
     </div>
 
     <script>
         let friends = [];
         let currentFriendIndex = 0;
-        let timer;
+        let timerInterval;
         let parchiyanNames = ["ਰਾਜਾ 👑", "ਵਜ਼ੀਰ 🗡️", "ਚੋਰ 🎭", "ਸਿਪਾਹੀ 👮"];
         let shuffledChits = [];
 
@@ -152,106 +144,111 @@
         function addFriend() {
             let name = prompt("ਦੋਸਤ ਦਾ ਨਾਮ ਲਿਖੋ:");
             if (name && name.trim() !== "") {
+                if(friends.includes(name.trim())) return alert("ਨਾਮ ਪਹਿਲਾਂ ਹੀ ਹੈ!");
                 friends.push(name.trim());
                 updateFriendList();
-                addChat(name + " joined!");
+                addChat("✅ " + name + " ਐਡ ਹੋ ਗਿਆ!");
             }
+        }
+
+        function deleteFriend(index) {
+            addChat("❌ " + friends[index] + " ਨੂੰ ਹਟਾ ਦਿੱਤਾ।");
+            friends.splice(index, 1);
+            updateFriendList();
         }
 
         function updateFriendList() {
             const container = document.getElementById('friendListContainer');
-            container.innerHTML = friends.map(f => `<span class="friend-tag">${f}</span>`).join("");
+            container.innerHTML = friends.map((f, i) => `<span class="friend-tag" onclick="deleteFriend(${i})">${f} ✕</span>`).join("");
         }
 
         function loadGame(game) {
-            if (friends.length < 1 && game !== 'Antakshari') {
-                alert("ਪਹਿਲਾਂ + Add Friend ਬਟਨ ਤੋਂ ਦੋਸਤ ਐਡ ਕਰੋ!");
-                return;
-            }
-
-            document.getElementById('sectionTruth').classList.add('hidden');
-            document.getElementById('sectionParchiyan').classList.add('hidden');
-            document.getElementById('sectionAntakshari').classList.add('hidden');
+            if (friends.length < 2 && game !== 'Antakshari') return alert("ਘੱਟੋ-ਘੱਟ 2 ਦੋਸਤ ਐਡ ਕਰੋ!");
+            
+            document.querySelectorAll('.main-card > div').forEach(div => { if(div.id) div.classList.add('hidden'); });
             document.getElementById('gameTitle').innerText = game;
             
-            if(game === 'Truth & Dare') {
-                document.getElementById('sectionTruth').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Classic fun mode!";
-            } else if(game === 'Parchiyan') {
-                document.getElementById('sectionParchiyan').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "ਰਾਜਾ, ਵਜ਼ੀਰ, ਚੋਰ, ਸਿਪਾਹੀ!";
-                resetParchiyan();
-            } else if(game === 'Antakshari') {
-                document.getElementById('sectionAntakshari').classList.remove('hidden');
-                document.getElementById('gameDesc').innerText = "Sing or Lose!";
-            }
+            if(game === 'Truth & Dare') document.getElementById('sectionTruth').classList.remove('hidden');
+            else if(game === 'Parchiyan') { document.getElementById('sectionParchiyan').classList.remove('hidden'); resetParchiyan(); }
+            else if(game === 'Antakshari') document.getElementById('sectionAntakshari').classList.remove('hidden');
+            
             toggleMenu();
-            addChat("Started: " + game);
+            celebrate();
         }
 
-        // --- Truth Dare ---
+        // --- Celebration Effect ---
+        function celebrate() {
+            for(let i=0; i<30; i++) {
+                let conf = document.createElement('div');
+                conf.innerText = "🎉";
+                conf.style.position = "fixed";
+                conf.style.left = Math.random() * 100 + "vw";
+                conf.style.top = "100vh";
+                conf.style.fontSize = "20px";
+                conf.style.zIndex = "1000";
+                conf.style.transition = "transform 2s ease-out, opacity 2s";
+                document.body.appendChild(conf);
+                setTimeout(() => {
+                    conf.style.transform = `translateY(-110vh) rotate(${Math.random() * 360}deg)`;
+                    conf.style.opacity = "0";
+                }, 100);
+                setTimeout(() => conf.remove(), 2000);
+            }
+        }
+
+        // --- Truth/Dare ---
         function spinPlayer() {
             let p = friends[Math.floor(Math.random() * friends.length)];
             document.getElementById('selectedPlayer').innerText = "👉 " + p;
-            document.getElementById('taskDisplay').innerText = "";
         }
 
         function getTask(type) {
-            const t = ["ਸਭ ਤੋਂ ਵੱਡਾ ਡਰ?", "ਆਖਰੀ ਝੂਠ ਕੀ ਸੀ?", "ਤੁਹਾਡਾ ਕ੍ਰਸ਼ ਕੌਣ ਹੈ?", "ਫੋਨ ਦਾ ਪਾਸਵਰਡ?"];
-            const d = ["10 ਪੁਸ਼ਅੱਪ ਕਰੋ", "ਬਾਂਦਰ ਵਾਂਗ ਐਕਟਿੰਗ", "ਕੋਈ ਮਜ਼ਾਕੀਆ ਗਾਣਾ", "ਬਿਨਾਂ ਸੰਗੀਤ ਡਾਂਸ"];
-            let list = type === 'truth' ? t : d;
+            const list = type === 'truth' ? ["ਸਭ ਤੋਂ ਵੱਡੀ ਗਲਤੀ?", "ਆਖਰੀ ਝੂਠ?", "ਕਿਸ ਤੋਂ ਡਰ ਲੱਗਦਾ?", "ਪਹਿਲਾ ਕ੍ਰਸ਼?"] : ["ਕੋਈ ਪੰਜਾਬੀ ਗਾਣਾ ਗਾਓ", "10 ਪੁਸ਼-ਅੱਪ", "ਮੁਰਗਾ ਬਣੋ", "ਫਨੀ ਫੋਟੋ ਖਿਚੋ"];
             document.getElementById('taskDisplay').innerText = list[Math.floor(Math.random() * list.length)];
         }
 
-        // --- Real Parchiyan Logic ---
+        // --- Parchiyan ---
         function resetParchiyan() {
             shuffledChits = [...parchiyanNames].sort(() => Math.random() - 0.5);
             currentFriendIndex = 0;
             document.getElementById('parchiPlayer').innerText = friends[0];
-            document.getElementById('parchiInstruction').innerText = "ਪਰਚੀ ਦੇਖਣ ਲਈ ਕਲਿੱਕ ਕਰੋ!";
             for(let i=1; i<=4; i++) {
                 let c = document.getElementById('c'+i);
                 c.innerText = "📄\nChit " + i;
                 c.style.background = "white";
+                c.style.borderColor = "transparent";
             }
         }
 
         function handleParchi(id) {
             let el = document.getElementById('c'+id);
             if (el.innerText.includes("Chit")) {
-                // Secret Look
-                el.innerText = shuffledChits[id-1];
+                let val = shuffledChits[id-1];
+                el.innerText = val;
                 el.style.background = "var(--warning)";
-                document.getElementById('parchiInstruction').innerText = "ਹੁਣ ਇਹ ਪਰਚੀ 'Pass' ਕਰੋ";
+                if(val.includes("ਰਾਜਾ")) celebrate();
             } else {
-                // Pass it
                 el.innerText = "📄\nChit " + id;
                 el.style.background = "white";
                 currentFriendIndex = (currentFriendIndex + 1) % friends.length;
                 document.getElementById('parchiPlayer').innerText = friends[currentFriendIndex];
-                document.getElementById('parchiInstruction').innerText = "ਅਗਲੇ ਪਲੇਅਰ ਦੀ ਵਾਰੀ!";
-                addChat(`Chit ${id} passed to ${friends[currentFriendIndex]}`);
+                addChat("Passed to " + friends[currentFriendIndex]);
             }
         }
 
-        // --- Antakshari Logic ---
+        // --- Antakshari ---
         function generateLetter() {
             const pLetters = "ੳਅੲਸਹਕਖਗਘਚਛਜਝਟਠਡਢਤਥਦਧਨਪਫਬਭਮਯਰਲਵੜ";
-            let char = pLetters[Math.floor(Math.random() * pLetters.length)];
-            document.getElementById('letterBox').innerText = char;
-            startTimer();
-        }
-
-        function startTimer() {
+            document.getElementById('letterBox').innerText = pLetters[Math.floor(Math.random() * pLetters.length)];
             let timeLeft = 15;
-            clearInterval(timer);
-            timer = setInterval(() => {
-                document.getElementById('timerDisplay').innerText = timeLeft + "s";
-                if(timeLeft <= 0) {
-                    clearInterval(timer);
-                    alert("ਸਮਾਂ ਖਤਮ! 🛑");
-                }
+            let timerEl = document.getElementById('timerDisplay');
+            timerEl.classList.remove('timer-low');
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
                 timeLeft--;
+                timerEl.innerText = timeLeft + "s";
+                if(timeLeft <= 5) timerEl.classList.add('timer-low');
+                if(timeLeft <= 0) { clearInterval(timerInterval); alert("ਸਮਾਂ ਖਤਮ! 🛑"); }
             }, 1000);
         }
 
