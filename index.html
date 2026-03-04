@@ -1,191 +1,101 @@
-<!DOCTYPE html>
-<html lang="pa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The 10-Year Loading Project</title>
-    <style>
-        :root {
-            --primary: #00ffcc;
-            --bg: #0a0a0a;
-        }
+"use client";
+import React, { useState, useEffect } from 'react';
+import { createClient } from '@supabase/supabase-js'; // Pehla 'npm install @supabase/supabase-js' karo
 
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
+// Supabase Configuration (Apni details aithe bharo)
+const supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_ANON_KEY');
 
-        .container {
-            width: 90%;
-            max-width: 800px;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+export default function PindTalentHub() {
+  const [user, setUser] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [view, setView] = useState('market'); // market, artisan-dashboard, login
 
-        h1 { font-size: 2rem; margin-bottom: 30px; color: #ffcc00; }
+  // 1. Fetch Products
+  useEffect(() => {
+    async function getProducts() {
+      const { data } = await supabase.from('products').select('*');
+      setProducts(data || []);
+    }
+    getProducts();
+  }, []);
 
-        /* Progress Bar Styling */
-        .progress-wrapper {
-            position: relative;
-            height: 40px;
-            background: #1a1a1a;
-            border-radius: 20px;
-            overflow: hidden;
-            border: 2px solid #333;
-        }
+  // 2. Add Product (For Artisans)
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const newProduct = {
+      title: formData.get('title'),
+      price: formData.get('price'),
+      image_url: 'https://via.placeholder.com/150', // Aithe image upload logic ayega
+      artisan_id: user.id
+    };
+    await supabase.from('products').insert([newProduct]);
+    alert("Product List Ho Gaya!");
+    setView('market');
+  };
 
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00c6ff, #0072ff);
-            box-shadow: 0 0 20px rgba(0, 114, 255, 0.5);
-            /* Transition remove kiti hai kyunki requestAnimationFrame handle karega */
-        }
+  return (
+    <div className="min-h-screen bg-orange-50 font-sans">
+      {/* Header */}
+      <nav className="p-4 bg-white shadow-md flex justify-between items-center sticky top-0 z-50">
+        <h1 className="text-2xl font-black text-orange-600">PIND TALENT 🇮🇳</h1>
+        <div className="space-x-4">
+          <button onClick={() => setView('market')} className="font-bold">Market</button>
+          {user ? (
+            <button onClick={() => setView('artisan-dashboard')} className="bg-orange-600 text-white px-4 py-2 rounded-lg">Mera Dashboard</button>
+          ) : (
+            <button onClick={() => setView('login')} className="bg-green-700 text-white px-4 py-2 rounded-lg">Karigar Login</button>
+          )}
+        </div>
+      </nav>
 
-        .percentage-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            font-size: 0.9rem;
-            color: white;
-            text-shadow: 1px 1px 2px black;
-        }
-
-        #timer {
-            font-family: 'Courier New', monospace;
-            font-size: 1.8rem;
-            margin: 20px 0;
-            color: var(--primary);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-            font-size: 0.9rem;
-            color: #888;
-        }
-
-        .milestone {
-            margin-top: 30px;
-            padding: 15px;
-            border-left: 4px solid var(--primary);
-            background: rgba(0, 255, 204, 0.05);
-            text-align: left;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Loading Your Future...</h1>
-    
-    <div class="progress-wrapper">
-        <div id="bar" class="progress-fill"></div>
-        <div id="percentText" class="percentage-text">0.0000000000%</div>
-    </div>
-
-    <div id="timer">00y 000d 00h 00m 00s</div>
-
-    <div class="milestone">
-        <strong>Current Milestone:</strong> 
-        <span id="milestoneTxt">Just started the journey.</span>
-    </div>
-
-    <div class="stats-grid">
-        <div>Started: <span id="startDateTxt">-</span></div>
-        <div>Finish: <span id="endDateTxt">-</span></div>
-    </div>
-</div>
-
-<script>
-    // 1. Setup Dates
-    let startDate = localStorage.getItem('decade_start');
-    let endDate = localStorage.getItem('decade_end');
-
-    if (!startDate) {
-        startDate = new Date().toISOString();
-        const end = new Date();
-        end.setFullYear(end.getFullYear() + 10);
-        endDate = end.toISOString();
+      {/* Main Content */}
+      <main className="p-6">
         
-        localStorage.setItem('decade_start', startDate);
-        localStorage.setItem('decade_end', endDate);
-    }
+        {/* VIEW: Marketplace */}
+        {view === 'market' && (
+          <div>
+            <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Pind de Karigaran da Samaan</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {products.map(p => (
+                <div key={p.id} className="bg-white p-4 rounded-2xl shadow-lg border-b-4 border-orange-500">
+                  <div className="h-40 bg-gray-200 rounded-xl mb-4"></div>
+                  <h3 className="text-xl font-bold">{p.title}</h3>
+                  <p className="text-orange-600 font-black text-2xl">₹{p.price}</p>
+                  <button className="w-full mt-4 bg-gray-900 text-white py-3 rounded-xl font-bold hover:bg-green-700 transition">Hune Order Karo</button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const totalDuration = end - start;
+        {/* VIEW: Artisan Dashboard (Upload Product) */}
+        {view === 'artisan-dashboard' && (
+          <div className="max-w-xl mx-auto bg-white p-8 rounded-3xl shadow-xl">
+            <h2 className="text-2xl font-bold mb-6">Nawa Product Add Karo</h2>
+            <form onSubmit={handleAddProduct} className="space-y-4">
+              <input name="title" placeholder="Product da Naam (e.g. Hath di Jutti)" className="w-full p-4 border rounded-xl" required />
+              <input name="price" placeholder="Keemat (₹)" className="w-full p-4 border rounded-xl" required />
+              <textarea name="desc" placeholder="Product bare daso..." className="w-full p-4 border rounded-xl" />
+              <div className="p-4 border-2 border-dashed border-orange-300 rounded-xl text-center">
+                <p className="text-sm text-gray-500">Photo Upload Karo (.webp recommended)</p>
+                <input type="file" className="mt-2" />
+              </div>
+              <button type="submit" className="w-full bg-orange-600 text-white p-4 rounded-xl font-bold">Market vich Pa deo</button>
+            </form>
+          </div>
+        )}
 
-    document.getElementById('startDateTxt').innerText = start.toLocaleDateString();
-    document.getElementById('endDateTxt').innerText = end.toLocaleDateString();
+        {/* VIEW: Login (Mockup) */}
+        {view === 'login' && (
+          <div className="max-w-sm mx-auto bg-white p-8 rounded-3xl shadow-xl text-center">
+            <h2 className="text-2xl font-bold mb-4">Karigar Account</h2>
+            <p className="text-gray-500 mb-6">Apna saman vechan layi login karo</p>
+            <button onClick={() => {setUser({id: '1', name: 'Kala Singh'}); setView('artisan-dashboard');}} className="w-full bg-blue-600 text-white p-4 rounded-xl font-bold">Login with Google/Phone</button>
+          </div>
+        )}
 
-    // 2. Smooth Animation Engine
-    function update() {
-        const now = new Date();
-        const remaining = end - now;
-        const elapsed = now - start;
-
-        if (remaining <= 0) {
-            document.getElementById('timer').innerText = "DONE!";
-            return;
-        }
-
-        // Percentage Calculation (Ultra High Precision)
-        const progress = (elapsed / totalDuration) * 100;
-        document.getElementById('bar').style.width = progress + "%";
-        document.getElementById('percentText').innerText = progress.toFixed(10) + "%";
-
-        // Timer Strings
-        const totalSecs = Math.floor(remaining / 1000);
-        const y = Math.floor(totalSecs / (365 * 24 * 3600));
-        const d = Math.floor((totalSecs % (365 * 24 * 3600)) / (24 * 3600));
-        const h = Math.floor((totalSecs % (24 * 3600)) / 3600);
-        const m = Math.floor((totalSecs % 3600) / 60);
-        const s = totalSecs % 60;
-
-        document.getElementById('timer').innerText = 
-            `${y}y ${String(d).padStart(3, '0')}d ${String(h).padStart(2, '0')}h ${String(m).padStart(2, '0')}m ${String(s).padStart(2, '0')}s`;
-
-        // Milestone Logic
-        updateMilestone(progress);
-
-        // Run next frame (60 times per second)
-        requestAnimationFrame(update);
-    }
-
-    function updateMilestone(p) {
-        let msg = "The Great Wait Begins...";
-        if (p > 1) msg = "1% done. You are very patient.";
-        if (p > 10) msg = "10% complete! A whole year has passed?";
-        if (p > 50) msg = "Halfway there! Keep the browser open (just kidding).";
-        if (p > 90) msg = "The end is near. Can you feel it?";
-        document.getElementById('milestoneTxt').innerText = msg;
-    }
-
-    // Start the engine
-    requestAnimationFrame(update);
-
-    // 3. Anti-Cheat (Optional)
-    window.addEventListener('storage', () => {
-        alert("Oi! Don't mess with the local storage!");
-        location.reload();
-    });
-</script>
-
-</body>
-</html>
+      </main>
+    </div>
+  );
+}
