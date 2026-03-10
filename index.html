@@ -1,151 +1,65 @@
-"use client";
-import React, { useState, useEffect } from 'react';
-import { createClient } from '@supabase/supabase-js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Showcase | Authentic Handcrafted</title>
+    <style>
+        /* CSS Styling */
+        :root { --bg: #F5F2ED; --text: #4A3F35; --accent: #C19A6B; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        
+        /* Hero Section */
+        .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .hero h1 { font-size: 3rem; margin-bottom: 10px; color: var(--text); }
+        .cta-btn { padding: 12px 30px; border: 1px solid var(--text); background: transparent; cursor: pointer; margin: 10px; transition: 0.3s; }
+        .cta-btn:hover { background: var(--text); color: #fff; }
 
-// 1. Supabase Client Setup (Replace with your keys)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!, 
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+        /* Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px; }
+        .card { background: #fff; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
 
-export default function PindTalentHub() {
-  const [products, setProducts] = useState<any[]>([]);
-  const [view, setView] = useState('market'); // market, upload
-  const [loading, setLoading] = useState(false);
+        /* Footer */
+        footer { text-align: center; padding: 40px; background: #e5e0da; }
+        
+        @media (max-width: 600px) { .hero h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
 
-  // 2. Fetch Products from Database
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  async function fetchProducts() {
-    const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
-    if (data) setProducts(data);
-  }
-
-  // 3. Image Upload + Product Listing Logic
-  const handleUpload = async (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-    
-    const formData = new FormData(e.target);
-    const file = (e.target.image as any).files[0];
-    const phone = formData.get('phone') as string;
-    const title = formData.get('title') as string;
-    const price = formData.get('price') as string;
-
-    try {
-      // Step A: Upload Image to Supabase Storage
-      const fileName = `${Date.now()}-${file.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(fileName, file);
-
-      if (uploadError) throw uploadError;
-
-      // Step B: Get Public URL
-      const { data: urlData } = supabase.storage.from('product-images').getPublicUrl(fileName);
-
-      // Step C: Insert into Database
-      const { error: dbError } = await supabase.from('products').insert([{
-        title,
-        price,
-        image_url: urlData.publicUrl,
-        artisan_phone: phone
-      }]);
-
-      if (dbError) throw dbError;
-
-      alert("Mubarkaan! Samaan Market vich live ho gaya.");
-      setView('market');
-      fetchProducts();
-    } catch (err: any) {
-      alert("Error: " + err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // 4. WhatsApp Order Logic
-  const placeOrder = (product: any) => {
-    const message = `Sat Sri Akal! Mainu tuhada product "${product.title}" pasand aya hai. Ki eh available hai?`;
-    window.open(`https://wa.me/${product.artisan_phone}?text=${encodeURIComponent(message)}`);
-  };
-
-  return (
-    <div className="min-h-screen bg-[#fafafa] font-sans text-slate-900">
-      {/* Navbar */}
-      <nav className="p-5 bg-white border-b flex justify-between items-center sticky top-0 z-50">
-        <h1 className="text-2xl font-black text-orange-600 tracking-tighter">PIND TALENT 🇮🇳</h1>
-        <div className="flex gap-4">
-          <button onClick={() => setView('market')} className={`px-4 py-2 font-bold ${view === 'market' ? 'text-orange-600 border-b-2 border-orange-600' : ''}`}>Market</button>
-          <button onClick={() => setView('upload')} className="bg-orange-600 text-white px-5 py-2 rounded-full font-bold shadow-lg hover:bg-orange-700">Saman Vecho +</button>
+    <section class="hero">
+        <h1>Discover Authentic Handcrafted Creations</h1>
+        <p>A global platform where artisans showcase their handmade masterpieces.</p>
+        <div>
+            <button class="cta-btn">Explore Artisans</button>
+            <button class="cta-btn">Join as Artisan</button>
         </div>
-      </nav>
+    </section>
 
-      <main className="max-w-7xl mx-auto p-6">
-        {/* MARKET VIEW */}
-        {view === 'market' && (
-          <div>
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-black mb-2">Asli Pind Da Hunnar</h2>
-              <p className="text-slate-500 italic">Directly from the artisans of Punjab</p>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {products.map((p) => (
-                <div key={p.id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-slate-100 group">
-                  <div className="h-56 overflow-hidden bg-slate-100">
-                    <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                  </div>
-                  <div className="p-6">
-                    <h3 className="text-xl font-bold mb-1">{p.title}</h3>
-                    <p className="text-2xl font-black text-green-700 mb-4">₹{p.price}</p>
-                    <button 
-                      onClick={() => placeOrder(p)}
-                      className="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition flex items-center justify-center gap-2"
-                    >
-                      <span>Order on WhatsApp</span>
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* UPLOAD VIEW */}
-        {view === 'upload' && (
-          <div className="max-w-xl mx-auto bg-white p-10 rounded-[2.5rem] shadow-2xl border border-orange-100">
-            <h2 className="text-3xl font-black mb-6 text-orange-600">Apna Saman List Karo</h2>
-            <form onSubmit={handleUpload} className="space-y-5">
-              <div>
-                <label className="block text-sm font-bold mb-2">Product da Naam</label>
-                <input name="title" required className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500" placeholder="e.g. Hath di Kadahi wala Suit" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-2">Keemat (Rupee vich)</label>
-                <input name="price" type="number" required className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500" placeholder="e.g. 1500" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-2">Tuhada WhatsApp Number</label>
-                <input name="phone" required className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-orange-500" placeholder="e.g. 919876543210" />
-              </div>
-              <div>
-                <label className="block text-sm font-bold mb-2">Saman di Photo (WebP/JPG)</label>
-                <input name="image" type="file" accept="image/*" required className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-orange-50 file:text-orange-700" />
-              </div>
-              <button 
-                disabled={loading}
-                type="submit" 
-                className={`w-full p-4 rounded-2xl font-black text-lg transition ${loading ? 'bg-slate-300' : 'bg-orange-600 text-white hover:bg-orange-700'}`}
-              >
-                {loading ? "Upload Ho Reha Hai..." : "Live Karo 🚀"}
-              </button>
-            </form>
-          </div>
-        )}
-      </main>
+    <div class="grid" id="productGrid">
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1578749556568-bc5c40e6d561?w=500" alt="Wood Craft">
+            <h3>Hand-carved Oak Bowl</h3>
+            <p><strong>Artisan:</strong> John Doe</p>
+            <button class="cta-btn">View Details</button>
+        </div>
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=500" alt="Pottery">
+            <h3>Ceramic Vase</h3>
+            <p><strong>Artisan:</strong> Sarah Smith</p>
+            <button class="cta-btn">View Details</button>
+        </div>
     </div>
-  );
-}
+
+    <footer>
+        <p>&copy; 2026 Artisan Showcase Platform</p>
+    </footer>
+
+    <script>
+        // Simple filter logic placeholder
+        console.log("Website Loaded Successfully!");
+    </script>
+</body>
+</html>
