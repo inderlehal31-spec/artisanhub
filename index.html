@@ -8,7 +8,7 @@
     
     <style>
         :root {
-            --primary: #e67e22; /* ਥੋੜਾ ਮਿੱਟੀ ਵਰਗਾ ਰੰਗ - ਕਾਰੀਗਰੀ ਲਈ */
+            --primary: #e67e22; 
             --dark: #2c3e50;
             --light: #fdfaf6;
             --success: #27ae60;
@@ -24,7 +24,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Modern Navigation */
         nav { 
             background: rgba(255, 255, 255, 0.9); 
             backdrop-filter: blur(10px);
@@ -45,12 +44,10 @@
             color: var(--dark); 
             margin-left: 25px; 
             font-weight: 500; 
-            position: relative;
         }
 
         .nav-links a:hover { color: var(--primary); }
 
-        /* Hero Section */
         header { 
             background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=1200');
             background-size: cover;
@@ -60,12 +57,10 @@
             text-align: center; 
         }
 
-        header h1 { font-size: 3rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        header p { font-size: 1.2rem; opacity: 0.9; }
+        header h1 { font-size: 3rem; margin-bottom: 10px; }
 
         .container { padding: 40px 5%; max-width: 1200px; margin: auto; }
 
-        /* Product Cards */
         .section-title { text-align: center; margin-bottom: 40px; font-size: 2rem; color: var(--dark); }
         .section-title::after { content: ''; display: block; width: 60px; height: 4px; background: var(--primary); margin: 10px auto; border-radius: 2px; }
 
@@ -83,12 +78,11 @@
             border: 1px solid #eee;
         }
 
-        .product-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .product-card:hover { transform: translateY(-10px); }
 
         .product-card img { width: 100%; height: 250px; object-fit: cover; }
 
         .product-info { padding: 20px; text-align: center; }
-        .product-info h3 { margin: 10px 0; color: var(--dark); }
         .price { color: var(--primary); font-weight: 700; font-size: 1.2rem; margin-bottom: 15px; }
 
         .btn { 
@@ -99,24 +93,18 @@
             text-decoration: none; 
             border-radius: 50px; 
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
         }
 
-        .btn:hover { background: #219150; transform: scale(1.05); }
-
-        /* Contact Form */
-        .contact-section { background: #fff; border-radius: 20px; padding: 40px; margin-top: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .contact-section { background: #fff; border-radius: 20px; padding: 20px; margin-top: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
 
         footer { text-align: center; padding: 40px; background: var(--dark); color: white; margin-top: 50px; }
 
-        /* Responsive */
         .hamburger { display: none; font-size: 24px; cursor: pointer; }
 
         @media (max-width: 768px) {
-            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: white; padding: 20px; box-shadow: 0 10px 10px rgba(0,0,0,0.05); }
+            .nav-links { display: none; flex-direction: column; position: absolute; top: 70px; left: 0; width: 100%; background: white; padding: 20px; }
             .nav-links.active { display: flex; }
             .hamburger { display: block; }
-            header h1 { font-size: 2rem; }
         }
     </style>
 </head>
@@ -139,7 +127,6 @@
     </header>
 
     <div class="container">
-        
         <section id="products">
             <h2 class="section-title">ਸਾਡੇ ਖਾਸ ਉਤਪਾਦ</h2>
             <div class="product-grid">
@@ -151,36 +138,22 @@
                         <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ ਖਰੀਦਣਾ ਹੈ" class="btn" target="_blank">WhatsApp 'ਤੇ ਆਰਡਰ ਕਰੋ</a>
                     </div>
                 </div>
-
-                <div class="product-card">
-                    <img src="https://images.unsplash.com/photo-1610701596007-11502861dc43?w=500" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
-                    <div class="product-info">
-                        <h3>ਮਿੱਟੀ ਦੇ ਦੇਸੀ ਬਰਤਨ</h3>
-                        <p class="price">₹800</p>
-                        <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਮਿੱਟੀ ਦੇ ਬਰਤਨ ਖਰੀਦਣਾ ਹੈ" class="btn" target="_blank">WhatsApp 'ਤੇ ਆਰਡਰ ਕਰੋ</a>
-                    </div>
                 </div>
-
-                <div class="product-card">
-                    <img src="https://images.unsplash.com/photo-1605721911519-3dfeb3be25e7?w=500" alt="ਜੁੱਤੀ">
-                    <div class="product-info">
-                        <h3>ਪੰਜਾਬੀ ਕਢਾਈ ਵਾਲੀ ਜੁੱਤੀ</h3>
-                        <p class="price">₹1,200</p>
-                        <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਜੁੱਤੀ ਚਾਹੀਦੀ ਹੈ" class="btn" target="_blank">WhatsApp 'ਤੇ ਆਰਡਰ ਕਰੋ</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" style="padding: 80px 0; text-align: center;">
-            <h2 class="section-title">ਸਾਡਾ ਮਕਸਦ</h2>
-            <p style="max-width: 800px; margin: auto; font-size: 1.1rem; line-height: 1.8;">ਅਸੀਂ ਪੰਜਾਬ ਦੇ ਦੂਰ-ਦੁਰਾਡੇ ਪਿੰਡਾਂ ਵਿੱਚ ਬੈਠੇ ਉਨ੍ਹਾਂ ਕਾਰੀਗਰਾਂ ਨੂੰ ਇੱਕ ਪਲੇਟਫਾਰਮ ਦੇ ਰਹੇ ਹਾਂ, ਜਿਨ੍ਹਾਂ ਦੀ ਕਲਾ ਅੱਜ ਵੀ ਅਸਲੀ ਤੇ ਸ਼ੁੱਧ ਹੈ। ਸਾਡੇ ਰਾਹੀਂ ਤੁਸੀਂ ਸਿੱਧਾ ਕਾਰੀਗਰ ਦੀ ਮਿਹਨਤ ਖਰੀਦਦੇ ਹੋ।</p>
         </section>
 
         <section id="contact" class="contact-section">
             <h2 class="section-title">ਆਰਡਰ ਕਰੋ</h2>
             <p style="text-align: center; margin-bottom: 20px;">ਹੇਠਾਂ ਦਿੱਤੇ ਫਾਰਮ ਵਿੱਚ ਆਪਣੀ ਜਾਣਕਾਰੀ ਭਰੋ, ਅਸੀਂ ਤੁਹਾਡੇ ਨਾਲ ਜਲਦੀ ਸੰਪਰਕ ਕਰਾਂਗੇ।</p>
-            <iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true" width="100%" height="500" frameborder="0" style="border:none; border-radius: 10px;">Loading...</iframe>
+            
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSeOH4iZgppHc2LLVv30tOumbYKzhPF2BOUEjO6IklEZfOOaUw/viewform?embedded=true" 
+                width="100%" 
+                height="850" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0" 
+                style="border:none; border-radius: 10px;">ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ…
+            </iframe>
         </section>
     </div>
 
