@@ -1,65 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artisan Showcase | Authentic Handcrafted</title>
+    <title>ਆਰਟੀਸਨ ਹੱਬ | Artisan Hub Punjab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Punjabi:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS Styling */
-        :root { --bg: #F5F2ED; --text: #4A3F35; --accent: #C19A6B; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
         
-        /* Hero Section */
-        .hero { height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        .hero h1 { font-size: 3rem; margin-bottom: 10px; color: var(--text); }
-        .cta-btn { padding: 12px 30px; border: 1px solid var(--text); background: transparent; cursor: pointer; margin: 10px; transition: 0.3s; }
-        .cta-btn:hover { background: var(--text); color: #fff; }
-
-        /* Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 40px; }
-        .card { background: #fff; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 250px; object-fit: cover; }
-
-        /* Footer */
-        footer { text-align: center; padding: 40px; background: #e5e0da; }
+        body { font-family: 'Noto Sans Punjabi', sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
         
-        @media (max-width: 600px) { .hero h1 { font-size: 2rem; } }
+        /* Navigation Bar */
+        nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav h2 { margin: 0; color: #2c3e50; }
+        nav a { text-decoration: none; color: #333; margin-left: 20px; font-weight: bold; }
+        
+        header { background: #2c3e50; color: white; padding: 3rem 1rem; text-align: center; }
+        .container { padding: 20px; max-width: 1000px; margin: auto; }
+        
+        /* Grid Layout */
+        
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; padding: 20px 0; }
+        
+        .product-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); transition: transform 0.3s; text-align: center; }
+        .product-card:hover { transform: scale(1.03); }
+        .product-card img { width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 15px; }
+        
+        .btn { display: inline-block; background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; margin-top: 15px; width: 80%; }
+        .btn:hover { background: #218838; }
+        
+        footer { margin-top: 50px; padding: 30px; background: #333; color: white; text-align: center; }
     </style>
 </head>
 <body>
 
-    <section class="hero">
-        <h1>Discover Authentic Handcrafted Creations</h1>
-        <p>A global platform where artisans showcase their handmade masterpieces.</p>
+    <nav>
+        <h2>Artisan Hub</h2>
         <div>
-            <button class="cta-btn">Explore Artisans</button>
-            <button class="cta-btn">Join as Artisan</button>
+            <a href="#home">ਮੁੱਖ ਪੰਨਾ</a>
+            <a href="#products">ਉਤਪਾਦ</a>
+            <a href="#footer">ਸੰਪਰਕ</a>
         </div>
-    </section>
+    </nav>
 
-    <div class="grid" id="productGrid">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1578749556568-bc5c40e6d561?w=500" alt="Wood Craft">
-            <h3>Hand-carved Oak Bowl</h3>
-            <p><strong>Artisan:</strong> John Doe</p>
-            <button class="cta-btn">View Details</button>
-        </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1577720580479-7d839d829c73?w=500" alt="Pottery">
-            <h3>Ceramic Vase</h3>
-            <p><strong>Artisan:</strong> Sarah Smith</p>
-            <button class="cta-btn">View Details</button>
+    <header id="home">
+        <h1>ਆਰਟੀਸਨ ਹੱਬ ਪੰਜਾਬ</h1>
+        <p>ਅਸਲੀ ਹੱਥ-ਕਲਾ, ਸਿੱਧੀ ਤੁਹਾਡੇ ਘਰ</p>
+    </header>
+
+    <div class="container" id="products">
+        <h2>ਸਾਡੇ ਖਾਸ ਉਤਪਾਦ</h2>
+        <div class="product-grid">
+            <div class="product-card">
+                <img src="phulkari.jpg" alt="ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ">
+                <h3>ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ</h3>
+                <p>ਕੀਮਤ: ₹1500</p>
+                <a href="https://wa.me/91XXXXXXXXXX?text=ਮੈਨੂੰ ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ ਖਰੀਦਣਾ ਹੈ" class="btn">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
+            </div>
+            <div class="product-card">
+                <img src="pottery.jpg" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
+                <h3>ਮਿੱਟੀ ਦੇ ਬਰਤਨ</h3>
+                <p>ਕੀਮਤ: ₹800</p>
+                <a href="https://wa.me/91XXXXXXXXXX?text=ਮੈਨੂੰ ਮਿੱਟੀ ਦੇ ਬਰਤਨ ਖਰੀਦਣਾ ਹੈ" class="btn">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
+            </div>
         </div>
     </div>
 
-    <footer>
-        <p>&copy; 2026 Artisan Showcase Platform</p>
+    <footer id="footer">
+        <p>ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ: +91 XXXXXXXXXX | ਈਮੇਲ: info@artisanhub.com</p>
     </footer>
 
-    <script>
-        // Simple filter logic placeholder
-        console.log("Website Loaded Successfully!");
-    </script>
 </body>
 </html>
