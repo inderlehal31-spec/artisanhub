@@ -4,53 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ਆਰਟੀਸਨ ਹੱਬ | Artisan Hub Punjab</title>
+    <meta name="description" content="ਪੰਜਾਬ ਦੀਆਂ ਅਸਲੀ ਹੱਥ-ਕਲਾਵਾਂ, ਫੁਲਕਾਰੀ ਅਤੇ ਮਿੱਟੀ ਦੇ ਬਰਤਨ ਸਿੱਧੇ ਕਾਰੀਗਰਾਂ ਤੋਂ ਖਰੀਦੋ।">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Punjabi:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        html { scroll-behavior: smooth; }
-        body { font-family: 'Noto Sans Punjabi', sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
-        
-        /* Navigation */
+        body { font-family: 'Noto Sans Punjabi', sans-serif; margin: 0; background-color: #f9f9f9; color: #333; }
         nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .nav-links a { text-decoration: none; color: #333; margin-left: 20px; font-weight: bold; }
-        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
-        
         header { background: #2c3e50; color: white; padding: 3rem 1rem; text-align: center; }
-        .container { padding: 20px; max-width: 800px; margin: auto; }
-        
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .product-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
-        
-        /* Form Styles */
-        .contact-section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        
-        .btn { display: inline-block; background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; border: none; cursor: pointer; width: 100%; transition: 0.3s; }
-        .btn:hover { background: #218838; }
-        
-        footer { margin-top: 50px; padding: 30px; background: #333; color: white; text-align: center; }
-
-        /* Mobile Responsive */
-        @media (max-width: 600px) {
-            .menu-toggle { display: block; }
-            .nav-links { display: none; width: 100%; flex-direction: column; background: #fff; position: absolute; top: 70px; left: 0; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); text-align: center; }
-            .nav-links.active { display: flex; }
-            .nav-links a { margin: 10px 0; display: block; }
-        }
+        .container { padding: 20px; max-width: 900px; margin: auto; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 20px; }
+        .product-card { background: white; border-radius: 12px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center; }
+        .product-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        .btn { display: block; background: #28a745; color: white; padding: 10px; text-decoration: none; border-radius: 5px; margin-top: 10px; font-weight: bold; }
+        .contact-section { background: white; padding: 30px; border-radius: 12px; margin-top: 40px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        footer { margin-top: 50px; padding: 20px; background: #333; color: white; text-align: center; }
     </style>
 </head>
 <body>
 
     <nav>
         <h2>Artisan Hub</h2>
-        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-        <div class="nav-links" id="navLinks">
-            <a href="#home">ਮੁੱਖ ਪੰਨਾ</a>
-            <a href="#products">ਉਤਪਾਦ</a>
-            <a href="#contact">ਸੰਪਰਕ</a>
-        </div>
+        <div><a href="#products">ਉਤਪਾਦ</a> | <a href="#contact">ਸੰਪਰਕ</a></div>
     </nav>
 
     <header id="home">
@@ -62,47 +36,29 @@
         <h2>ਸਾਡੇ ਖਾਸ ਉਤਪਾਦ</h2>
         <div class="product-grid">
             <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=500" alt="ਫੁਲਕਾਰੀ">
                 <h3>ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ</h3>
                 <p>ਕੀਮਤ: ₹1500</p>
-                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ ਖਰੀਦਣਾ ਹੈ" class="btn" target="_blank">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
+                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਫੁਲਕਾਰੀ ਦੁਪੱਟਾ ਖਰੀਦਣਾ ਹੈ" class="btn">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
             </div>
             <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1610701596007-11502861dc43?w=500" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
                 <h3>ਮਿੱਟੀ ਦੇ ਬਰਤਨ</h3>
                 <p>ਕੀਮਤ: ₹800</p>
-                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਮਿੱਟੀ ਦੇ ਬਰਤਨ ਖਰੀਦਣਾ ਹੈ" class="btn" target="_blank">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
+                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ ਮਿੱਟੀ ਦੇ ਬਰਤਨ ਖਰੀਦਣਾ ਹੈ" class="btn">WhatsApp 'ਤੇ ਖਰੀਦੋ</a>
             </div>
         </div>
 
         <div class="contact-section" id="contact">
-            <h2>ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ</h2>
-            <form action="https://api.web3forms.com/submit" method="POST">
-                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
-                
-                <div class="form-group">
-                    <label>ਨਾਮ:</label>
-                    <input type="text" name="name" required>
-                </div>
-                <div class="form-group">
-                    <label>ਈਮੇਲ:</label>
-                    <input type="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label>ਸੁਨੇਹਾ:</label>
-                    <textarea name="message" rows="4" required></textarea>
-                </div>
-                <button type="submit" class="btn">ਸੁਨੇਹਾ ਭੇਜੋ</button>
-            </form>
+            <h2>ਆਰਡਰ ਜਾਂ ਪੁੱਛ-ਗਿੱਛ ਲਈ</h2>
+            <p>ਸਾਡਾ Google Form ਇੱਥੇ ਭਰੋ, ਇਹ ਸਿੱਧਾ ਸਾਡੀ Google Sheet ਵਿੱਚ ਜਾਵੇਗਾ:</p>
+            <iframe src="https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?embedded=true" width="100%" height="500" frameborder="0">Loading...</iframe>
         </div>
     </div>
 
     <footer>
-        <p>ਫੋਨ: +91 7087806377 | ਈਮੇਲ: info@artisanhub.com</p>
+        <p>ਸੰਪਰਕ: +91 7087806377 | info@artisanhub.com</p>
     </footer>
 
-    <script>
-        function toggleMenu() {
-            document.getElementById('navLinks').classList.toggle('active');
-        }
-    </script>
 </body>
 </html>
