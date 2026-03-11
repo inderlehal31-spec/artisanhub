@@ -3,107 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Artisan Hub Punjab - ਅਸਲੀ ਤੇ ਸ਼ੁੱਧ ਪੰਜਾਬੀ ਕਲਾ ਅਤੇ ਹੱਥੀਂ ਬਣੇ ਉਤਪਾਦ। ਸਿੱਧਾ ਕਾਰੀਗਰਾਂ ਤੋਂ।">
-    <title>Artisan Hub Punjab | ਅਸਲੀ ਪੰਜਾਬੀ ਕਲਾ</title>
+    <title>Artisan Hub Punjab | ਆਰਡਰ ਫਾਰਮ</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Punjabi:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #d35400; --dark: #2c3e50; --light: #f4f4f4; --white: #ffffff; }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Noto Sans Punjabi', sans-serif; background-color: var(--light); color: #333; line-height: 1.6; }
-
-        /* Navigation */
-        nav { background: var(--white); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .nav-links { display: flex; }
-        .nav-links a { text-decoration: none; color: var(--dark); margin-left: 20px; font-weight: 600; }
-        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
-
-        /* Hero */
-        header { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=1200') no-repeat center/cover; height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
-        
-        .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .info { padding: 15px; text-align: center; }
-        .btn { display: inline-block; background: var(--primary); color: white; padding: 10px 15px; border-radius: 5px; text-decoration: none; margin-top: 10px; transition: 0.3s; }
-        .btn:hover { background: #a04000; }
-
-        /* Form */
-        .order-form { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 40px auto; }
-        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-        .submit-btn { background: var(--dark); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; }
-        .submit-btn:disabled { background: #7f8c8d; cursor: not-allowed; }
-
-        @media (max-width: 768px) {
-            .menu-toggle { display: block; }
-            .nav-links { display: none; flex-direction: column; width: 100%; position: absolute; top: 60px; left: 0; background: white; padding: 20px; text-align: center; box-shadow: 0 5px 10px rgba(0,0,0,0.1); }
-            .nav-links.active { display: flex; }
-        }
+        :root { --primary: #d35400; --dark: #2c3e50; --light: #f4f4f4; }
+        body { font-family: 'Noto Sans Punjabi', sans-serif; background-color: var(--light); padding: 20px; }
+        .order-form { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 0 auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
+        .submit-btn { background: var(--primary); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; }
+        .submit-btn:disabled { background: #7f8c8d; }
     </style>
 </head>
 <body>
 
-<nav>
-    <div class="logo">Artisan Hub</div>
-    <div class="menu-toggle" onclick="toggleMenu()">☰</div>
-    <div class="nav-links" id="navLinks">
-        <a href="#products">ਉਤਪਾਦ</a>
-        <a href="#contact">ਆਰਡਰ</a>
-    </div>
-</nav>
-
-<header>
-    <h1>ਪੰਜਾਬੀ ਵਿਰਸਾ ਤੇ ਕਾਰੀਗਰੀ</h1>
-    <p>ਸਿੱਧਾ ਕਾਰੀਗਰਾਂ ਤੋਂ, ਤੁਹਾਡੇ ਘਰ ਤੱਕ।</p>
-</header>
-
-<div class="container" id="products">
-    <div class="product-grid">
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=500" loading="lazy" alt="ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ">
-            <div class="info">
-                <h3>ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ</h3>
-                <p>₹1,500</p>
-                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ%20ਫੁਲਕਾਰੀ%20ਚਾਹੀਦੀ%20ਹੈ" class="btn">WhatsApp 'ਤੇ ਆਰਡਰ</a>
-            </div>
-        </div>
-        <div class="card">
-            <img src="https://images.unsplash.com/photo-1610701596007-11502861dc43?w=500" loading="lazy" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
-            <div class="info">
-                <h3>ਮਿੱਟੀ ਦੇ ਬਰਤਨ</h3>
-                <p>₹800</p>
-                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ%20ਮਿੱਟੀ%20ਦੇ%20ਬਰਤਨ%20ਚਾਹੀਦੇ%20ਹਨ" class="btn">WhatsApp 'ਤੇ ਆਰਡਰ</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<section id="contact" class="order-form">
+<section class="order-form">
     <h2 style="text-align: center;">ਆਰਡਰ ਫਾਰਮ</h2>
     <form id="orderForm" action="https://formspree.io/f/xeergzvv" method="POST">
+        
         <input type="text" name="name" placeholder="ਤੁਹਾਡਾ ਨਾਮ" required>
         <input type="email" name="email" placeholder="ਤੁਹਾਡੀ ਈਮੇਲ" required>
-        <textarea name="message" rows="4" placeholder="ਆਪਣੇ ਆਰਡਰ ਬਾਰੇ ਲਿਖੋ..." required></textarea>
+        <input type="tel" name="phone" placeholder="ਤੁਹਾਡਾ ਫੋਨ ਨੰਬਰ" required>
+
+        <label>ਉਤਪਾਦ ਦੀ ਸ਼੍ਰੇਣੀ ਚੁਣੋ:</label>
+        <select name="category" required>
+            <option value="" disabled selected>ਕੈਟਾਗਰੀ ਚੁਣੋ...</option>
+            <option value="ਕਢਾਈ ਅਤੇ ਕੱਪੜੇ">ਕਢਾਈ ਅਤੇ ਕੱਪੜੇ (ਫੁਲਕਾਰੀ ਆਦਿ)</option>
+            <option value="ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ">ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ</option>
+            <option value="ਪੰਜਾਬੀ ਜੁੱਤੀ">ਪੰਜਾਬੀ ਜੁੱਤੀ</option>
+            <option value="ਸਜਾਵਟੀ ਸਮਾਨ">ਸਜਾਵਟੀ ਸਮਾਨ (Home Decor)</option>
+            <option value="ਪਿੱਤਲ ਦੇ ਭਾਂਡੇ">ਪਿੱਤਲ ਦੇ ਭਾਂਡੇ</option>
+            <option value="ਹੋਰ">ਹੋਰ</option>
+        </select>
+
+        <textarea name="address" rows="3" placeholder="ਆਪਣਾ ਪੂਰਾ ਪਤਾ (ਡਿਲੀਵਰੀ ਲਈ)..." required></textarea>
+        <textarea name="message" rows="2" placeholder="ਕੋਈ ਹੋਰ ਜਾਣਕਾਰੀ (ਵਿਕਲਪਿਕ)"></textarea>
+        
         <button type="submit" class="submit-btn">ਆਰਡਰ ਭੇਜੋ</button>
     </form>
-    <p id="responseMsg" style="text-align: center; margin-top: 15px; color: green;"></p>
+    <p id="responseMsg" style="text-align: center; margin-top: 15px;"></p>
 </section>
 
 <script>
-    function toggleMenu() {
-        document.getElementById('navLinks').classList.toggle('active');
-    }
-
     const form = document.getElementById('orderForm');
     const msg = document.getElementById('responseMsg');
-    const submitBtn = form.querySelector('.submit-btn');
     
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        submitBtn.innerText = "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...";
-        submitBtn.disabled = true;
-
         const formData = new FormData(form);
         fetch(form.action, {
             method: 'POST',
@@ -112,17 +57,12 @@
         }).then(response => {
             if (response.ok) {
                 msg.innerText = "ਧੰਨਵਾਦ! ਤੁਹਾਡਾ ਆਰਡਰ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜ ਦਿੱਤਾ ਗਿਆ ਹੈ।";
+                msg.style.color = "green";
                 form.reset();
             } else {
-                msg.innerText = "ਕੋਈ ਗਲਤੀ ਹੋਈ, ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।";
+                msg.innerText = "ਕੋਈ ਗਲਤੀ ਹੋਈ, ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।";
                 msg.style.color = "red";
             }
-        }).catch(() => {
-            msg.innerText = "ਸਰਵਰ ਨਾਲ ਜੁੜਨ ਵਿੱਚ ਸਮੱਸਿਆ ਆਈ ਹੈ।";
-            msg.style.color = "red";
-        }).finally(() => {
-            submitBtn.innerText = "ਆਰਡਰ ਭੇਜੋ";
-            submitBtn.disabled = false;
         });
     });
 </script>
