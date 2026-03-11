@@ -10,8 +10,10 @@
         html { scroll-behavior: smooth; }
         body { font-family: 'Noto Sans Punjabi', sans-serif; margin: 0; background-color: #f4f4f4; color: #333; }
         
+        /* Navigation */
         nav { background: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        nav a { text-decoration: none; color: #333; margin-left: 20px; font-weight: bold; }
+        .nav-links a { text-decoration: none; color: #333; margin-left: 20px; font-weight: bold; }
+        .menu-toggle { display: none; font-size: 24px; cursor: pointer; }
         
         header { background: #2c3e50; color: white; padding: 3rem 1rem; text-align: center; }
         .container { padding: 20px; max-width: 800px; margin: auto; }
@@ -19,23 +21,32 @@
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px; }
         .product-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); text-align: center; }
         
-        /* Contact Form Styles */
+        /* Form Styles */
         .contact-section { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
         .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         
-        .btn { display: inline-block; background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; border: none; cursor: pointer; width: 100%; }
+        .btn { display: inline-block; background: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; border: none; cursor: pointer; width: 100%; transition: 0.3s; }
         .btn:hover { background: #218838; }
         
         footer { margin-top: 50px; padding: 30px; background: #333; color: white; text-align: center; }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .menu-toggle { display: block; }
+            .nav-links { display: none; width: 100%; flex-direction: column; background: #fff; position: absolute; top: 70px; left: 0; padding: 20px; box-shadow: 0 5px 10px rgba(0,0,0,0.1); text-align: center; }
+            .nav-links.active { display: flex; }
+            .nav-links a { margin: 10px 0; display: block; }
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <h2>Artisan Hub</h2>
-        <div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <div class="nav-links" id="navLinks">
             <a href="#home">ਮੁੱਖ ਪੰਨਾ</a>
             <a href="#products">ਉਤਪਾਦ</a>
             <a href="#contact">ਸੰਪਰਕ</a>
@@ -64,7 +75,9 @@
 
         <div class="contact-section" id="contact">
             <h2>ਸਾਡੇ ਨਾਲ ਸੰਪਰਕ ਕਰੋ</h2>
-            <form action="mailto:info@artisanhub.com" method="post" enctype="text/plain">
+            <form action="https://api.web3forms.com/submit" method="POST">
+                <input type="hidden" name="access_key" value="YOUR_ACCESS_KEY_HERE">
+                
                 <div class="form-group">
                     <label>ਨਾਮ:</label>
                     <input type="text" name="name" required>
@@ -82,9 +95,14 @@
         </div>
     </div>
 
-    <footer id="footer">
+    <footer>
         <p>ਫੋਨ: +91 7087806377 | ਈਮੇਲ: info@artisanhub.com</p>
     </footer>
 
+    <script>
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
