@@ -3,142 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artisan Hub Punjab | ਅਸਲੀ ਪੰਜਾਬੀ ਕਲਾ</title>
-    <meta property="og:title" content="Artisan Hub Punjab | ਅਸਲੀ ਪੰਜਾਬੀ ਕਲਾ">
-    <meta property="og:description" content="ਸਿੱਧਾ ਕਾਰੀਗਰਾਂ ਤੋਂ, ਤੁਹਾਡੇ ਘਰ ਤੱਕ।">
-    <meta property="og:image" content="https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=800">
-    
+    <meta name="theme-color" content="#d35400">
+    <link rel="canonical" href="https://yourwebsite.com/"> <title>Artisan Hub Punjab | ਅਸਲੀ ਪੰਜਾਬੀ ਕਲਾ</title>
+    <meta name="description" content="Artisan Hub Punjab: ਅਸਲੀ ਤੇ ਸ਼ੁੱਧ ਪੰਜਾਬੀ ਕਲਾ ਅਤੇ ਹੱਥੀਂ ਬਣੇ ਉਤਪਾਦ।">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3063/3063183.png" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Punjabi:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #d35400; --dark: #2c3e50; --light: #f4f4f4; --white: #ffffff; }
-        
-        /* Smooth Scrolling */
+        :root { --primary: #d35400; --dark: #2c3e50; --light: #f4f4f4; }
         html { scroll-behavior: smooth; }
-        
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Noto Sans Punjabi', sans-serif; background-color: var(--light); color: #333; line-height: 1.6; }
 
-        nav { background: var(--white); padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
-        .logo { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
-        .nav-links a { text-decoration: none; color: var(--dark); margin-left: 20px; font-weight: 600; }
+        nav { background: #fff; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        .nav-links { display: flex; }
+        .nav-links a { text-decoration: none; color: var(--dark); margin-left: 20px; font-weight: 600; padding: 10px; }
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; }
 
-        header { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=1200') no-repeat center/cover; height: 50vh; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; }
-        
+        header { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1582555172866-f73bb12a2ab3?w=1200') center/cover; height: 40vh; display: flex; justify-content: center; align-items: center; color: white; text-align: center; }
+
         .container { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
-        
-        /* Gallery Styles */
-        .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 40px; }
-        .gallery img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s; }
-        .gallery img:hover { transform: scale(1.03); }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .img-box { aspect-ratio: 16/9; width: 100%; object-fit: cover; border-radius: 8px; }
+        .card { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .info { padding: 15px; text-align: center; }
-        .price { color: var(--primary); font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
-        
-        .whatsapp-btn { background: #25D366; color: white; padding: 12px; display: block; text-decoration: none; border-radius: 5px; margin-top: 10px; font-weight: bold; text-align: center; }
-        
         .order-form { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 40px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-        .submit-btn { background: var(--dark); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; transition: background 0.3s; }
-        .submit-btn:hover { background: #1a252f; }
-        .submit-btn:disabled { background: #95a5a6; cursor: not-allowed; }
+        .submit-btn { background: var(--primary); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .submit-btn:disabled { background: #95a5a6; }
 
-        footer { text-align: center; padding: 20px; background: var(--dark); color: white; }
+        #responseMsg { display: none; padding: 15px; text-align: center; border-radius: 5px; margin-top: 15px; font-weight: bold; }
+        footer { background: var(--dark); color: white; padding: 30px; text-align: center; }
+
+        @media (max-width: 600px) { .menu-toggle { display: block; } .nav-links { display: none; flex-direction: column; position: absolute; top: 60px; right: 0; background: white; width: 100%; padding: 20px; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">Artisan Hub</div>
-    <div class="nav-links">
+    <div class="logo" style="color:var(--primary); font-weight:700;">Artisan Hub</div>
+    <div class="menu-toggle" onclick="document.querySelector('.nav-links').style.display = (document.querySelector('.nav-links').style.display === 'flex' ? 'none' : 'flex')">☰</div>
+    <div class="nav-links" onclick="if(window.innerWidth < 600) this.style.display='none'">
         <a href="#products">ਉਤਪਾਦ</a>
-        <a href="#gallery">ਗੈਲਰੀ</a>
         <a href="#contact">ਆਰਡਰ</a>
     </div>
 </nav>
 
-<header>
-    <h1>ਪੰਜਾਬੀ ਵਿਰਸਾ ਤੇ ਕਾਰੀਗਰੀ</h1>
-    <p>ਸਿੱਧਾ ਕਾਰੀਗਰਾਂ ਤੋਂ, ਤੁਹਾਡੇ ਘਰ ਤੱਕ।</p>
-</header>
+<header><h1>ਪੰਜਾਬੀ ਵਿਰਸਾ ਤੇ ਕਾਰੀਗਰੀ</h1></header>
 
-<div class="container">
-    <section id="gallery">
-        <h2>ਸਾਡੀ ਕਲਾ</h2><br>
-        <div class="gallery">
-            <img src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=400" alt="ਫੁਲਕਾਰੀ">
-            <img src="https://images.unsplash.com/photo-1610701596007-11502861dc43?w=400" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
-            <img src="https://images.unsplash.com/photo-1596568202570-523178229b11?w=400" alt="ਹੱਥ ਦਾ ਕੰਮ">
-        </div>
-    </section>
-
-    <div id="products" class="product-grid">
+<div class="container" id="products">
+    <div class="product-grid">
         <div class="card">
-            <img src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=500" alt="ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ">
-            <div class="info">
-                <h3>ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ</h3><p class="price">₹1,500</p>
-                <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ%20ਫੁਲਕਾਰੀ%20ਚਾਹੀਦੀ%20ਹੈ" class="whatsapp-btn">WhatsApp 'ਤੇ ਆਰਡਰ</a>
-            </div>
+            <img class="img-box" src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=500" width="500" height="281" alt="ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ" loading="lazy">
+            <h3>ਸ਼ਾਹੀ ਫੁਲਕਾਰੀ</h3>
+            <p>ਕੀਮਤ: ₹1,500</p>
+            <a href="https://wa.me/917087806377?text=ਮੈਨੂੰ%20ਸ਼ਾਹੀ%20ਫੁਲਕਾਰੀ%20ਬਾਰੇ%20ਜਾਣਕਾਰੀ%20ਚਾਹੀਦੀ%20ਹੈ" class="submit-btn" style="display:block; text-align:center; margin-top:10px; text-decoration:none;">WhatsApp 'ਤੇ ਆਰਡਰ</a>
         </div>
     </div>
 </div>
 
+[attachment_0](attachment)
+
 <section id="contact" class="order-form">
-    <h2 style="text-align: center;">ਆਰਡਰ ਫਾਰਮ</h2>
+    <h2>ਆਰਡਰ ਫਾਰਮ</h2>
     <form id="orderForm" action="https://formspree.io/f/xeergzvv" method="POST">
         <input type="text" name="_honey" style="display:none">
-        <input type="text" name="name" placeholder="ਤੁਹਾਡਾ ਨਾਮ" required>
-        <input type="email" name="email" placeholder="ਤੁਹਾਡੀ ਈਮੇਲ" required>
-        <input type="tel" name="phone" placeholder="ਫੋਨ ਨੰਬਰ (10 ਅੰਕ)" pattern="[0-9]{10}" title="ਕਿਰਪਾ ਕਰਕੇ 10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ ਭਰੋ" required>
-        
-        <select name="category" required>
-            <option value="" disabled selected>ਉਤਪਾਦ ਦੀ ਸ਼੍ਰੇਣੀ ਚੁਣੋ...</option>
+        <label for="name">ਨਾਮ:</label>
+        <input type="text" id="name" name="name" placeholder="ਆਪਣਾ ਪੂਰਾ ਨਾਮ ਲਿਖੋ" required>
+        <label for="phone">ਫੋਨ:</label>
+        <input type="tel" id="phone" name="phone" placeholder="10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ" pattern="[0-9]{10}" required>
+        <label for="category">ਉਤਪਾਦ:</label>
+        <select id="category" name="category" required>
             <option value="ਕਢਾਈ">ਕਢਾਈ</option>
             <option value="ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ">ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ</option>
         </select>
-
-        <textarea name="address" rows="3" placeholder="ਆਪਣਾ ਪੂਰਾ ਪਤਾ (ਡਿਲੀਵਰੀ ਲਈ)..." required></textarea>
+        <label for="address">ਪਤਾ:</label>
+        <textarea id="address" name="address" rows="3" placeholder="ਆਪਣਾ ਡਿਲੀਵਰੀ ਪਤਾ ਲਿਖੋ" required></textarea>
         <button type="submit" class="submit-btn">ਆਰਡਰ ਭੇਜੋ</button>
     </form>
-    <p id="responseMsg" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
+    <p id="responseMsg"></p>
 </section>
 
-<footer><p>&copy; 2026 Artisan Hub Punjab. ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।</p></footer>
+<footer>
+    <p>ਕਾਲ ਕਰੋ: <a href="tel:+917087806377" style="color:white; text-decoration:none;">+91 70878 06377</a></p>
+    <p>&copy; 2026 Artisan Hub Punjab.</p>
+</footer>
 
 <script>
     const form = document.getElementById('orderForm');
+    const btn = form.querySelector('.submit-btn');
     const msg = document.getElementById('responseMsg');
     
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', (e) => {
         e.preventDefault();
-        const btn = form.querySelector('.submit-btn');
-        btn.innerText = "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...";
-        btn.disabled = true;
-
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { 'Accept': 'application/json' }
-        })
+        btn.disabled = true; btn.innerText = "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...";
+        fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
         .then(response => {
             if (response.ok) {
-                msg.style.color = "green";
-                msg.innerText = "ਧੰਨਵਾਦ! ਤੁਹਾਡਾ ਆਰਡਰ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜ ਦਿੱਤਾ ਗਿਆ ਹੈ।";
-                form.reset();
-            } else {
-                msg.style.color = "red";
-                msg.innerText = "ਕੋਈ ਗਲਤੀ ਹੋਈ, ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ!";
-            }
-            btn.innerText = "ਆਰਡਰ ਭੇਜੋ";
-            btn.disabled = false;
+                msg.style.display = "block"; msg.style.background = "#e8f5e9"; msg.style.color = "#2e7d32";
+                msg.innerText = "ਧੰਨਵਾਦ! ਆਰਡਰ ਸਫਲ ਰਿਹਾ।"; form.reset();
+            } else { throw new Error(); }
         })
         .catch(() => {
-            msg.style.color = "red";
-            msg.innerText = "ਇੰਟਰਨੈੱਟ ਵਿੱਚ ਕੋਈ ਸਮੱਸਿਆ ਹੈ!";
-            btn.innerText = "ਆਰਡਰ ਭੇਜੋ";
-            btn.disabled = false;
+            msg.style.display = "block"; msg.style.background = "#ffebee"; msg.style.color = "#c62828";
+            msg.innerText = "ਕੋਈ ਗਲਤੀ ਹੋਈ, ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ।";
+        })
+        .finally(() => { 
+            btn.disabled = false; btn.innerText = "ਆਰਡਰ ਭੇਜੋ";
+            setTimeout(() => { msg.style.display = "none"; }, 5000);
         });
     });
 </script>
