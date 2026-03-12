@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Punjabi:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #d35400; --dark: #2c3e50; --light: #f4f4f4; --white: #ffffff; }
+        
+        /* Smooth Scrolling */
+        html { scroll-behavior: smooth; }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Noto Sans Punjabi', sans-serif; background-color: var(--light); color: #333; line-height: 1.6; }
 
@@ -24,7 +28,8 @@
         
         /* Gallery Styles */
         .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 40px; }
-        .gallery img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+        .gallery img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; transition: transform 0.3s; }
+        .gallery img:hover { transform: scale(1.03); }
 
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
         .card { background: var(--white); border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -32,11 +37,13 @@
         .info { padding: 15px; text-align: center; }
         .price { color: var(--primary); font-weight: bold; font-size: 1.2rem; margin: 5px 0; }
         
-        .whatsapp-btn { background: #25D366; color: white; padding: 10px; display: block; text-decoration: none; border-radius: 5px; margin-top: 10px; font-weight: bold; }
+        .whatsapp-btn { background: #25D366; color: white; padding: 12px; display: block; text-decoration: none; border-radius: 5px; margin-top: 10px; font-weight: bold; text-align: center; }
         
         .order-form { background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 40px auto; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; }
-        .submit-btn { background: var(--dark); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; }
+        .submit-btn { background: var(--dark); color: white; padding: 12px; width: 100%; border: none; cursor: pointer; border-radius: 4px; font-size: 1rem; transition: background 0.3s; }
+        .submit-btn:hover { background: #1a252f; }
+        .submit-btn:disabled { background: #95a5a6; cursor: not-allowed; }
 
         footer { text-align: center; padding: 20px; background: var(--dark); color: white; }
     </style>
@@ -59,7 +66,7 @@
 
 <div class="container">
     <section id="gallery">
-        <h2 style="margin-bottom: 20px;">ਸਾਡੀ ਕਲਾ</h2>
+        <h2>ਸਾਡੀ ਕਲਾ</h2><br>
         <div class="gallery">
             <img src="https://images.unsplash.com/photo-1599521418632-f9a77074154c?w=400" alt="ਫੁਲਕਾਰੀ">
             <img src="https://images.unsplash.com/photo-1610701596007-11502861dc43?w=400" alt="ਮਿੱਟੀ ਦੇ ਬਰਤਨ">
@@ -82,30 +89,57 @@
     <h2 style="text-align: center;">ਆਰਡਰ ਫਾਰਮ</h2>
     <form id="orderForm" action="https://formspree.io/f/xeergzvv" method="POST">
         <input type="text" name="_honey" style="display:none">
-        
         <input type="text" name="name" placeholder="ਤੁਹਾਡਾ ਨਾਮ" required>
         <input type="email" name="email" placeholder="ਤੁਹਾਡੀ ਈਮੇਲ" required>
-        <input type="tel" name="phone" placeholder="ਤੁਹਾਡਾ 10 ਅੰਕਾਂ ਦਾ ਫੋਨ ਨੰਬਰ" pattern="[0-9]{10}" title="ਕਿਰਪਾ ਕਰਕੇ 10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ ਭਰੋ" required>
+        <input type="tel" name="phone" placeholder="ਫੋਨ ਨੰਬਰ (10 ਅੰਕ)" pattern="[0-9]{10}" title="ਕਿਰਪਾ ਕਰਕੇ 10 ਅੰਕਾਂ ਦਾ ਨੰਬਰ ਭਰੋ" required>
         
         <select name="category" required>
-            <option value="" disabled selected>ਉਤਪਾਦ ਦੀ ਸ਼੍ਰੇਣੀ...</option>
+            <option value="" disabled selected>ਉਤਪਾਦ ਦੀ ਸ਼੍ਰੇਣੀ ਚੁਣੋ...</option>
             <option value="ਕਢਾਈ">ਕਢਾਈ</option>
             <option value="ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ">ਮਿੱਟੀ ਦੇ ਭਾਂਡੇ</option>
         </select>
 
-        <textarea name="address" rows="3" placeholder="ਪੂਰਾ ਪਤਾ..." required></textarea>
+        <textarea name="address" rows="3" placeholder="ਆਪਣਾ ਪੂਰਾ ਪਤਾ (ਡਿਲੀਵਰੀ ਲਈ)..." required></textarea>
         <button type="submit" class="submit-btn">ਆਰਡਰ ਭੇਜੋ</button>
     </form>
-    <p id="responseMsg" style="text-align: center; margin-top: 15px;"></p>
+    <p id="responseMsg" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
 </section>
 
-<footer><p>&copy; 2026 Artisan Hub Punjab.</p></footer>
+<footer><p>&copy; 2026 Artisan Hub Punjab. ਸਾਰੇ ਹੱਕ ਰਾਖਵੇਂ ਹਨ।</p></footer>
 
 <script>
     const form = document.getElementById('orderForm');
+    const msg = document.getElementById('responseMsg');
+    
     form.addEventListener('submit', function(e) {
-        // Formspree handling code remains similar
-        console.log("ਸਬਮਿਟ ਹੋ ਰਿਹਾ ਹੈ...");
+        e.preventDefault();
+        const btn = form.querySelector('.submit-btn');
+        btn.innerText = "ਭੇਜਿਆ ਜਾ ਰਿਹਾ ਹੈ...";
+        btn.disabled = true;
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            if (response.ok) {
+                msg.style.color = "green";
+                msg.innerText = "ਧੰਨਵਾਦ! ਤੁਹਾਡਾ ਆਰਡਰ ਸਫਲਤਾਪੂਰਵਕ ਭੇਜ ਦਿੱਤਾ ਗਿਆ ਹੈ।";
+                form.reset();
+            } else {
+                msg.style.color = "red";
+                msg.innerText = "ਕੋਈ ਗਲਤੀ ਹੋਈ, ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ!";
+            }
+            btn.innerText = "ਆਰਡਰ ਭੇਜੋ";
+            btn.disabled = false;
+        })
+        .catch(() => {
+            msg.style.color = "red";
+            msg.innerText = "ਇੰਟਰਨੈੱਟ ਵਿੱਚ ਕੋਈ ਸਮੱਸਿਆ ਹੈ!";
+            btn.innerText = "ਆਰਡਰ ਭੇਜੋ";
+            btn.disabled = false;
+        });
     });
 </script>
 </body>
