@@ -1,116 +1,73 @@
-let posts = [];
+// Scroll to booking section
 
+function scrollToBooking(){
 
-function createPost(){
+document.getElementById("booking").scrollIntoView({
 
-let input = document.getElementById("postInput");
+behavior:"smooth"
 
-let text = input.value.trim();
-
-if(text === ""){
-alert("Write something first");
-return;
-}
-
-let post = {
-content: text,
-likes: 0,
-comments: []
-};
-
-posts.unshift(post);
-
-input.value = "";
-
-renderPosts();
+})
 
 }
 
 
-function renderPosts(){
 
-let feed = document.getElementById("feed");
+// Booking Form
 
-feed.innerHTML = "<h2>News Feed</h2>";
+document
+.getElementById("bookingForm")
+.addEventListener("submit",function(e){
 
-posts.forEach((post,index)=>{
+e.preventDefault()
 
-let postDiv = document.createElement("div");
 
-postDiv.className = "post";
 
-let html = `
-<p>${post.content}</p>
+let name = document.getElementById("name").value
+let phone = document.getElementById("phone").value
+let service = document.getElementById("service").value
+let date = document.getElementById("date").value
+let time = document.getElementById("time").value
 
-<button class="like-btn" onclick="likePost(${index})">
-👍 Like (${post.likes})
-</button>
 
-<div>
 
-<input id="commentInput${index}" placeholder="Write comment">
+if(service==="Select Service"){
 
-<button class="comment-btn" onclick="addComment(${index})">
-Comment
-</button>
+alert("Please select a service")
 
-</div>
-
-`;
-
-post.comments.forEach(c=>{
-html += `<p>💬 ${c}</p>`;
-});
-
-postDiv.innerHTML = html;
-
-feed.appendChild(postDiv);
-
-});
+return
 
 }
 
 
-function likePost(index){
 
-posts[index].likes++;
+let message =
 
-renderPosts();
+"New Appointment Booking%0A%0A" +
 
-}
+"Name: " + name + "%0A" +
+
+"Phone: " + phone + "%0A" +
+
+"Service: " + service + "%0A" +
+
+"Date: " + date + "%0A" +
+
+"Time: " + time
 
 
-function addComment(index){
 
-let input = document.getElementById("commentInput"+index);
+let whatsapp =
 
-let text = input.value.trim();
+"https://wa.me/917087806377?text=" + message
 
-if(text === "") return;
 
-posts[index].comments.push(text);
 
-input.value = "";
+window.open(whatsapp)
 
-renderPosts();
 
-}
-let email = localStorage.getItem("loggedInUser")
 
-if(email){
+alert("Redirecting to WhatsApp for booking confirmation")
 
-let user = JSON.parse(localStorage.getItem(email))
 
-if(user){
-document.getElementById("userName").innerText = "Welcome " + user.username
-}
 
-}
-
-function logout(){
-
-localStorage.removeItem("loggedInUser")
-
-window.location.href = "/login.html"
-
-}
+})
