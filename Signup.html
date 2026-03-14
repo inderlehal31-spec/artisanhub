@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Signup - Meta Social</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header class="navbar">
+
+<h1>Meta Social</h1>
+
+<nav>
+
+<a href="index.html">Home</a>
+<a href="login.html">Login</a>
+
+</nav>
+
+</header>
+
+
+<div class="form-container">
+
+<h2>Create Account</h2>
+
+<input type="text" id="signupUsername" placeholder="Username">
+
+<input type="email" id="signupEmail" placeholder="Email">
+
+<input type="password" id="signupPassword" placeholder="Password">
+
+<button onclick="signupUser()">Signup</button>
+
+</div>
+
+
+<script>
+
+function signupUser(){
+
+let username=document.getElementById("signupUsername").value;
+
+let email=document.getElementById("signupEmail").value;
+
+let password=document.getElementById("signupPassword").value;
+
+if(username=="" || email=="" || password==""){
+alert("Please fill all fields");
+return;
+}
+
+alert("Account created successfully (demo)");
+
+window.location.href="login.html";
+
+}
+
+</script>
+
+
+</body>
+
+</html>
