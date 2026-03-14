@@ -1,228 +1,64 @@
-meta-platform
-│
-├── server.jsconst express = require("express")
-const mongoose = require("mongoose")
-const bodyParser = require("body-parser")
-const cors = require("cors")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
+<!DOCTYPE html>
+<html lang="en">
 
-const app = express()
-
-app.use(cors())
-app.use(bodyParser.json())
-app.use(express.static("public"))
-
-mongoose.connect("mongodb://127.0.0.1:27017/meta")
-
-const UserSchema = new mongoose.Schema({
-username:String,
-email:String,
-password:String
-})
-
-const PostSchema = new mongoose.Schema({
-user:String,
-content:String,
-likes:Number,
-comments:[String]
-})
-
-const User = mongoose.model("User",UserSchema)
-const Post = mongoose.model("Post",PostSchema)
-
-app.post("/signup", async (req,res)=>{
-
-let hashed = await bcrypt.hash(req.body.password,10)
-
-let user = new User({
-username:req.body.username,
-email:req.body.email,
-password:hashed
-})
-
-await user.save()
-
-res.send("User Created")
-
-})
-
-app.post("/login", async (req,res)=>{
-
-let user = await User.findOne({email:req.body.email})
-
-if(!user) return res.send("User not found")
-
-let match = await bcrypt.compare(req.body.password,user.password)
-
-if(!match) return res.send("Wrong password")
-
-let token = jwt.sign({id:user._id},"secret")
-
-res.json({token})
-
-})
-
-app.post("/createPost", async (req,res)=>{
-
-let post = new Post({
-user:req.body.user,
-content:req.body.content,
-likes:0,
-comments:[]
-})
-
-await post.save()
-
-res.send("Post created")
-
-})
-
-app.get("/posts", async (req,res)=>{
-
-let posts = await Post.find().sort({_id:-1})
-
-res.json(posts)
-
-})
-
-app.post("/like/:id", async (req,res)=>{
-
-let post = await Post.findById(req.params.id)
-
-post.likes +=1
-
-await post.save()
-
-res.send("liked")
-
-})
-
-app.post("/comment/:id", async (req,res)=>{
-
-let post = await Post.findById(req.params.id)
-
-post.comments.push(req.body.comment)
-
-await post.save()
-
-res.send("comment added")
-
-})
-
-app.listen(3000,()=>{
-console.log("Server running")
-})
-├── package.json{
-"name":"meta-platform",
-"version":"1.0.0",
-"main":"server.js",
-"scripts":{
-"start":"node server.js"
-},
-"dependencies":{
-"express":"^4.18.2",
-"mongoose":"^7.0.0",
-"cors":"^2.8.5",
-"body-parser":"^1.20.2",
-"jsonwebtoken":"^9.0.0",
-"bcryptjs":"^2.4.3"
-}
-}
-│
-├── public
-│   ├── index.html<!DOCTYPE html>
-<html>
 <head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Meta Social</title>
+
 <link rel="stylesheet" href="style.css">
+
 </head>
 
-<body>async function createPost(){
+<body>
 
-let content=document.getElementById("postContent").value
+<header class="navbar">
 
-await fetch("/createPost",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-user:"demo",
-content:content
-})
-})
+<h1>Meta Social</h1>
 
-loadPosts()
+<nav>
 
-}
+<a href="index.html">Home</a>
 
-async function loadPosts(){
+<a href="profile.html">Profile</a>
 
-let res=await fetch("/posts")
+<a href="login.html">Login</a>
 
-let posts=await res.json()
+<a href="signup.html">Signup</a>
 
-let html=""
+</nav>
 
-posts.forEach(p=>{
+</header>
 
-html+=`
 
-<div class="post">
+<div class="container">
 
-<p>${p.content}</p>
 
-<button onclick="like('${p._id}')">Like ${p.likes}</button>
+<div class="post-box">
 
-</div>
+<h2>Create Post</h2>
 
-`
-
-})
-
-document.getElementById("feed").innerHTML=html
-
-}
-
-async function like(id){
-
-await fetch("/like/"+id,{method:"POST"})
-
-loadPosts()
-
-}
-
-loadPosts()
-
-<h1>Meta Social Platform</h1>
-
-<textarea id="postContent" placeholder="What's on your mind"></textarea>
+<textarea id="postInput" placeholder="What's on your mind?"></textarea>
 
 <button onclick="createPost()">Post</button>
 
-<div id="feed"></div>
+</div>
+
+
+<div id="feed" class="feed">
+
+<h2>News Feed</h2>
+
+</div>
+
+
+</div>
+
 
 <script src="app.js"></script>
 
 </body>
+
 </html>
-│   ├── login.html
-│   ├── signup.html
-│   ├── profile.html
-│   ├── style.cssbody{
-font-family:Arial;
-background:#f4f4f4;
-padding:20px;
-}
-
-textarea{
-width:100%;
-height:80px;
-}
-
-.post{
-background:white;
-padding:15px;
-margin-top:15px;
-border-radius:8px;
-}
-│   └── app.js
