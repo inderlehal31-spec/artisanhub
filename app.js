@@ -95,3 +95,22 @@ input.value = "";
 renderPosts();
 
 }
+let email = localStorage.getItem("loggedInUser")
+
+if(email){
+
+let user = JSON.parse(localStorage.getItem(email))
+
+if(user){
+document.getElementById("userName").innerText = "Welcome " + user.username
+}
+
+}
+
+function logout(){
+
+localStorage.removeItem("loggedInUser")
+
+window.location.href = "/login.html"
+
+}
