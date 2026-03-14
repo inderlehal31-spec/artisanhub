@@ -3,8 +3,8 @@
 
 <head>
 
-<Rexa charset="UTF-8">
-<Rexa name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Rexa</title>
 
@@ -35,7 +35,6 @@
 
 <div class="container">
 
-
 <div class="post-box">
 
 <h2>Create Post</h2>
@@ -53,11 +52,79 @@
 
 </div>
 
-
 </div>
 
 
 <script src="app.js"></script>
+
+
+<!-- FIREBASE CODE START -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged }
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyCxDUBknzr72aLZTv_8Ru-_RvRUWxbnudw",
+authDomain: "rexa-platform.firebaseapp.com",
+projectId: "rexa-platform",
+storageBucket: "rexa-platform.firebasestorage.app",
+messagingSenderId: "461455978632",
+appId: "1:461455978632:web:d2cd38b72464732c40ef3d",
+measurementId: "G-F3LQPDNKL4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+
+// SIGNUP
+window.signup=function(){
+
+let email=document.getElementById("signupEmail").value
+let password=document.getElementById("signupPassword").value
+
+createUserWithEmailAndPassword(auth,email,password)
+.then(()=>alert("Account Created"))
+.catch(e=>alert(e.message))
+
+}
+
+
+// LOGIN
+window.login=function(){
+
+let email=document.getElementById("loginEmail").value
+let password=document.getElementById("loginPassword").value
+
+signInWithEmailAndPassword(auth,email,password)
+.then(()=>alert("Login Success"))
+.catch(e=>alert(e.message))
+
+}
+
+
+// PROFILE
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+let profile=document.getElementById("profileEmail")
+
+if(profile){
+profile.innerText=user.email
+}
+
+}
+
+})
+
+</script>
+
+<!-- FIREBASE CODE END -->
+
 
 </body>
 
